@@ -53,17 +53,13 @@
                                     <div class="form-group">
                                         <button type="submit" class="btn btn-lg btn-primary btn-block login-btn">{{ __('main.sign_in') }}</button>
                                     </div>
+                                    <div class="xvrx-auth-links">
+                                        <a href="{{ route('password.request') }}">Забыл пароль?</a>
+                                        <a href="{{ route('register') }}">{{ __('main.register') }}</a>
+                                    </div>
                                     <p class="msg none"></p>
                                 </form>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="nk-block nk-auth-footer">
-                    <div class="mt-3">
-                        <div class="form-note-s2 pt-4">
-                            {{ __('main.no_account') }}
-                            <a href="{{ route('register') }}"><strong>{{ __('main.register') }}</strong></a>
                         </div>
                     </div>
                 </div>
@@ -95,6 +91,27 @@ $(document).ready(function() {
     }
     @endif
 
+    function getFirstError(errors) {
+        var order = ['username', 'password', 'recaptcha_token'];
+        for (var i = 0; i < order.length; i++) {
+            var field = order[i];
+            if (errors && errors[field] && errors[field][0]) {
+                return errors[field][0];
+            }
+        }
+
+        if (errors) {
+            var keys = Object.keys(errors);
+            for (var j = 0; j < keys.length; j++) {
+                if (errors[keys[j]] && errors[keys[j]][0]) {
+                    return errors[keys[j]][0];
+                }
+            }
+        }
+
+        return '{{ __("main.validation_error") }}';
+    }
+
     function doLogin(captchaToken) {
         var username = $('input[name="username"]').val();
         var password = $('input[name="password"]').val();
@@ -125,7 +142,7 @@ $(document).ready(function() {
                     if (errors && errors.password) {
                         $('input[name="password"]').addClass('error');
                     }
-                    $('.msg').removeClass('none').text(errors && errors.username ? errors.username[0] : '{{ __("main.validation_error") }}');
+                    $('.msg').removeClass('none').text(getFirstError(errors));
                 } else {
                     $('.msg').removeClass('none').text('{{ __("main.server_error") }}');
                 }

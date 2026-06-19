@@ -111,6 +111,27 @@ $(document).ready(function() {
     }
     @endif
 
+    function getFirstError(errors) {
+        var order = ['username', 'email', 'password', 'password_confirmation', 'recaptcha_token'];
+        for (var i = 0; i < order.length; i++) {
+            var field = order[i];
+            if (errors && errors[field] && errors[field][0]) {
+                return errors[field][0];
+            }
+        }
+
+        if (errors) {
+            var keys = Object.keys(errors);
+            for (var j = 0; j < keys.length; j++) {
+                if (errors[keys[j]] && errors[keys[j]][0]) {
+                    return errors[keys[j]][0];
+                }
+            }
+        }
+
+        return '{{ __("main.validation_error") }}';
+    }
+
     function doRegister(captchaToken) {
         var formData = new FormData();
         formData.append('username', $('input[name="username"]').val());
@@ -146,14 +167,12 @@ $(document).ready(function() {
                         Object.keys(errors).forEach(function(field) {
                             $('input[name="' + field + '"]').addClass('error');
                         });
-                        $('.msg').removeClass('none').text(Object.values(errors)[0][0]);
+                        $('.msg').removeClass('none').text(getFirstError(errors));
+                    } else {
+                        $('.msg').removeClass('none').text('{{ __("main.validation_error") }}');
                     }
                 } else {
-                    var errorMessage = '{{ __("main.server_error") }}';
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        errorMessage = xhr.responseJSON.message;
-                    }
-                    $('.msg').removeClass('none').text(errorMessage);
+                    $('.msg').removeClass('none').text((xhr.responseJSON && xhr.responseJSON.message) || '{{ __("main.server_error") }}');
                 }
             }
         });

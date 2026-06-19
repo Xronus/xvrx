@@ -1,0 +1,24 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: wow-335a-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ascent
+      MYSQL_DATABASE: wow_website
+    ports:
+      - "3306:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - wow_335a_mysql:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-pascent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  wow_335a_mysql:

@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\AdminLogoController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\NewsController;
 
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/lang/{locale}', function (string $locale) {
@@ -33,6 +34,8 @@ Route::get('/lang/{locale}', function (string $locale) {
 Route::middleware('guest')->group(function () {
     Route::get('/cp', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/cp', [LoginController::class, 'login']);
+    Route::get('/cp/forgot-password', [LoginController::class, 'showForgotPasswordForm'])->name('password.request');
+    Route::post('/cp/forgot-password', [LoginController::class, 'sendPasswordResetLink'])->name('password.email');
     Route::get('/cp/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/cp/register', [RegisterController::class, 'register']);
 });

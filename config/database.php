@@ -62,6 +62,44 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
+
+        // НОВОЕ СОЕДИНЕНИЕ ДЛЯ TRINITYCORE CHARACTERS
+        'trinity_characters' => [
+            'driver' => 'mysql',
+            'host' => env('TRINITY_DB_HOST', '127.0.0.1'),
+            'port' => env('TRINITY_DB_PORT', '3306'),
+            'database' => env('TRINITY_DB_DATABASE', 'characters'),
+            'username' => env('TRINITY_DB_USERNAME'),
+            'password' => env('TRINITY_DB_PASSWORD'),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+        'trinity' => [
+            'driver' => 'mysql',
+            'host' => env('TRINITY_DB_HOST', '127.0.0.1'),
+            'port' => env('TRINITY_DB_PORT', '3306'),
+            'database' => env('TRINITY_DB_DATABASE', 'characters'),
+            'username' => env('TRINITY_DB_USERNAME', 'root'),
+            'password' => env('TRINITY_DB_PASSWORD', 'ascent'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ], // <-- ВАЖНО: здесь добавлена закрывающая скобка для массива 'trinity'
     ],
     'migrations' => 'migrations',
     'redis' => [

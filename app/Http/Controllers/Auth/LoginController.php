@@ -28,6 +28,21 @@ class LoginController extends Controller
         return view('auth.login', compact('settings'));
     }
 
+    public function showForgotPasswordForm()
+    {
+        $settings = SiteSetting::first();
+        return view('auth.forgot-password', compact('settings'));
+    }
+
+    public function sendPasswordResetLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email|max:255',
+        ]);
+
+        return back()->with('status', 'Если указанный адрес есть в системе, на него будет отправлена ссылка для восстановления пароля.');
+    }
+
     public function login(Request $request)
     {
         $rules = [
@@ -35,7 +50,14 @@ class LoginController extends Controller
             'password' => 'required|string|min:8',
         ];
 
-        $messages = [];
+        $messages = [
+            'username.required' => 'Введите логин.',
+            'username.string' => 'Логин должен быть строкой.',
+            'username.max' => 'Логин не должен быть длиннее 14 символов.',
+            'password.required' => 'Введите пароль.',
+            'password.string' => 'Пароль должен быть строкой.',
+            'password.min' => 'Пароль должен быть не короче 8 символов.',
+        ];
 
         // Add captcha validation only if enabled (google or cloudflare)
         if ($this->captchaService->isEnabled()) {

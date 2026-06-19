@@ -6,255 +6,106 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ asset('powerpuffsite/images/favicon.ico') }}" type="image/x-icon">
     <title>{{ __('main.ladder_title') }}</title>
-    <link rel="stylesheet" href="{{ asset('powerpuffsite/css/main_home.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('powerpuffsite/css/addition.css') }}">
-    @if(file_exists(public_path('powerpuffsite/css/ladder/core.b15be49248362418ef78.css')))
-    <link href="{{ asset('powerpuffsite/css/ladder/core.b15be49248362418ef78.css') }}" rel="stylesheet" type="text/css"/>
-    @endif
-    @if(file_exists(public_path('powerpuffsite/css/ladder/5.60a3b147f091048d9af5.css')))
-    <link href="{{ asset('powerpuffsite/css/ladder/5.60a3b147f091048d9af5.css') }}" rel="stylesheet" type="text/css"/>
-    @endif
-    <style>
-        .ladder-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 24px; }
-        .ladder-nav a {
-            display: inline-block;
-            padding: 10px 18px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 6px;
-            color: #c9a227;
-            text-decoration: none;
-            font-weight: 500;
-            transition: background 0.2s, border-color 0.2s;
-        }
-        .ladder-nav a:hover {
-            background: rgba(255,255,255,0.15);
-            border-color: rgba(255,255,255,0.35);
-            color: #f0d878;
-        }
-        .ladder-nav a.active {
-            background: rgba(201, 162, 39, 0.35);
-            border-color: #c9a227;
-            color: #f0d878;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('xvrx-assets/css/remixicon.css') }}">
+    <link rel="stylesheet" href="{{ asset('xvrx-assets/css/xvrx-laravel.css') }}">
 </head>
-<body>
-<div class="wrapper">
-<header class="header">
-    <div class="header__wrapper">
-        <div class="header__container _container">
-            <div class="header__body">
-                <button type="button" class="menu__icon icon-menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <div class="header__menu menu">
-                    <nav class="menu__body" style="--logo-path: url('{{ asset($settings && $settings->logo_path ? $settings->logo_path : 'powerpuffsite/images/main/logo.png') }}');">
-                        <ul class="menu__list">
-                            <li class="menu__item">
-                                <a href="{{ route('home') }}" class="menu__link">{{ __('main.home') }}</a>
-                            </li>
-                            <li class="menu__item">
-                                <a href="{{ route('ladder') }}" class="menu__link">{{ __('main.ladder') }}</a>
-                            </li>
-                            <li class="menu__item">
-                                <a href="{{ route('register') }}" class="menu__link">{{ __('main.registration') }}</a>
-                            </li>
-                            @auth
-                            <li class="menu__item" style="padding-left: 53px;">
-                                <a href="{{ route('cabinet') }}" class="actions-header__user menu__link">{{ __('main.personal_account') }}</a>
-                            </li>
-                            @else
-                            <li class="menu__item" style="padding-left: 53px;">
-                                <a href="{{ route('login') }}" class="actions-header__user menu__link">{{ __('main.personal_account') }}</a>
-                            </li>
-                            @endauth
-                            @if(isset($activeLangs) && $activeLangs->count() > 1)
-                            <li class="menu__item" style="padding-left: 30px; position: relative;">
-                                <div class="lang-selector" style="position: relative; display: inline-block;">
-                                    <a href="#" class="menu__link lang-current" onclick="event.preventDefault(); document.getElementById('lang-dropdown').classList.toggle('lang-show');" style="display: inline-flex; align-items: center; gap: 5px;">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                                        {{ strtoupper(app()->getLocale()) }}
-                                    </a>
-                                    <div id="lang-dropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(20,20,30,0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; min-width: 120px; z-index: 999; padding: 5px 0; margin-top: 5px;">
-                                        @foreach($activeLangs as $lang)
-                                        <a href="{{ route('locale.switch', $lang->code) }}" style="display: block; padding: 8px 16px; color: {{ app()->getLocale() === $lang->code ? '#fff' : '#aaa' }}; text-decoration: none; font-size: 14px; white-space: nowrap;">
-                                            {{ $lang->native_name }}
-                                        </a>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </li>
-                            @endif
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+<body class="xvrx-inner-page xvrx-ladder-body">
+@include('partials.xvrx-header')
 
-<main id="main" role="main">
-    <div class="Pane bordered Pane--underSiteNav Pane--above Pane--full Pane--abover" media-medium="!Pane--full">
-        <div class="Pane-bgg" style="background-image:url('{{ asset('powerpuffsite/images/ladder/bg.jpg') }}');">
-            <div class="Pane-overlay"></div>
+<main class="xvrx-ladder-page">
+    <section class="xvrx-ladder-wrap">
+        <div class="xvrx-ladder-head">
+            <p class="xvrx-eyebrow">PvP Ladder</p>
+            <h1>{{ __('main.ladder_title') }}</h1>
+            <p>{{ __('main.ladder_description') }}</p>
         </div>
 
-        <div class="Pane-content">
-            <div class="space-medium"></div>
-            <div media-huge="space-medium"></div>
-            <div class="align-center" media-wide="!align-center align-left">
-                <h1 class="margin-none font-semp-xxxLarge-white">{{ __('main.ladder_title') }}</h1>
-            </div>
-            <div class="space-rhythm-medium"></div>
-            <div class="contain-large align-center" media-wide="!align-center !contain-large contain-wide contain-left align-left">
-                <p class="margin-none font-bliz-light-small-beige">{{ __('main.ladder_description') }}</p>
-            </div>
-            <div class="space-rhythm-medium"></div>
-            <nav class="ladder-nav" aria-label="{{ __('main.ladder_title') }}">
-                <a href="{{ route('ladder', ['type' => 2]) }}" class="{{ isset($mode) && $mode === 'arena' && $type == 2 ? 'active' : '' }}">{{ __('main.arena_2v2') }}</a>
-                <a href="{{ route('ladder', ['type' => 3]) }}" class="{{ isset($mode) && $mode === 'arena' && $type == 3 ? 'active' : '' }}">{{ __('main.arena_3v3') }}</a>
-                <a href="{{ route('ladder', ['type' => 5]) }}" class="{{ isset($mode) && $mode === 'arena' && $type == 5 ? 'active' : '' }}">{{ __('main.arena_5v5') }}</a>
-                <a href="{{ route('ladder', ['list' => 'honorable_kills']) }}" class="{{ isset($mode) && $mode === 'honorable_kills' ? 'active' : '' }}">{{ __('main.ladder_tab_honorable_kills') }}</a>
-                <a href="{{ route('ladder', ['list' => 'time_played']) }}" class="{{ isset($mode) && $mode === 'time_played' ? 'active' : '' }}">{{ __('main.ladder_tab_time_played') }}</a>
-            </nav>
-            <div class="space-medium" media-wide="space-huge"></div>
-        </div>
-    </div>
+        <nav class="xvrx-ladder-tabs" aria-label="{{ __('main.ladder_title') }}">
+            <a href="{{ route('ladder', ['list' => 'time_played']) }}" class="{{ isset($mode) && $mode === 'time_played' ? 'active' : '' }}">{{ __('main.ladder_tab_time_played') }}</a>
+            <a href="{{ route('ladder', ['list' => 'honorable_kills']) }}" class="{{ isset($mode) && $mode === 'honorable_kills' ? 'active' : '' }}">{{ __('main.ladder_tab_honorable_kills') }}</a>
+            <a href="{{ route('ladder', ['type' => 2]) }}" class="{{ isset($mode) && $mode === 'arena' && $type == 2 ? 'active' : '' }}">{{ __('main.arena_2v2') }}</a>
+            <a href="{{ route('ladder', ['type' => 3]) }}" class="{{ isset($mode) && $mode === 'arena' && $type == 3 ? 'active' : '' }}">{{ __('main.arena_3v3') }}</a>
+            <a href="{{ route('ladder', ['type' => 5]) }}" class="{{ isset($mode) && $mode === 'arena' && $type == 5 ? 'active' : '' }}">{{ __('main.arena_5v5') }}</a>
+        </nav>
 
-    <div class="Divider"></div>
-    <div class="Pane Pane--dirtBlue bordered">
-        <div class="Pane-bgg">
-            <div class="Pane-overlay"></div>
+        <div class="xvrx-ladder-table-shell">
+            @if(isset($mode) && $mode === 'arena')
+                <table class="xvrx-ladder-table">
+                    <thead>
+                        <tr>
+                            <th>{{ __('main.rank') }}</th>
+                            <th>{{ __('main.ladder_team_name') }}</th>
+                            <th>{{ __('main.ladder_members') }}</th>
+                            <th>{{ __('main.rating') }}</th>
+                            <th>{{ __('main.ladder_season_stats') }}</th>
+                            <th>{{ __('main.ladder_week_stats') }}</th>
+                            <th>{{ __('main.ladder_win_percent') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($ladderData as $row)
+                            <tr>
+                                <td>{{ $row['place'] }}</td>
+                                <td>{{ $row['team_name'] }}</td>
+                                <td>{{ $row['members'] ?: '-' }}</td>
+                                <td>{{ $row['rating'] }}</td>
+                                <td>{{ $row['season_wins'] }} / {{ $row['season_losses'] }}</td>
+                                <td>{{ $row['week_wins'] }} / {{ $row['week_losses'] }}</td>
+                                <td>{{ $row['win_percent'] }}%</td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="7" class="xvrx-ladder-empty">{{ __('main.no_ladder_data') }}</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            @elseif(isset($mode) && $mode === 'honorable_kills')
+                <table class="xvrx-ladder-table">
+                    <thead>
+                        <tr>
+                            <th>{{ __('main.rank') }}</th>
+                            <th>{{ __('main.player') }}</th>
+                            <th>{{ __('main.ladder_honorable_kills') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($ladderData as $row)
+                            <tr>
+                                <td>{{ $row['place'] }}</td>
+                                <td>{{ $row['name'] }}</td>
+                                <td>{{ number_format($row['count']) }}</td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="3" class="xvrx-ladder-empty">{{ __('main.no_ladder_data') }}</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            @else
+                <table class="xvrx-ladder-table">
+                    <thead>
+                        <tr>
+                            <th>{{ __('main.rank') }}</th>
+                            <th>{{ __('main.player') }}</th>
+                            <th>{{ __('main.ladder_time_played') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($ladderData as $row)
+                            <tr>
+                                <td>{{ $row['place'] }}</td>
+                                <td>{{ $row['name'] }}</td>
+                                <td>{{ \App\Http\Controllers\LadderController::formatTime($row['totaltime']) }}</td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="3" class="xvrx-ladder-empty">{{ __('main.no_ladder_data') }}</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            @endif
         </div>
-
-        <div class="Pane-content">
-            <div media-wide="space-normal"></div>
-            <div class="space-normal"></div>
-            <div class="Paginator" data-page="1" data-size="30" data-total="{{ count($ladderData) }}">
-                <div class="Paginator-pages">
-                    <div class="Paginator-page" data-page="1">
-                        <div class="SortTable SortTable--flex">
-                            @if(isset($mode) && $mode === 'arena')
-                                <div class="SortTable-head">
-                                    <div class="SortTable-row">
-                                        <div class="SortTable-col SortTable-label is-sorted" data-priority="1"><div class="SortTable-labelOuter"><div class="SortTable-labelInner"><div class="SortTable-labelText">{{ __('main.rank') }}</div></div></div></div>
-                                        <div class="SortTable-col SortTable-label SortTable-label--left" data-priority="1"><div class="SortTable-labelOuter"><div class="SortTable-labelInner"><div class="SortTable-labelText">{{ __('main.ladder_team_name') }}</div></div></div></div>
-                                        <div class="SortTable-col SortTable-label SortTable-label--left" data-priority="2"><div class="SortTable-labelOuter"><div class="SortTable-labelInner"><div class="SortTable-labelText">{{ __('main.ladder_members') }}</div></div></div></div>
-                                        <div class="SortTable-col SortTable-label" data-priority="2"><div class="SortTable-labelOuter"><div class="SortTable-labelInner"><div class="SortTable-labelText">{{ __('main.rating') }}</div></div></div></div>
-                                        <div class="SortTable-col SortTable-label" data-priority="3"><div class="SortTable-labelOuter"><div class="SortTable-labelInner"><div class="SortTable-labelText">{{ __('main.ladder_season_stats') }}</div></div></div></div>
-                                        <div class="SortTable-col SortTable-label" data-priority="3"><div class="SortTable-labelOuter"><div class="SortTable-labelInner"><div class="SortTable-labelText">{{ __('main.ladder_week_stats') }}</div></div></div></div>
-                                        <div class="SortTable-col SortTable-label" data-priority="3"><div class="SortTable-labelOuter"><div class="SortTable-labelInner"><div class="SortTable-labelText">{{ __('main.ladder_win_percent') }}</div></div></div></div>
-                                    </div>
-                                </div>
-                                <div class="SortTable-body">
-                                    @forelse($ladderData as $row)
-                                    <div class="SortTable-row">
-                                        <div class="SortTable-col SortTable-data align-center text-nowrap" data-value="{{ $row['place'] }}">{{ $row['place'] }}</div>
-                                        <div class="SortTable-col SortTable-data" data-value="{{ $row['team_name'] }}">{{ $row['team_name'] }}</div>
-                                        <div class="SortTable-col SortTable-data" data-value="{{ $row['members'] }}">{{ $row['members'] }}</div>
-                                        <div class="SortTable-col SortTable-data align-center text-nowrap" data-value="{{ $row['rating'] }}">{{ $row['rating'] }}</div>
-                                        <div class="SortTable-col SortTable-data align-center text-nowrap">{{ $row['season_wins'] }}–{{ $row['season_losses'] }}</div>
-                                        <div class="SortTable-col SortTable-data align-center text-nowrap">{{ $row['week_wins'] }}–{{ $row['week_losses'] }}</div>
-                                        <div class="SortTable-col SortTable-data align-center text-nowrap">{{ $row['win_percent'] }}%</div>
-                                    </div>
-                                    @empty
-                                    <div class="SortTable-row"><div class="SortTable-col SortTable-data" style="padding: 40px; text-align: center; color: rgba(255,255,255,0.6); grid-column: 1 / -1;">{{ __('main.no_ladder_data') }}</div></div>
-                                    @endforelse
-                                </div>
-                            @elseif(isset($mode) && $mode === 'honorable_kills')
-                                <div class="SortTable-head">
-                                    <div class="SortTable-row">
-                                        <div class="SortTable-col SortTable-label is-sorted" data-priority="1"><div class="SortTable-labelOuter"><div class="SortTable-labelInner"><div class="SortTable-labelText">{{ __('main.rank') }}</div></div></div></div>
-                                        <div class="SortTable-col SortTable-label SortTable-label--left" data-priority="1"><div class="SortTable-labelOuter"><div class="SortTable-labelInner"><div class="SortTable-labelText">{{ __('main.player') }}</div></div></div></div>
-                                        <div class="SortTable-col SortTable-label" data-priority="2"><div class="SortTable-labelOuter"><div class="SortTable-labelInner"><div class="SortTable-labelText">{{ __('main.ladder_honorable_kills') }}</div></div></div></div>
-                                    </div>
-                                </div>
-                                <div class="SortTable-body">
-                                    @forelse($ladderData as $row)
-                                    <div class="SortTable-row">
-                                        <div class="SortTable-col SortTable-data align-center text-nowrap" data-value="{{ $row['place'] }}">{{ $row['place'] }}</div>
-                                        <div class="SortTable-col SortTable-data" data-value="{{ $row['name'] }}">{{ $row['name'] }}</div>
-                                        <div class="SortTable-col SortTable-data align-center text-nowrap" data-value="{{ $row['count'] }}">{{ number_format($row['count']) }}</div>
-                                    </div>
-                                    @empty
-                                    <div class="SortTable-row"><div class="SortTable-col SortTable-data" style="padding: 40px; text-align: center; color: rgba(255,255,255,0.6); grid-column: 1 / -1;">{{ __('main.no_ladder_data') }}</div></div>
-                                    @endforelse
-                                </div>
-                            @elseif(isset($mode) && $mode === 'time_played')
-                                <div class="SortTable-head">
-                                    <div class="SortTable-row">
-                                        <div class="SortTable-col SortTable-label is-sorted" data-priority="1"><div class="SortTable-labelOuter"><div class="SortTable-labelInner"><div class="SortTable-labelText">{{ __('main.rank') }}</div></div></div></div>
-                                        <div class="SortTable-col SortTable-label SortTable-label--left" data-priority="1"><div class="SortTable-labelOuter"><div class="SortTable-labelInner"><div class="SortTable-labelText">{{ __('main.player') }}</div></div></div></div>
-                                        <div class="SortTable-col SortTable-label" data-priority="2"><div class="SortTable-labelOuter"><div class="SortTable-labelInner"><div class="SortTable-labelText">{{ __('main.ladder_time_played') }}</div></div></div></div>
-                                    </div>
-                                </div>
-                                <div class="SortTable-body">
-                                    @forelse($ladderData as $row)
-                                    <div class="SortTable-row">
-                                        <div class="SortTable-col SortTable-data align-center text-nowrap" data-value="{{ $row['place'] }}">{{ $row['place'] }}</div>
-                                        <div class="SortTable-col SortTable-data" data-value="{{ $row['name'] }}">{{ $row['name'] }}</div>
-                                        <div class="SortTable-col SortTable-data align-center text-nowrap">{{ \App\Http\Controllers\LadderController::formatTime($row['totaltime']) }}</div>
-                                    </div>
-                                    @empty
-                                    <div class="SortTable-row"><div class="SortTable-col SortTable-data" style="padding: 40px; text-align: center; color: rgba(255,255,255,0.6); grid-column: 1 / -1;">{{ __('main.no_ladder_data') }}</div></div>
-                                    @endforelse
-                                </div>
-                            @else
-                                <div class="SortTable-body">
-                                    <div class="SortTable-row"><div class="SortTable-col SortTable-data" style="padding: 40px; text-align: center; color: rgba(255,255,255,0.6); grid-column: 1 / -1;">{{ __('main.no_ladder_data') }}</div></div>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="space-huge"></div>
-            <div media-wide="space-large"></div>
-            <div class="Tooltip" name="pvp-tier-tooltip-8">
-                <div class="GameTooltip"><div class="ui-tooltip"><div class="List"><div class="List-item"><img src="{{ asset('powerpuffsite/images/ladder/arena/pvp-tier-tooltip-8.png') }}" style="max-width: 32px;"></div><div class="List-item gutter-small-left"><div class="font-bliz-light-small-white">{{ __('main.tier_no_rank') }}</div></div></div><div class="space-small"></div><div class="font-size-xSmall color-beige-medium">{{ __('main.tier_no_rank_desc') }}</div></div></div>
-            </div>
-            <div class="Tooltip" name="pvp-tier-tooltip-9">
-                <div class="GameTooltip"><div class="ui-tooltip"><div class="List"><div class="List-item"><img src="{{ asset('powerpuffsite/images/ladder/arena/pvp-tier-tooltip-9.png') }}" style="max-width: 32px;"></div><div class="List-item gutter-small-left"><div class="font-bliz-light-small-white">{{ __('main.tier_combatant') }}</div></div></div><div class="space-small"></div><div class="font-size-xSmall color-beige-medium">{{ __('main.tier_combatant_desc') }}</div></div></div>
-            </div>
-            <div class="Tooltip" name="pvp-tier-tooltip-11">
-                <div class="GameTooltip"><div class="ui-tooltip"><div class="List"><div class="List-item"><img src="{{ asset('powerpuffsite/images/ladder/arena/pvp-tier-tooltip-11.png') }}" style="max-width: 32px;"></div><div class="List-item gutter-small-left"><div class="font-bliz-light-small-white">{{ __('main.tier_challenger') }}</div></div></div><div class="space-small"></div><div class="font-size-xSmall color-beige-medium">{{ __('main.tier_challenger_desc') }}</div></div></div>
-            </div>
-            <div class="Tooltip" name="pvp-tier-tooltip-12">
-                <div class="GameTooltip"><div class="ui-tooltip"><div class="List"><div class="List-item"><img src="{{ asset('powerpuffsite/images/ladder/arena/pvp-tier-tooltip-12.png') }}" style="max-width: 32px;"></div><div class="List-item gutter-small-left"><div class="font-bliz-light-small-white">{{ __('main.tier_rival') }}</div></div></div><div class="space-small"></div><div class="font-size-xSmall color-beige-medium">{{ __('main.tier_rival_desc') }}</div></div></div>
-            </div>
-            <div class="Tooltip" name="pvp-tier-tooltip-13">
-                <div class="GameTooltip"><div class="ui-tooltip"><div class="List"><div class="List-item"><img src="{{ asset('powerpuffsite/images/ladder/arena/pvp-tier-tooltip-13.png') }}" style="max-width: 32px;"></div><div class="List-item gutter-small-left"><div class="font-bliz-light-small-white">{{ __('main.tier_duelist') }}</div></div></div><div class="space-small"></div><div class="font-size-xSmall color-beige-medium">{{ __('main.tier_duelist_desc') }}</div></div></div>
-            </div>
-            <div class="Tooltip" name="pvp-tier-tooltip-14">
-                <div class="GameTooltip"><div class="ui-tooltip"><div class="List"><div class="List-item"><img src="{{ asset('powerpuffsite/images/ladder/arena/pvp-tier-tooltip-14.png') }}" style="max-width: 32px;"></div><div class="List-item gutter-small-left"><div class="font-bliz-light-small-white">{{ __('main.tier_gladiator') }}</div></div></div><div class="space-small"></div><div class="font-size-xSmall color-beige-medium">{{ __('main.tier_gladiator_desc') }}</div></div></div>
-            </div>
-        </div>
-    </div>
+    </section>
 </main>
 
-<section class="page__features features">
-    <div class="features__container _container">
-        <div class="info__line gorizontal-line"></div>
-        <footer class="footer">
-            <div class="footer__copy">
-                {{ __('main.developed_by') }}
-            </div>
-            <a href="https://powerpuff.pro" rel="dofollow" title="Website & Development" target="_blank" class="footer__logo_Powerpuff">
-                <img src="{{ asset('powerpuffsite/fonts/powerpuff.png') }}" alt="Powerpuff - website creation">
-            </a>
-        </footer>
-    </div>
-</section>
-</div>
-
-@if(file_exists(public_path('powerpuffsite/js/ladder/core.04c3634bf4bf834dbb46.js')))
-<script src="{{ asset('powerpuffsite/js/ladder/core.04c3634bf4bf834dbb46.js') }}"></script>
-<script id="init">window.trigger("init");</script>
-@endif
-<script src="{{ asset('powerpuffsite/js/vendor.min.js') }}"></script>
-<script src="{{ asset('powerpuffsite/js/main_home.min.js') }}"></script>
+@include('partials.xvrx-social')
+@include('partials.xvrx-footer')
 </body>
 </html>

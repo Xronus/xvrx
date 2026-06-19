@@ -65,7 +65,7 @@
                         <div class="nk-block">
                             <div class="row g-gs">
                                 <div class="col-sm-6">
-                                    <div class="card card-bordered">
+                                    <div class="card card-bordered xvrx-cabinet-summary-card">
                                         <div class="card-inner">
                                             <div class="card-title-group align-start mb-2">
                                                 <div class="card-title">
@@ -81,7 +81,7 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
-                                    <div class="card card-bordered">
+                                    <div class="card card-bordered xvrx-cabinet-summary-card">
                                         <div class="card-inner">
                                             <div class="card-title-group align-start mb-2">
                                                 <div class="card-title">

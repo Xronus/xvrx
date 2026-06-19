@@ -41,7 +41,19 @@ class RegisterController extends Controller
         ];
 
         $messages = [
-            'username.regex' => 'Логин должен содержать только латинские буквы',
+            'username.required' => 'Введите логин.',
+            'username.string' => 'Логин должен быть строкой.',
+            'username.max' => 'Логин не должен быть длиннее 14 символов.',
+            'username.regex' => 'Логин должен содержать только латинские буквы.',
+            'email.required' => 'Введите email.',
+            'email.string' => 'Email должен быть строкой.',
+            'email.email' => 'Введите корректный email.',
+            'email.max' => 'Email не должен быть длиннее 255 символов.',
+            'email.unique' => 'Этот email уже используется.',
+            'password.required' => 'Введите пароль.',
+            'password.string' => 'Пароль должен быть строкой.',
+            'password.min' => 'Пароль должен быть не короче 8 символов.',
+            'password.confirmed' => 'Пароли не совпадают.',
         ];
 
         // Add captcha validation only if enabled (google or cloudflare)
@@ -113,7 +125,7 @@ class RegisterController extends Controller
                 
                 return response()->json([
                     'status' => false,
-                    'message' => 'Ошибка при создании игрового аккаунта: ' . $e->getMessage(),
+                    'message' => 'Не удалось создать игровой аккаунт. Проверьте данные и попробуйте еще раз.',
                 ], 500);
             }
 
@@ -153,7 +165,7 @@ class RegisterController extends Controller
             
             return response()->json([
                 'status' => false,
-                'message' => 'Ошибка при регистрации: ' . $e->getMessage(),
+                'message' => 'Не удалось завершить регистрацию. Попробуйте позже.',
             ], 500);
         }
 

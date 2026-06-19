@@ -8,10 +8,13 @@
     <meta name="description" content="{{ $settings ? $settings->localizedSiteDescription() : '' }}">
     <meta name="format-detection" content="telephone=no">
     <title>{{ __('main.news') }} - {{ $settings ? $settings->localizedSiteTitle() : 'WoW Server' }}</title>
+    <link rel="stylesheet" href="{{ asset('xvrx-assets/css/remixicon.css') }}">
     <link rel="stylesheet" href="{{ asset('powerpuffsite/css/main_home.min.css') }}">
     <link rel="stylesheet" href="{{ asset('powerpuffsite/css/addition.css') }}">
+    <link rel="stylesheet" href="{{ asset('xvrx-assets/css/xvrx-laravel.css') }}">
 </head>
 <body class="news-page-body">
+@include('partials.xvrx-header')
 <div class="wrapper">
 <header class="header">
     <div class="header__wrapper">
@@ -27,6 +30,12 @@
                         <ul class="menu__list">
                             <li class="menu__item">
                                 <a href="{{ route('home') }}" class="menu__link">{{ __('main.home') }}</a>
+                            </li>
+                            <li class="menu__item">
+                                <a href="{{ route('news.index') }}" class="menu__link">{{ __('main.news') }}</a>
+                            </li>
+                            <li class="menu__item">
+                                <a href="{{ route('home') }}#howtostart" class="menu__link">{{ __('main.download_full_game') }}</a>
                             </li>
                             <li class="menu__item">
                                 <a href="{{ route('ladder') }}" class="menu__link">{{ __('main.ladder') }}</a>
@@ -137,16 +146,13 @@
     <div class="features__container _container">
         <div class="info__line gorizontal-line"></div>
         <footer class="footer">
-            <div class="footer__copy">
-                {{ __('main.developed_by') }}
-            </div>
-            <a href="https://powerpuff.pro" rel="dofollow" title="Website & Development" target="_blank" class="footer__logo_Powerpuff">
-                <img src="{{ asset('powerpuffsite/fonts/powerpuff.png') }}" alt="Powerpuff - website creation">
-            </a>
+            <div class="footer__copy">WoW Free server &middot; 2026</div>
         </footer>
     </div>
 </section>
 
+@include('partials.xvrx-social')
+@include('partials.xvrx-footer')
 <script src="{{ asset('powerpuffsite/js/jquery-2.1.1.min.js') }}"></script>
 <script src="{{ asset('powerpuffsite/js/vendor.min.js') }}"></script>
 <script src="{{ asset('powerpuffsite/js/main_home.min.js') }}"></script>

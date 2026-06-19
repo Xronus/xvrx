@@ -86,7 +86,7 @@
                         <div class="col-md-3">
                             <div class="mb-3">
                                 <label class="form-label">{{ __('main.rate') }}</label>
-                                <input type="text" name="rate" class="form-control @error('rate') is-invalid @enderror" value="{{ old('rate') }}" placeholder="x1">
+                                <input type="text" name="rate" class="form-control @error('rate') is-invalid @enderror" value="{{ old('rate') }}" placeholder="x5">
                                 @error('rate')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -154,19 +154,19 @@
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-label">{{ __('main.professions') }}</label>
-                                <input type="text" name="proffesion" class="form-control" value="{{ old('proffesion') }}" placeholder="x1">
+                                <input type="text" name="proffesion" class="form-control" value="{{ old('proffesion') }}" placeholder="x5">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-label">{{ __('main.gold') }}</label>
-                                <input type="text" name="gold" class="form-control" value="{{ old('gold') }}" placeholder="x1">
+                                <input type="text" name="gold" class="form-control" value="{{ old('gold') }}" placeholder="x5">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-label">{{ __('main.reputation') }}</label>
-                                <input type="text" name="rep" class="form-control" value="{{ old('rep') }}" placeholder="x1">
+                                <input type="text" name="rep" class="form-control" value="{{ old('rep') }}" placeholder="x5">
                             </div>
                         </div>
                     </div>
@@ -175,13 +175,13 @@
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-label">{{ __('main.loot') }}</label>
-                                <input type="text" name="loot" class="form-control" value="{{ old('loot') }}" placeholder="x1">
+                                <input type="text" name="loot" class="form-control" value="{{ old('loot') }}" placeholder="x5">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="mb-3">
                                 <label class="form-label">{{ __('main.honor_points') }}</label>
-                                <input type="text" name="honor" class="form-control" value="{{ old('honor') }}" placeholder="x1">
+                                <input type="text" name="honor" class="form-control" value="{{ old('honor') }}" placeholder="x5">
                             </div>
                         </div>
                     </div>
