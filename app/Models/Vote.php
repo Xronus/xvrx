@@ -28,7 +28,7 @@ class Vote extends Model
 
         $value = str_replace('../template/nighthold/', 'powerpuffsite/', $value);
         $value = str_replace('template/nighthold/', 'powerpuffsite/', $value);
-        
+
         return $value;
     }
 }

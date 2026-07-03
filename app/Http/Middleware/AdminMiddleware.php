@@ -10,13 +10,13 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
         $user = auth()->user();
         $isAdmin = $user->is_admin;
-        
+
         if (is_string($isAdmin)) {
             $isAdmin = $isAdmin === '1' || $isAdmin === 'true';
         } elseif (is_int($isAdmin)) {
@@ -26,8 +26,8 @@ class AdminMiddleware
         } else {
             $isAdmin = false;
         }
-        
-        if (!$isAdmin) {
+
+        if (! $isAdmin) {
             abort(403, 'Доступ запрещен. Требуются права администратора.');
         }
 

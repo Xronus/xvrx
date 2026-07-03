@@ -111,15 +111,16 @@ class AdminNewsController extends Controller
 
     private function uploadImage($file): string
     {
-        $dir = public_path('powerpuffsite/images/news');
-        if (!is_dir($dir)) {
+        $imageDir = config('xvrx.images.news', 'powerpuffsite/images/news');
+        $dir = public_path($imageDir);
+        if (! is_dir($dir)) {
             mkdir($dir, 0775, true);
         }
 
-        $filename = Str::random(20) . '.' . $file->getClientOriginalExtension();
+        $filename = Str::random(20).'.'.$file->getClientOriginalExtension();
         $file->move($dir, $filename);
 
-        return 'powerpuffsite/images/news/' . $filename;
+        return $imageDir.'/'.$filename;
     }
 
     private function deleteOldImage(?string $path): void
@@ -129,7 +130,7 @@ class AdminNewsController extends Controller
         }
 
         $fullPath = public_path($path);
-        if (file_exists($fullPath) && str_contains($path, 'powerpuffsite/images/news/')) {
+        if (file_exists($fullPath) && str_contains($path, config('xvrx.images.news', 'powerpuffsite/images/news'))) {
             unlink($fullPath);
         }
     }

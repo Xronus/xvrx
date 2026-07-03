@@ -5,6 +5,7 @@ namespace App\Services;
 class CaptchaService
 {
     protected RecaptchaService $recaptchaService;
+
     protected TurnstileService $turnstileService;
 
     public function __construct(RecaptchaService $recaptchaService, TurnstileService $turnstileService)
@@ -19,15 +20,12 @@ class CaptchaService
     public function isEnabled(): bool
     {
         $method = config('captcha.method');
+
         return $method === 'google' || $method === 'cloudflare';
     }
 
     /**
      * Verify captcha token (delegates to Google or Cloudflare based on config)
-     *
-     * @param string $token
-     * @param string|null $ip
-     * @return bool
      */
     public function verify(string $token, ?string $ip = null): bool
     {

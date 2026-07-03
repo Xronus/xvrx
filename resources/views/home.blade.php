@@ -52,7 +52,11 @@
                 <span>Patch</span>
             </div>
             <div>
-                <strong>{{ (int)($onlineCount ?? 0) }}</strong>
+                @if($onlineError ?? false)
+                    <strong class="text-muted">—</strong>
+                @else
+                    <strong>{{ (int)($onlineCount ?? 0) }}</strong>
+                @endif
                 <span>{{ __('main.online') }}</span>
             </div>
         </div>

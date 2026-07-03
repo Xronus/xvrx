@@ -50,6 +50,7 @@ class User extends Authenticatable
         if (is_int($value)) {
             return $value === 1;
         }
+
         return (bool) $value;
     }
 
@@ -67,6 +68,7 @@ class User extends Authenticatable
         if (is_resource($value)) {
             return stream_get_contents($value);
         }
+
         return $value;
     }
 
@@ -84,6 +86,7 @@ class User extends Authenticatable
         if (is_resource($value)) {
             return stream_get_contents($value);
         }
+
         return $value;
     }
 }

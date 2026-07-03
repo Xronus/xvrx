@@ -54,7 +54,7 @@
                                         <button type="submit" class="btn btn-lg btn-primary btn-block login-btn">{{ __('main.sign_in') }}</button>
                                     </div>
                                     <div class="xvrx-auth-links">
-                                        <a href="{{ route('password.request') }}">Забыл пароль?</a>
+                                        <a href="{{ route('password.request') }}">{{ __('main.forgot_password_link') }}</a>
                                         <a href="{{ route('register') }}">{{ __('main.register') }}</a>
                                     </div>
                                     <p class="msg none"></p>

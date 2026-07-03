@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Feature;
+use App\Models\HowToStart;
+use App\Models\LanguageSetting;
 use App\Models\News;
-use App\Models\SiteSetting;
 use App\Models\Realm;
+use App\Models\SiteSetting;
+use App\Models\SocialLink;
 use App\Models\Stock;
 use App\Models\Vote;
-use App\Models\SocialLink;
-use App\Models\HowToStart;
-use App\Models\Feature;
-use App\Models\LanguageSetting;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -31,9 +30,10 @@ class HomeController extends Controller
         $activeLangs = LanguageSetting::where('is_active', true)->orderBy('sort_order')->get();
 
         // Получение данных онлайн-игроков БЕЗ кэширования
+        $onlineError = false;
         try {
             // Проверяем, существует ли соединение в конфигурации
-            $connection = DB::connection('trinity_characters');
+            $connection = DB::connection('trinity');
 
             // Выполняем запрос к таблице characters
             $onlineCount = $connection
@@ -41,17 +41,20 @@ class HomeController extends Controller
                 ->where('online', 1)
                 ->count();
 
-            \Log::info('Успешно получен онлайн-счётчик: ' . $onlineCount);
+            \Log::info('Успешно получен онлайн-счётчик: '.$onlineCount);
         } catch (QueryException $e) {
-            \Log::error('SQL-ошибка при получении онлайн-игроков: ' . $e->getMessage());
-            \Log::error('Код ошибки: ' . $e->getCode());
+            \Log::error('SQL-ошибка при получении онлайн-игроков: '.$e->getMessage());
+            \Log::error('Код ошибки: '.$e->getCode());
             $onlineCount = 0;
+            $onlineError = true;
         } catch (\PDOException $e) {
-            \Log::error('Ошибка PDO подключения к БД TrinityCore: ' . $e->getMessage());
+            \Log::error('Ошибка PDO подключения к БД TrinityCore: '.$e->getMessage());
             $onlineCount = 0;
+            $onlineError = true;
         } catch (\Exception $e) {
-            \Log::error('Общая ошибка получения онлайн-игроков: ' . $e->getMessage());
+            \Log::error('Общая ошибка получения онлайн-игроков: '.$e->getMessage());
             $onlineCount = 0;
+            $onlineError = true;
         }
 
         return view('home', compact(
@@ -64,7 +67,8 @@ class HomeController extends Controller
             'hts',
             'features',
             'activeLangs',
-            'onlineCount'
+            'onlineCount',
+            'onlineError'
         ));
     }
 }

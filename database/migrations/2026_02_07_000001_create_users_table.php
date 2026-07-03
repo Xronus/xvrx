@@ -10,22 +10,22 @@ return new class extends Migration
     {
         if (Schema::hasTable('users')) {
             Schema::table('users', function (Blueprint $table) {
-                if (!Schema::hasColumn('users', 'username')) {
+                if (! Schema::hasColumn('users', 'username')) {
                     $table->string('username', 14)->unique()->after('id');
                 }
-                if (!Schema::hasColumn('users', 'salt')) {
+                if (! Schema::hasColumn('users', 'salt')) {
                     $table->binary('salt')->after('email');
                 }
-                if (!Schema::hasColumn('users', 'verifier')) {
+                if (! Schema::hasColumn('users', 'verifier')) {
                     $table->binary('verifier')->after('salt');
                 }
-                if (!Schema::hasColumn('users', 'is_admin')) {
+                if (! Schema::hasColumn('users', 'is_admin')) {
                     $table->boolean('is_admin')->default(false)->after('verifier');
                 }
-                if (!Schema::hasColumn('users', 'bonuses')) {
+                if (! Schema::hasColumn('users', 'bonuses')) {
                     $table->integer('bonuses')->default(0)->after('is_admin');
                 }
-                if (!Schema::hasColumn('users', 'votes')) {
+                if (! Schema::hasColumn('users', 'votes')) {
                     $table->integer('votes')->default(0)->after('bonuses');
                 }
             });

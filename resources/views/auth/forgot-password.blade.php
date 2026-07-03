@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Восстановление пароля')
+@section('title', __('main.forgot_password'))
 
 @section('content')
 <div class="nk-wrap nk-wrap-nosidebar">
@@ -18,8 +18,8 @@
                     </div>
                     <div class="nk-block-head">
                         <div class="nk-block-head-content">
-                            <h5 class="nk-block-title">Восстановление пароля</h5>
-                            <p class="xvrx-auth-hint">Укажите email учетной записи. Если аккаунт существует, мы подготовим ссылку для восстановления.</p>
+                            <h5 class="nk-block-title">{{ __('main.forgot_password') }}</h5>
+                            <p class="xvrx-auth-hint">{{ __('main.forgot_password_hint') }}</p>
                         </div>
                     </div>
 
@@ -37,13 +37,13 @@
                             <div class="form-label-group">
                                 <label class="form-label" for="email">Email</label>
                             </div>
-                            <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="Введите email" value="{{ old('email') }}" required>
+                            <input type="email" class="form-control form-control-lg" id="email" name="email" placeholder="{{ __('main.enter_email') }}" value="{{ old('email') }}" required>
                         </div>
                         <div class="form-group">
-                            <button type="submit" class="btn btn-lg btn-primary btn-block">Отправить ссылку</button>
+                            <button type="submit" class="btn btn-lg btn-primary btn-block">{{ __('main.send_reset_link') }}</button>
                         </div>
                         <div class="xvrx-auth-links xvrx-auth-links-single">
-                            <a href="{{ route('login') }}">Назад ко входу</a>
+                            <a href="{{ route('login') }}">{{ __('main.back_to_login') }}</a>
                         </div>
                     </form>
                 </div>

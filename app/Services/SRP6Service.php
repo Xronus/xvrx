@@ -5,6 +5,7 @@ namespace App\Services;
 class SRP6Service
 {
     private $g;
+
     private $N;
 
     public function __construct()
@@ -15,8 +16,8 @@ class SRP6Service
 
     public function calculateVerifier(string $username, string $password, string $salt): string
     {
-        $h1 = sha1(strtoupper($username . ':' . $password), true);
-        $h2 = sha1($salt . $h1, true);
+        $h1 = sha1(strtoupper($username.':'.$password), true);
+        $h2 = sha1($salt.$h1, true);
         $h2 = gmp_import($h2, 1, GMP_LSW_FIRST);
         $verifier = gmp_powm($this->g, $h2, $this->N);
         $verifier = gmp_export($verifier, 1, GMP_LSW_FIRST);
@@ -35,6 +36,7 @@ class SRP6Service
     public function verifyLogin(string $username, string $password, string $salt, string $verifier): bool
     {
         $checkVerifier = $this->calculateVerifier($username, $password, $salt);
+
         return hash_equals($verifier, $checkVerifier);
     }
 }

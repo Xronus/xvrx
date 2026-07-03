@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasLocalization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Realm extends Model
 {
-    use HasFactory;
+    use HasFactory, HasLocalization;
 
     protected $fillable = [
         'name',
@@ -28,17 +29,4 @@ class Realm extends Model
         'loot',
         'honor',
     ];
-
-    public function localized(string $field): ?string
-    {
-        $locale = app()->getLocale();
-
-        if ($locale === 'ru') {
-            return $this->{$field};
-        }
-
-        $localizedValue = $this->{$field . '_' . $locale};
-
-        return $localizedValue ?: $this->{$field};
-    }
 }

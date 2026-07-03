@@ -14,7 +14,7 @@ class Admin extends Model
     protected $fillable = [
         'username',
         'password',
-		'is_admin', // обязательно добавьте это поле
+        'is_admin', // обязательно добавьте это поле
         'email',      // Обязательно добавьте email
         'comment',
     ];

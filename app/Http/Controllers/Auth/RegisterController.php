@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Services\SRP6Service;
-use App\Services\CaptchaService;
-use App\Models\User;
 use App\Models\SiteSetting;
+use App\Models\User;
+use App\Services\CaptchaService;
+use App\Services\SRP6Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +20,7 @@ use Illuminate\Validation\Rules\Password;
 class RegisterController extends Controller
 {
     protected $srp6Service;
+
     protected $captchaService;
 
     public function __construct(SRP6Service $srp6Service, CaptchaService $captchaService)
@@ -29,6 +32,7 @@ class RegisterController extends Controller
     public function showRegistrationForm()
     {
         $settings = SiteSetting::first();
+
         return view('auth.register', compact('settings'));
     }
 
@@ -41,19 +45,19 @@ class RegisterController extends Controller
         ];
 
         $messages = [
-            'username.required' => 'Введите логин.',
-            'username.string' => 'Логин должен быть строкой.',
-            'username.max' => 'Логин не должен быть длиннее 14 символов.',
-            'username.regex' => 'Логин должен содержать только латинские буквы.',
-            'email.required' => 'Введите email.',
-            'email.string' => 'Email должен быть строкой.',
-            'email.email' => 'Введите корректный email.',
-            'email.max' => 'Email не должен быть длиннее 255 символов.',
-            'email.unique' => 'Этот email уже используется.',
-            'password.required' => 'Введите пароль.',
-            'password.string' => 'Пароль должен быть строкой.',
-            'password.min' => 'Пароль должен быть не короче 8 символов.',
-            'password.confirmed' => 'Пароли не совпадают.',
+            'username.required' => __('validation.username_required'),
+            'username.string' => __('validation.username_string'),
+            'username.max' => __('validation.username_max'),
+            'username.regex' => __('validation.username_regex'),
+            'email.required' => __('validation.email_required'),
+            'email.string' => __('validation.email_string'),
+            'email.email' => __('validation.email_email'),
+            'email.max' => __('validation.email_max'),
+            'email.unique' => __('validation.email_unique'),
+            'password.required' => __('validation.password_required'),
+            'password.string' => __('validation.password_string'),
+            'password.min' => __('validation.password_min'),
+            'password.confirmed' => __('validation.password_confirmed'),
         ];
 
         // Add captcha validation only if enabled (google or cloudflare)
@@ -65,7 +69,7 @@ class RegisterController extends Controller
         $request->validate($rules, $messages);
 
         // Verify captcha token if enabled
-        if ($this->captchaService->isEnabled() && !$this->captchaService->verify($request->recaptcha_token ?? '', $request->ip())) {
+        if ($this->captchaService->isEnabled() && ! $this->captchaService->verify($request->recaptcha_token ?? '', $request->ip())) {
             return response()->json([
                 'status' => false,
                 'message' => __('main.captcha_validation_error'),
@@ -78,8 +82,8 @@ class RegisterController extends Controller
             return response()->json([
                 'status' => false,
                 'type' => 1,
-                'message' => 'Такой логин уже существует',
-                'fields' => ['username']
+                'message' => __('validation.username_exists'),
+                'fields' => ['username'],
             ], 422);
         }
 
@@ -96,14 +100,15 @@ class RegisterController extends Controller
             $existingGameAccount = DB::connection('game_auth')->table('account')
                 ->where('username', strtoupper($request->username))
                 ->first();
-            
+
             if ($existingGameAccount) {
                 DB::rollBack();
+
                 return response()->json([
                     'status' => false,
                     'type' => 1,
-                    'message' => 'Такой логин уже существует в игровой базе данных',
-                    'fields' => ['username']
+                    'message' => __('validation.account_already_exists'),
+                    'fields' => ['username'],
                 ], 422);
             }
 
@@ -118,14 +123,14 @@ class RegisterController extends Controller
                 ]);
             } catch (\Exception $e) {
                 DB::rollBack();
-                Log::error('Game account creation error: ' . $e->getMessage(), [
+                Log::error('Game account creation error: '.$e->getMessage(), [
                     'trace' => $e->getTraceAsString(),
-                    'username' => $request->username
+                    'username' => $request->username,
                 ]);
-                
+
                 return response()->json([
                     'status' => false,
-                    'message' => 'Не удалось создать игровой аккаунт. Проверьте данные и попробуйте еще раз.',
+                    'message' => __('validation.game_account_error'),
                 ], 500);
             }
 
@@ -151,7 +156,7 @@ class RegisterController extends Controller
 
             $placeholders = implode(',', array_fill(0, count($values), '?'));
             $columnsList = implode(', ', $columns);
-            
+
             DB::statement("INSERT INTO users ({$columnsList}) VALUES ({$placeholders})", $values);
 
             $user = User::where('username', $request->username)->first();
@@ -159,13 +164,13 @@ class RegisterController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Registration error: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
+            Log::error('Registration error: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
             ]);
-            
+
             return response()->json([
                 'status' => false,
-                'message' => 'Не удалось завершить регистрацию. Попробуйте позже.',
+                'message' => __('validation.registration_error'),
             ], 500);
         }
 
@@ -174,7 +179,7 @@ class RegisterController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Регистрация прошла успешно!',
-            'redirect' => route('cabinet')
+            'redirect' => route('cabinet'),
         ]);
 
     }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 class TurnstileService
 {
     protected $secretKey;
+
     protected $verifyUrl;
 
     public function __construct()
@@ -18,15 +19,12 @@ class TurnstileService
 
     /**
      * Verify Cloudflare Turnstile token
-     *
-     * @param string $token
-     * @param string|null $ip
-     * @return bool
      */
     public function verify(string $token, ?string $ip = null): bool
     {
         if (empty($this->secretKey)) {
             Log::warning('Turnstile secret key is not configured. Skipping verification.');
+
             return true;
         }
 
@@ -41,20 +39,22 @@ class TurnstileService
                 'remoteip' => $ip ?? request()->ip(),
             ]);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 Log::error('Turnstile verification failed', [
                     'status' => $response->status(),
                     'body' => $response->body(),
                 ]);
+
                 return false;
             }
 
             $data = $response->json();
 
-            if (!isset($data['success']) || $data['success'] !== true) {
+            if (! isset($data['success']) || $data['success'] !== true) {
                 Log::warning('Turnstile verification failed', [
                     'error-codes' => $data['error-codes'] ?? [],
                 ]);
+
                 return false;
             }
 
@@ -64,6 +64,7 @@ class TurnstileService
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
+
             return false;
         }
     }

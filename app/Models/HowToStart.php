@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasLocalization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class HowToStart extends Model
 {
-    use HasFactory;
+    use HasFactory, HasLocalization;
 
     protected $table = 'how_to_start';
 
@@ -59,17 +60,11 @@ class HowToStart extends Model
 
     public function localizedLauncherText(): ?string
     {
-        $locale = app()->getLocale();
-        $value = $this->{'launcher_text_' . $locale};
-
-        return $value ?: $this->launcher_text_ru;
+        return $this->localized('launcher_text');
     }
 
     public function localizedLauncherDescription(): ?string
     {
-        $locale = app()->getLocale();
-        $value = $this->{'launcher_description_' . $locale};
-
-        return $value ?: $this->launcher_description_ru;
+        return $this->localized('launcher_description');
     }
 }

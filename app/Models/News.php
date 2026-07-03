@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasLocalization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class News extends Model
 {
-    use HasFactory;
+    use HasFactory, HasLocalization;
 
     protected $fillable = [
         'date',
@@ -24,27 +25,11 @@ class News extends Model
         'images',
     ];
 
-    public function localized(string $field): ?string
-    {
-        $locale = app()->getLocale();
-
-        if ($locale === 'ru') {
-            return $this->{$field};
-        }
-
-        $localizedValue = $this->{$field . '_' . $locale};
-
-        return $localizedValue ?: $this->{$field};
-    }
-
     public function getImagesAttribute($value)
     {
         if (empty($value)) {
             return $value;
         }
-
-        $value = str_replace('../template/nighthold/', 'powerpuffsite/', $value);
-        $value = str_replace('template/nighthold/', 'powerpuffsite/', $value);
 
         return $value;
     }

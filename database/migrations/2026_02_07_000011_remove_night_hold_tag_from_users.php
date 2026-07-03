@@ -17,7 +17,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        if (Schema::hasTable('users') && !Schema::hasColumn('users', 'night_hold_tag')) {
+        if (Schema::hasTable('users') && ! Schema::hasColumn('users', 'night_hold_tag')) {
             Schema::table('users', function (Blueprint $table) {
                 $table->string('night_hold_tag')->after('email');
             });

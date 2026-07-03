@@ -43,12 +43,13 @@
                     <div class="mb-3">
                         <label class="form-label">{{ __('main.css_class') }}</label>
                         <select name="class" class="form-control @error('class') is-invalid @enderror">
-                            <option value="soc__link _icon-discord" {{ old('class', $social->class) == 'soc__link _icon-discord' ? 'selected' : '' }}>Discord</option>
-                            <option value="soc__link _icon-telegram" {{ old('class', $social->class) == 'soc__link _icon-telegram' ? 'selected' : '' }}>Telegram</option>
-                            <option value="soc__link _icon-vk" {{ old('class', $social->class) == 'soc__link _icon-vk' ? 'selected' : '' }}>VK</option>
-                            <option value="soc__link _icon-youtube" {{ old('class', $social->class) == 'soc__link _icon-youtube' ? 'selected' : '' }}>YouTube</option>
-                            <option value="soc__link _icon-facebook" {{ old('class', $social->class) == 'soc__link _icon-facebook' ? 'selected' : '' }}>Facebook</option>
-                            <option value="soc__link _icon-twitter" {{ old('class', $social->class) == 'soc__link _icon-twitter' ? 'selected' : '' }}>Twitter</option>
+                            @php($currentIcon = old('class', $social->remixIconClass()))
+                            <option value="ri-discord-fill" {{ $currentIcon == 'ri-discord-fill' ? 'selected' : '' }}>Discord</option>
+                            <option value="ri-telegram-fill" {{ $currentIcon == 'ri-telegram-fill' ? 'selected' : '' }}>Telegram</option>
+                            <option value="ri-vk-fill" {{ $currentIcon == 'ri-vk-fill' ? 'selected' : '' }}>VK</option>
+                            <option value="ri-youtube-fill" {{ $currentIcon == 'ri-youtube-fill' ? 'selected' : '' }}>YouTube</option>
+                            <option value="ri-facebook-fill" {{ $currentIcon == 'ri-facebook-fill' ? 'selected' : '' }}>Facebook</option>
+                            <option value="ri-twitter-x-fill" {{ $currentIcon == 'ri-twitter-x-fill' ? 'selected' : '' }}>X / Twitter</option>
                         </select>
                         @error('class')
                         <div class="invalid-feedback">{{ $message }}</div>

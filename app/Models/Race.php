@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasLocalization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Race extends Model
 {
-    use HasFactory;
+    use HasFactory, HasLocalization;
 
     protected $fillable = [
         'race_id',

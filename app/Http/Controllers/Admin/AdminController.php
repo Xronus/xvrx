@@ -19,6 +19,7 @@ class AdminController extends Controller
         $totalBanned = 0;
         $totalPremium = 0;
         $totalRealms = 0;
+        $gameStatsError = false;
 
         try {
             $totalAccounts = DB::connection('game_auth')->table('account')->count();
@@ -26,9 +27,11 @@ class AdminController extends Controller
             $totalPremium = DB::connection('game_auth')->table('account_premium')->where('active', 1)->count();
             $totalRealms = DB::connection('game_auth')->table('realmlist')->count();
         } catch (\Exception $e) {
+            \Log::error('Admin dashboard: failed to fetch game stats: '.$e->getMessage());
+            $gameStatsError = true;
         }
 
-        return view('admin.index', compact('settings', 'totalAccounts', 'totalBanned', 'totalPremium', 'totalRealms', 'enabledLangs'));
+        return view('admin.index', compact('settings', 'totalAccounts', 'totalBanned', 'totalPremium', 'totalRealms', 'gameStatsError', 'enabledLangs'));
     }
 
     public function languages()
@@ -36,6 +39,45 @@ class AdminController extends Controller
         $languages = LanguageSetting::getAllOrdered();
 
         return view('admin.languages', compact('languages'));
+    }
+
+    public function mail()
+    {
+        $settings = SiteSetting::first();
+        $smtp = [
+            'mailer' => config('mail.default', env('MAIL_MAILER')),
+            'host' => env('MAIL_HOST'),
+            'port' => env('MAIL_PORT'),
+            'username' => env('MAIL_USERNAME'),
+            'from_address' => env('MAIL_FROM_ADDRESS'),
+            'encryption' => env('MAIL_ENCRYPTION'),
+            'password_configured' => filled(env('MAIL_PASSWORD')),
+            'configured' => filled(env('MAIL_HOST')) && filled(env('MAIL_USERNAME')) && filled(env('MAIL_PASSWORD')),
+        ];
+
+        return view('admin.mail.index', compact('settings', 'smtp'));
+    }
+
+    public function updateMail(Request $request)
+    {
+        $request->validate([
+            'mail_password_reset_enabled' => 'nullable|boolean',
+            'mail_from_name' => 'nullable|string|max:100',
+            'mail_reset_subject' => 'nullable|string|max:180',
+            'mail_reset_body' => 'nullable|string|max:2000',
+        ]);
+
+        $settings = SiteSetting::first() ?: new SiteSetting();
+
+        $settings->fill([
+            'mail_password_reset_enabled' => $request->boolean('mail_password_reset_enabled'),
+            'mail_from_name' => $request->mail_from_name,
+            'mail_reset_subject' => $request->mail_reset_subject,
+            'mail_reset_body' => $request->mail_reset_body,
+        ]);
+        $settings->save();
+
+        return redirect()->route('admin.mail.index')->with('success', __('main.mail_settings_saved'));
     }
 
     public function updateSettings(Request $request)

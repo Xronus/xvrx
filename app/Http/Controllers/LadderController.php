@@ -18,7 +18,7 @@ class LadderController extends Controller
             $mode = $list;
         } else {
             $mode = 'arena';
-            if (!in_array($type, [2, 3, 5], true)) {
+            if (! in_array($type, [2, 3, 5], true)) {
                 $type = 5;
             }
         }
@@ -87,13 +87,14 @@ class LadderController extends Controller
                 'win_percent' => $winPct,
             ];
         }
+
         return $result;
     }
 
     private function getHonorableKillsLadder(): array
     {
         $col = $this->honorKillsColumn();
-        if (!$col) {
+        if (! $col) {
             return [];
         }
         $sql = "SELECT name, {$col} AS cnt FROM characters WHERE {$col} > 0 ORDER BY {$col} DESC LIMIT 100";
@@ -107,15 +108,16 @@ class LadderController extends Controller
                 'count' => (int) ($row->cnt ?? 0),
             ];
         }
+
         return $result;
     }
 
     private function getTimePlayedLadder(): array
     {
-        if (!$this->hasColumn('characters', 'totaltime')) {
+        if (! $this->hasColumn('characters', 'totaltime')) {
             return [];
         }
-        $sql = "SELECT name, totaltime, leveltime FROM characters WHERE totaltime > 0 ORDER BY totaltime DESC LIMIT 100";
+        $sql = 'SELECT name, totaltime, leveltime FROM characters WHERE totaltime > 0 ORDER BY totaltime DESC LIMIT 100';
         $rows = DB::connection('game_char')->select($sql);
         $result = [];
         $place = 1;
@@ -127,6 +129,7 @@ class LadderController extends Controller
                 'leveltime' => (int) ($row->leveltime ?? 0),
             ];
         }
+
         return $result;
     }
 
@@ -136,9 +139,10 @@ class LadderController extends Controller
             $conn = DB::connection('game_char');
             $db = $conn->getDatabaseName();
             $r = $conn->selectOne(
-                "SELECT COUNT(*) AS c FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?",
+                'SELECT COUNT(*) AS c FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?',
                 [$db, $table, $column]
             );
+
             return isset($r->c) && (int) $r->c > 0;
         } catch (\Throwable $e) {
             return false;
@@ -152,6 +156,7 @@ class LadderController extends Controller
                 return $col;
             }
         }
+
         return null;
     }
 
@@ -162,8 +167,10 @@ class LadderController extends Controller
         if ($h >= 24) {
             $d = (int) floor($h / 24);
             $h = $h % 24;
+
             return "{$d}d {$h}h {$m}m";
         }
+
         return "{$h}h {$m}m";
     }
 }

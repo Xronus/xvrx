@@ -19,6 +19,7 @@ class AdminClassController extends Controller
     public function create()
     {
         $enabledLangs = LanguageSetting::getActiveCodes();
+
         return view('admin.classes.create', compact('enabledLangs'));
     }
 
@@ -41,13 +42,14 @@ class AdminClassController extends Controller
     public function edit(CharacterClass $class)
     {
         $enabledLangs = LanguageSetting::getActiveCodes();
+
         return view('admin.classes.edit', compact('class', 'enabledLangs'));
     }
 
     public function update(Request $request, CharacterClass $class)
     {
         $request->validate([
-            'class_id' => 'required|integer|unique:character_classes,class_id,' . $class->id,
+            'class_id' => 'required|integer|unique:character_classes,class_id,'.$class->id,
             'name' => 'required|string|max:100',
             'name_en' => 'nullable|string|max:100',
             'name_de' => 'nullable|string|max:100',

@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Log;
 class RecaptchaService
 {
     protected $secretKey;
+
     protected $verifyUrl;
+
     protected $minScore;
 
     public function __construct()
@@ -20,16 +22,13 @@ class RecaptchaService
 
     /**
      * Verify reCAPTCHA token
-     *
-     * @param string $token
-     * @param string|null $ip
-     * @return bool
      */
     public function verify(string $token, ?string $ip = null): bool
     {
         if (empty($this->secretKey)) {
             // If secret key is not configured, skip verification (for development)
             Log::warning('reCAPTCHA secret key is not configured. Skipping verification.');
+
             return true;
         }
 
@@ -44,20 +43,22 @@ class RecaptchaService
                 'remoteip' => $ip ?? request()->ip(),
             ]);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 Log::error('reCAPTCHA verification failed', [
                     'status' => $response->status(),
                     'body' => $response->body(),
                 ]);
+
                 return false;
             }
 
             $data = $response->json();
 
-            if (!isset($data['success']) || $data['success'] !== true) {
+            if (! isset($data['success']) || $data['success'] !== true) {
                 Log::warning('reCAPTCHA verification failed', [
                     'errors' => $data['error-codes'] ?? [],
                 ]);
+
                 return false;
             }
 
@@ -67,6 +68,7 @@ class RecaptchaService
                     'score' => $data['score'],
                     'min_score' => $this->minScore,
                 ]);
+
                 return false;
             }
 
@@ -76,6 +78,7 @@ class RecaptchaService
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
+
             return false;
         }
     }

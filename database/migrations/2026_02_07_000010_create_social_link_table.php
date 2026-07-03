@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('social_link')) {
+        if (! Schema::hasTable('social_link')) {
             Schema::create('social_link', function (Blueprint $table) {
                 $table->id();
                 $table->string('link', 255);

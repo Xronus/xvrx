@@ -9,16 +9,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('main', function (Blueprint $table) {
-            if (!Schema::hasColumn('main', 'title_de')) {
+            if (! Schema::hasColumn('main', 'title_de')) {
                 $table->string('title_de', 255)->nullable()->after('title_en');
             }
-            if (!Schema::hasColumn('main', 'title_es')) {
+            if (! Schema::hasColumn('main', 'title_es')) {
                 $table->string('title_es', 255)->nullable()->after('title_de');
             }
-            if (!Schema::hasColumn('main', 'description_de')) {
+            if (! Schema::hasColumn('main', 'description_de')) {
                 $table->string('description_de', 255)->nullable()->after('description_en');
             }
-            if (!Schema::hasColumn('main', 'description_es')) {
+            if (! Schema::hasColumn('main', 'description_es')) {
                 $table->string('description_es', 255)->nullable()->after('description_de');
             }
         });

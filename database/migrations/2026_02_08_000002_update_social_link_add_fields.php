@@ -9,13 +9,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('social_link', function (Blueprint $table) {
-            if (!Schema::hasColumn('social_link', 'name')) {
+            if (! Schema::hasColumn('social_link', 'name')) {
                 $table->string('name', 100)->nullable()->after('id');
             }
-            if (!Schema::hasColumn('social_link', 'icon')) {
+            if (! Schema::hasColumn('social_link', 'icon')) {
                 $table->string('icon', 100)->nullable()->after('class');
             }
-            if (!Schema::hasColumn('social_link', 'is_active')) {
+            if (! Schema::hasColumn('social_link', 'is_active')) {
                 $table->boolean('is_active')->default(true)->after('icon');
             }
         });

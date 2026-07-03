@@ -21,18 +21,18 @@ class AdminAccountParserController extends Controller
         try {
             $totalGameAccounts = DB::connection('game_auth')->table('account')->count();
             $totalWebsiteAccounts = User::count();
-            
+
             // Подсчитываем аккаунты, которых нет на сайте
             $gameAccounts = DB::connection('game_auth')
                 ->table('account')
                 ->select('username')
                 ->get();
-            
+
             $gameUsernames = $gameAccounts->pluck('username')->toArray();
             $existingUsernames = User::whereIn('username', $gameUsernames)->pluck('username')->toArray();
-            $accountsToImport = count($gameUsernames) - count($existingUsernames);
+            $accountsToImport = max(0, count($gameUsernames) - count($existingUsernames));
         } catch (\Exception $e) {
-            Log::error('Account parser error: ' . $e->getMessage());
+            Log::error('Account parser error: '.$e->getMessage());
         }
 
         return view('admin.account-parser.index', compact('totalGameAccounts', 'totalWebsiteAccounts', 'accountsToImport'));
@@ -47,7 +47,7 @@ class AdminAccountParserController extends Controller
 
         $batchSize = $request->input('batch_size', 100);
         $defaultEmailDomain = $request->input('default_email_domain', 'example.com');
-        
+
         $stats = [
             'processed' => 0,
             'created' => 0,
@@ -70,17 +70,18 @@ class AdminAccountParserController extends Controller
                 try {
                     // Проверяем, существует ли уже пользователь с таким username
                     $existingUser = User::where('username', $gameAccount->username)->first();
-                    
+
                     if ($existingUser) {
                         $stats['skipped']++;
+
                         continue;
                     }
 
                     // Проверяем, есть ли email в игровой БД
                     $email = $gameAccount->email;
-                    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    if (empty($email) || ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
                         // Генерируем email на основе username
-                        $email = strtolower($gameAccount->username) . '@' . $defaultEmailDomain;
+                        $email = strtolower($gameAccount->username).'@'.$defaultEmailDomain;
                     }
 
                     // Проверяем уникальность email
@@ -90,7 +91,7 @@ class AdminAccountParserController extends Controller
                         $counter = 1;
                         $originalEmail = $email;
                         while (User::where('email', $email)->exists()) {
-                            $email = str_replace('@', $counter . '@', $originalEmail);
+                            $email = str_replace('@', $counter.'@', $originalEmail);
                             $counter++;
                         }
                     }
@@ -108,7 +109,7 @@ class AdminAccountParserController extends Controller
                     }
 
                     // Если salt/verifier не пустые и не являются валидным base64, кодируем
-                    if (!empty($salt)) {
+                    if (! empty($salt)) {
                         $decoded = @base64_decode($salt, true);
                         if ($decoded === false || base64_encode($decoded) !== $salt) {
                             $salt = base64_encode($salt);
@@ -116,8 +117,8 @@ class AdminAccountParserController extends Controller
                     } else {
                         $salt = '';
                     }
-                    
-                    if (!empty($verifier)) {
+
+                    if (! empty($verifier)) {
                         $decoded = @base64_decode($verifier, true);
                         if ($decoded === false || base64_encode($decoded) !== $verifier) {
                             $verifier = base64_encode($verifier);
@@ -148,7 +149,7 @@ class AdminAccountParserController extends Controller
 
                     $placeholders = implode(',', array_fill(0, count($values), '?'));
                     $columnsList = implode(', ', $columns);
-                    
+
                     DB::statement("INSERT INTO users ({$columnsList}) VALUES ({$placeholders})", $values);
 
                     $stats['created']++;
@@ -156,23 +157,24 @@ class AdminAccountParserController extends Controller
                     $stats['errors']++;
                     $stats['errors_list'][] = [
                         'username' => $gameAccount->username,
-                        'error' => $e->getMessage()
+                        'error' => $e->getMessage(),
                     ];
-                    Log::error('Error importing account: ' . $gameAccount->username . ' - ' . $e->getMessage());
+                    Log::error('Error importing account: '.$gameAccount->username.' - '.$e->getMessage());
                 }
             }
 
             return response()->json([
                 'success' => true,
                 'message' => __('main.accounts_imported_successfully'),
-                'stats' => $stats
+                'stats' => $stats,
             ]);
         } catch (\Exception $e) {
-            Log::error('Account parser error: ' . $e->getMessage());
+            Log::error('Account parser error: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => __('main.accounts_import_error') . ': ' . $e->getMessage(),
-                'stats' => $stats
+                'message' => __('main.accounts_import_error').': '.$e->getMessage(),
+                'stats' => $stats,
             ], 500);
         }
     }

@@ -38,7 +38,7 @@
                                 <td>{{ $social->id }}</td>
                                 <td>{{ $social->name }}</td>
                                 <td><a href="{{ $social->link }}" target="_blank">{{ Str::limit($social->link, 40) }}</a></td>
-                                <td><code>{{ $social->class }}</code></td>
+                                <td><code>{{ $social->remixIconClass() }}</code></td>
                                 <td>
                                     <form method="POST" action="{{ route('admin.socials.toggle', $social) }}" style="display: inline;">
                                         @csrf
@@ -72,12 +72,12 @@
                 <div class="mt-4">
                     <h6>{{ __('main.available_css') }}</h6>
                     <ul class="list-unstyled">
-                        <li><code>soc__link _icon-discord</code> — Discord</li>
-                        <li><code>soc__link _icon-telegram</code> — Telegram</li>
-                        <li><code>soc__link _icon-vk</code> — VK</li>
-                        <li><code>soc__link _icon-youtube</code> — YouTube</li>
-                        <li><code>soc__link _icon-facebook</code> — Facebook</li>
-                        <li><code>soc__link _icon-twitter</code> — Twitter</li>
+                        <li><code>ri-discord-fill</code> — Discord</li>
+                        <li><code>ri-telegram-fill</code> — Telegram</li>
+                        <li><code>ri-vk-fill</code> — VK</li>
+                        <li><code>ri-youtube-fill</code> — YouTube</li>
+                        <li><code>ri-facebook-fill</code> — Facebook</li>
+                        <li><code>ri-twitter-x-fill</code> — X / Twitter</li>
                     </ul>
                 </div>
             </div>

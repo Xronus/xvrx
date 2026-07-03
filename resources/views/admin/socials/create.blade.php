@@ -42,12 +42,12 @@
                     <div class="mb-3">
                         <label class="form-label">{{ __('main.css_class') }}</label>
                         <select name="class" class="form-control @error('class') is-invalid @enderror">
-                            <option value="soc__link _icon-discord" {{ old('class') == 'soc__link _icon-discord' ? 'selected' : '' }}>Discord</option>
-                            <option value="soc__link _icon-telegram" {{ old('class') == 'soc__link _icon-telegram' ? 'selected' : '' }}>Telegram</option>
-                            <option value="soc__link _icon-vk" {{ old('class') == 'soc__link _icon-vk' ? 'selected' : '' }}>VK</option>
-                            <option value="soc__link _icon-youtube" {{ old('class') == 'soc__link _icon-youtube' ? 'selected' : '' }}>YouTube</option>
-                            <option value="soc__link _icon-facebook" {{ old('class') == 'soc__link _icon-facebook' ? 'selected' : '' }}>Facebook</option>
-                            <option value="soc__link _icon-twitter" {{ old('class') == 'soc__link _icon-twitter' ? 'selected' : '' }}>Twitter</option>
+                            <option value="ri-discord-fill" {{ old('class') == 'ri-discord-fill' ? 'selected' : '' }}>Discord</option>
+                            <option value="ri-telegram-fill" {{ old('class') == 'ri-telegram-fill' ? 'selected' : '' }}>Telegram</option>
+                            <option value="ri-vk-fill" {{ old('class') == 'ri-vk-fill' ? 'selected' : '' }}>VK</option>
+                            <option value="ri-youtube-fill" {{ old('class') == 'ri-youtube-fill' ? 'selected' : '' }}>YouTube</option>
+                            <option value="ri-facebook-fill" {{ old('class') == 'ri-facebook-fill' ? 'selected' : '' }}>Facebook</option>
+                            <option value="ri-twitter-x-fill" {{ old('class') == 'ri-twitter-x-fill' ? 'selected' : '' }}>X / Twitter</option>
                         </select>
                         @error('class')
                         <div class="invalid-feedback">{{ $message }}</div>

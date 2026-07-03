@@ -31,9 +31,11 @@ public/phpinfo.php
 .DS_Store
 **/.DS_Store
 /.codex-runtime
+/fork-docs
 /php
 /list.txt
 *.new
+resources/views/emails/password-reset.blade 2.php
 Homestead.json
 Homestead.yaml
 auth.json

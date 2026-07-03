@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Race;
 use App\Models\CharacterClass;
+use App\Models\Race;
 use App\Models\SiteSetting;
-use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class CabinetController extends Controller
@@ -41,7 +41,7 @@ class CabinetController extends Controller
         return view('cabinet.votes', compact('user', 'settings'));
     }
 
-    private function getCharacters($user): \Illuminate\Support\Collection
+    private function getCharacters($user): Collection
     {
         $characters = collect();
 
@@ -51,7 +51,7 @@ class CabinetController extends Controller
                 ->where('username', strtoupper($user->username))
                 ->value('id');
 
-            if (!$accountId) {
+            if (! $accountId) {
                 return $characters;
             }
 
@@ -71,9 +71,11 @@ class CabinetController extends Controller
                     $faction = $factions[$char->race] ?? 0;
                     $char->faction = $faction === 0 ? 'Альянс' : 'Орда';
                     $char->last_login = $char->logout_time > 0 ? date('d.m.Y H:i', $char->logout_time) : 'Нет данных';
+
                     return $char;
                 });
         } catch (\Exception $e) {
+            \Log::error('Cabinet: failed to fetch characters for user '.$user->username.': '.$e->getMessage());
         }
 
         return $characters;

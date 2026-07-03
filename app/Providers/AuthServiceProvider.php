@@ -9,7 +9,5 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
     ];
 
-    public function boot(): void
-    {
-    }
+    public function boot(): void {}
 }

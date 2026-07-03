@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasLocalization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class CharacterClass extends Model
 {
-    use HasFactory;
+    use HasFactory, HasLocalization;
 
     protected $table = 'character_classes';
 

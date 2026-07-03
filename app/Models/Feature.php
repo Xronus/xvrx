@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasLocalization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Feature extends Model
 {
-    use HasFactory;
+    use HasFactory, HasLocalization;
 
     protected $fillable = [
         'title_ru',
@@ -36,21 +37,23 @@ class Feature extends Model
     public function localized($field = 'title')
     {
         $locale = app()->getLocale();
-        $fieldName = $field . '_' . $locale;
-        
-        if (isset($this->$fieldName) && !empty($this->$fieldName)) {
+        $fieldName = $field.'_'.$locale;
+
+        if (isset($this->$fieldName) && ! empty($this->$fieldName)) {
             return $this->$fieldName;
         }
-        
-        $fallbackField = $field . '_ru';
+
+        $fallbackField = $field.'_ru';
+
         return $this->$fallbackField ?? '';
     }
 
     public function getImageAttribute($value)
     {
         if ($value && strpos($value, 'powerpuffsite') === false) {
-            return 'powerpuffsite/images/features/' . $value;
+            return 'powerpuffsite/images/features/'.$value;
         }
+
         return $value;
     }
 }

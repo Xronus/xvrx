@@ -277,7 +277,10 @@ File: Main Js File
     }
 
     function updateRadio(radioId) {
-        document.getElementById(radioId).checked = true;
+        var radio = document.getElementById(radioId);
+        if (radio) {
+            radio.checked = true;
+        }
     }
 
     function layoutSetting() {

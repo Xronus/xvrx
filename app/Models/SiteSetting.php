@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasLocalization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SiteSetting extends Model
 {
-    use HasFactory;
+    use HasFactory, HasLocalization;
 
     protected $table = 'main';
 
@@ -33,57 +34,36 @@ class SiteSetting extends Model
         'main__text_es',
         'main__text_fr',
         'logo_path',
+        'mail_password_reset_enabled',
+        'mail_from_name',
+        'mail_reset_subject',
+        'mail_reset_body',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'mail_password_reset_enabled' => 'boolean',
+        ];
+    }
 
     public function localizedTitle(): ?string
     {
-        $locale = app()->getLocale();
-
-        if ($locale === 'ru') {
-            return $this->main__title;
-        }
-
-        $value = $this->{'main__title_' . $locale};
-
-        return $value ?: $this->main__title;
+        return $this->localized('main__title');
     }
 
     public function localizedText(): ?string
     {
-        $locale = app()->getLocale();
-
-        if ($locale === 'ru') {
-            return $this->main__text;
-        }
-
-        $value = $this->{'main__text_' . $locale};
-
-        return $value ?: $this->main__text;
+        return $this->localized('main__text');
     }
 
     public function localizedSiteTitle(): ?string
     {
-        $locale = app()->getLocale();
-
-        if ($locale === 'ru') {
-            return $this->title;
-        }
-
-        $value = $this->{'title_' . $locale};
-
-        return $value ?: $this->title;
+        return $this->localized('title');
     }
 
     public function localizedSiteDescription(): ?string
     {
-        $locale = app()->getLocale();
-
-        if ($locale === 'ru') {
-            return $this->description;
-        }
-
-        $value = $this->{'description_' . $locale};
-
-        return $value ?: $this->description;
+        return $this->localized('description');
     }
 }

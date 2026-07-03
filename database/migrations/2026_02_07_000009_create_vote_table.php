@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('vote')) {
+        if (! Schema::hasTable('vote')) {
             Schema::create('vote', function (Blueprint $table) {
                 $table->id();
                 $table->string('images_company', 255)->nullable();

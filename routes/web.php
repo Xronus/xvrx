@@ -1,25 +1,25 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\AdminAccountParserController;
+use App\Http\Controllers\Admin\AdminClassController;
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AdminFeatureController;
+use App\Http\Controllers\Admin\AdminHowToStartController;
+use App\Http\Controllers\Admin\AdminLogoController;
+use App\Http\Controllers\Admin\AdminNewsController;
+use App\Http\Controllers\Admin\AdminRaceController;
+use App\Http\Controllers\Admin\AdminRealmController;
+use App\Http\Controllers\Admin\AdminSocialController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminVoteController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CabinetController;
-use App\Http\Controllers\VoteController;
-use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\Admin\AdminNewsController;
-use App\Http\Controllers\Admin\AdminRealmController;
-use App\Http\Controllers\Admin\AdminSocialController;
-use App\Http\Controllers\Admin\AdminVoteController;
-use App\Http\Controllers\Admin\AdminRaceController;
-use App\Http\Controllers\Admin\AdminClassController;
-use App\Http\Controllers\Admin\AdminHowToStartController;
-use App\Http\Controllers\Admin\AdminFeatureController;
-use App\Http\Controllers\Admin\AdminAccountParserController;
-use App\Http\Controllers\Admin\AdminLogoController;
-use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LadderController;
 use App\Http\Controllers\NewsController;
-
+use App\Http\Controllers\VoteController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -31,11 +31,13 @@ Route::get('/lang/{locale}', function (string $locale) {
     return redirect()->back();
 })->name('locale.switch');
 
-Route::middleware('guest')->group(function () {
+Route::middleware(['guest', 'throttle:6,1'])->group(function () {
     Route::get('/cp', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/cp', [LoginController::class, 'login']);
     Route::get('/cp/forgot-password', [LoginController::class, 'showForgotPasswordForm'])->name('password.request');
-    Route::post('/cp/forgot-password', [LoginController::class, 'sendPasswordResetLink'])->name('password.email');
+    Route::post('/cp/forgot-password', [LoginController::class, 'sendPasswordResetLink'])->name('password.email')->middleware('throttle:3,1');
+    Route::get('/cp/reset-password', [LoginController::class, 'showResetForm'])->name('password.reset');
+    Route::post('/cp/reset-password', [LoginController::class, 'reset'])->name('password.update');
     Route::get('/cp/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/cp/register', [RegisterController::class, 'register']);
 });
@@ -53,6 +55,8 @@ Route::middleware(['auth', 'admin'])->prefix('powerpuffsiteadmin')->name('admin.
     Route::put('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
     Route::get('/languages', [AdminController::class, 'languages'])->name('languages.index');
     Route::post('/languages/toggle', [AdminController::class, 'toggleLanguage'])->name('languages.toggle');
+    Route::get('/mail', [AdminController::class, 'mail'])->name('mail.index');
+    Route::put('/mail', [AdminController::class, 'updateMail'])->name('mail.update');
 
     Route::get('/account-parser', [AdminAccountParserController::class, 'index'])->name('account-parser.index');
     Route::post('/account-parser/parse', [AdminAccountParserController::class, 'parse'])->name('account-parser.parse');
@@ -116,7 +120,7 @@ Route::middleware(['auth', 'admin'])->prefix('powerpuffsiteadmin')->name('admin.
 
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
 Route::get('/news/{news}', [NewsController::class, 'show'])->name('news.show');
-Route::get('/ladder', [\App\Http\Controllers\LadderController::class, 'index'])->name('ladder');
+Route::get('/ladder', [LadderController::class, 'index'])->name('ladder');
 Route::get('/terms', function () {
     return view('terms');
 })->name('terms');
