@@ -325,10 +325,10 @@ body::after {
 }
 
 #page-topbar {
-    border-bottom: 1px solid var(--admin-line);
+    border-bottom: 1px solid rgba(214, 185, 107, .12);
     background: rgba(6, 9, 14, .86) !important;
     backdrop-filter: blur(16px);
-    box-shadow: 0 16px 34px rgba(0, 0, 0, .28);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, .22);
 }
 
 .navbar-header {
@@ -337,8 +337,9 @@ body::after {
 }
 
 .navbar-brand-box {
-    border-right: 1px solid var(--admin-line);
+    border-right: 1px solid rgba(214, 185, 107, .12);
     background: rgba(6, 9, 14, .54) !important;
+    box-shadow: none !important;
 }
 
 .logo-lg img,
