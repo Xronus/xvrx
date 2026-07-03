@@ -95,9 +95,58 @@ CAPTCHA_METHOD=false
 SESSION_DRIVER=database
 CACHE_STORE=database
 QUEUE_CONNECTION=database
+
+MAIL_MAILER=log
+MAIL_HOST=smtp.example.com
+MAIL_PORT=587
+MAIL_USERNAME=noreply@example.com
+MAIL_PASSWORD=your-smtp-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="noreply@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
 ```
 
+Для локального Docker MySQL замените `change-me` на пароль контейнера из `docker-compose.yml`. По умолчанию это `ascent`.
+
 Для production включите капчу через `CAPTCHA_METHOD=google` или `CAPTCHA_METHOD=cloudflare` и заполните соответствующие ключи.
+
+## Настройка почты
+
+Почтовые доступы не хранятся в админке и не должны попадать в репозиторий. SMTP-сервер, логин, пароль, порт, шифрование и адрес отправителя задаются только в `.env`.
+
+Для локальной разработки безопаснее оставить письма в логах:
+
+```env
+MAIL_MAILER=log
+```
+
+В production укажите реальные SMTP-параметры:
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.example.com
+MAIL_PORT=587
+MAIL_USERNAME=noreply@example.com
+MAIL_PASSWORD=your-smtp-password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="noreply@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+После изменения почтовых переменных на сервере очистите кеш конфигурации:
+
+```bash
+php artisan optimize:clear
+php artisan config:cache
+```
+
+В админке откройте `Настройки -> Почта`. Там можно:
+
+- проверить, видит ли приложение SMTP-настройки;
+- включить или отключить отправку писем сброса пароля;
+- изменить имя отправителя, тему и текст письма сброса пароля.
+
+Пароль SMTP в админке не показывается: отображается только признак, что он задан.
 
 ## Production-разворачивание
 
@@ -121,7 +170,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-4. Заполнить `.env` реальными доступами к базам сайта, `auth` и `characters`.
+4. Заполнить `.env` реальными доступами к базам сайта, `auth`, `characters` и SMTP.
 
 5. Выполнить миграции:
 
