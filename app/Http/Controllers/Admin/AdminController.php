@@ -7,6 +7,7 @@ use App\Models\LanguageSetting;
 use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class AdminController extends Controller
 {
@@ -24,7 +25,9 @@ class AdminController extends Controller
         try {
             $totalAccounts = DB::connection('game_auth')->table('account')->count();
             $totalBanned = DB::connection('game_auth')->table('account_banned')->count();
-            $totalPremium = DB::connection('game_auth')->table('account_premium')->where('active', 1)->count();
+            if (Schema::connection('game_auth')->hasTable('account_premium')) {
+                $totalPremium = DB::connection('game_auth')->table('account_premium')->where('active', 1)->count();
+            }
             $totalRealms = DB::connection('game_auth')->table('realmlist')->count();
         } catch (\Exception $e) {
             \Log::error('Admin dashboard: failed to fetch game stats: '.$e->getMessage());

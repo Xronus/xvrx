@@ -102,6 +102,7 @@ MAIL_PORT=587
 MAIL_USERNAME=noreply@example.com
 MAIL_PASSWORD=your-smtp-password
 MAIL_ENCRYPTION=tls
+MAIL_TIMEOUT=10
 MAIL_FROM_ADDRESS="noreply@example.com"
 MAIL_FROM_NAME="${APP_NAME}"
 ```
@@ -129,6 +130,7 @@ MAIL_PORT=587
 MAIL_USERNAME=noreply@example.com
 MAIL_PASSWORD=your-smtp-password
 MAIL_ENCRYPTION=tls
+MAIL_TIMEOUT=10
 MAIL_FROM_ADDRESS="noreply@example.com"
 MAIL_FROM_NAME="${APP_NAME}"
 ```
