@@ -74,4 +74,17 @@ class LoginTest extends TestCase
         $response->assertStatus(302);
         $response->assertSessionHas('status');
     }
+
+    public function test_forgot_password_uses_configured_rate_limit(): void
+    {
+        SiteSetting::first()->update(['mail_password_reset_rate_limit' => 1]);
+
+        $this->post('/cp/forgot-password', [
+            'email' => 'limited@example.com',
+        ])->assertSessionHas('status');
+
+        $this->post('/cp/forgot-password', [
+            'email' => 'limited@example.com',
+        ])->assertSessionHasErrors(['email']);
+    }
 }

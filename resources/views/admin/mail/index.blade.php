@@ -85,6 +85,15 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label" for="mail_password_reset_rate_limit">{{ __('main.password_reset_rate_limit_label') }}</label>
+                        <input type="number" min="1" max="60" step="1" id="mail_password_reset_rate_limit" name="mail_password_reset_rate_limit" class="form-control @error('mail_password_reset_rate_limit') is-invalid @enderror" value="{{ old('mail_password_reset_rate_limit', $settings->mail_password_reset_rate_limit ?? 3) }}">
+                        <div class="form-text">{{ __('main.password_reset_rate_limit_hint') }}</div>
+                        @error('mail_password_reset_rate_limit')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label">{{ __('main.from_name') }}</label>
                         <input type="text" name="mail_from_name" class="form-control @error('mail_from_name') is-invalid @enderror" value="{{ old('mail_from_name', $settings->mail_from_name ?? config('app.name')) }}">
                         @error('mail_from_name')

@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
@@ -52,11 +54,22 @@ class LoginController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
+        $settings = SiteSetting::first();
+        $rateLimit = max(1, min(60, (int) ($settings?->mail_password_reset_rate_limit ?: 3)));
+        $rateLimitKey = 'password-reset:'.Str::lower($request->email).'|'.$request->ip();
+
+        if (RateLimiter::tooManyAttempts($rateLimitKey, $rateLimit)) {
+            return back()->withErrors([
+                'email' => __('main.password_reset_rate_limit', [
+                    'seconds' => RateLimiter::availableIn($rateLimitKey),
+                ]),
+            ])->withInput();
+        }
+
+        RateLimiter::hit($rateLimitKey, 60);
 
         if ($user) {
             try {
-                $settings = SiteSetting::first();
-
                 if ($settings && $settings->mail_password_reset_enabled === false) {
                     Log::warning('Password reset email skipped because mail is disabled in admin settings', [
                         'email' => $user->email,

@@ -31,15 +31,15 @@ Route::get('/lang/{locale}', function (string $locale) {
     return redirect()->back();
 })->name('locale.switch');
 
-Route::middleware(['guest', 'throttle:6,1'])->group(function () {
-    Route::get('/cp', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/cp', [LoginController::class, 'login']);
-    Route::get('/cp/forgot-password', [LoginController::class, 'showForgotPasswordForm'])->name('password.request');
-    Route::post('/cp/forgot-password', [LoginController::class, 'sendPasswordResetLink'])->name('password.email')->middleware('throttle:3,1');
-    Route::get('/cp/reset-password', [LoginController::class, 'showResetForm'])->name('password.reset');
-    Route::post('/cp/reset-password', [LoginController::class, 'reset'])->name('password.update');
-    Route::get('/cp/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-    Route::post('/cp/register', [RegisterController::class, 'register']);
+Route::middleware('guest')->group(function () {
+    Route::get('/cp', [LoginController::class, 'showLoginForm'])->name('login')->middleware('throttle:6,1');
+    Route::post('/cp', [LoginController::class, 'login'])->middleware('throttle:6,1');
+    Route::get('/cp/forgot-password', [LoginController::class, 'showForgotPasswordForm'])->name('password.request')->middleware('throttle:6,1');
+    Route::post('/cp/forgot-password', [LoginController::class, 'sendPasswordResetLink'])->name('password.email');
+    Route::get('/cp/reset-password', [LoginController::class, 'showResetForm'])->name('password.reset')->middleware('throttle:6,1');
+    Route::post('/cp/reset-password', [LoginController::class, 'reset'])->name('password.update')->middleware('throttle:6,1');
+    Route::get('/cp/register', [RegisterController::class, 'showRegistrationForm'])->name('register')->middleware('throttle:6,1');
+    Route::post('/cp/register', [RegisterController::class, 'register'])->middleware('throttle:6,1');
 });
 
 Route::middleware('auth')->group(function () {

@@ -38,12 +38,14 @@ class SiteSetting extends Model
         'mail_from_name',
         'mail_reset_subject',
         'mail_reset_body',
+        'mail_password_reset_rate_limit',
     ];
 
     protected function casts(): array
     {
         return [
             'mail_password_reset_enabled' => 'boolean',
+            'mail_password_reset_rate_limit' => 'integer',
         ];
     }
 

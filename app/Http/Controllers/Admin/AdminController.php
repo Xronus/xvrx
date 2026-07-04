@@ -68,6 +68,7 @@ class AdminController extends Controller
             'mail_from_name' => 'nullable|string|max:100',
             'mail_reset_subject' => 'nullable|string|max:180',
             'mail_reset_body' => 'nullable|string|max:2000',
+            'mail_password_reset_rate_limit' => 'required|integer|min:1|max:60',
         ]);
 
         $settings = SiteSetting::first() ?: new SiteSetting();
@@ -77,6 +78,7 @@ class AdminController extends Controller
             'mail_from_name' => $request->mail_from_name,
             'mail_reset_subject' => $request->mail_reset_subject,
             'mail_reset_body' => $request->mail_reset_body,
+            'mail_password_reset_rate_limit' => $request->integer('mail_password_reset_rate_limit'),
         ]);
         $settings->save();
 
