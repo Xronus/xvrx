@@ -45,8 +45,8 @@ class AdminShopController extends Controller
         $validated = $request->validate([
             'subcategory_id' => 'required|exists:shop_categories,id',
             'item_entry' => 'required|integer|min:1',
-            'name_ru' => 'nullable|string|max:255',
-            'icon_name' => 'nullable|string|max:255',
+            'name_ru' => 'required|string|max:255',
+            'icon_name' => 'required|string|max:255',
             'price' => 'required|integer|min:1',
             'quantity' => 'integer|min:1',
             'enabled' => 'boolean',
@@ -73,8 +73,8 @@ class AdminShopController extends Controller
         $validated = $request->validate([
             'subcategory_id' => 'required|exists:shop_categories,id',
             'item_entry' => 'required|integer|min:1',
-            'name_ru' => 'nullable|string|max:255',
-            'icon_name' => 'nullable|string|max:255',
+            'name_ru' => 'required|string|max:255',
+            'icon_name' => 'required|string|max:255',
             'price' => 'required|integer|min:1',
             'quantity' => 'integer|min:1',
             'enabled' => 'boolean',

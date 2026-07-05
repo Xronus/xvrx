@@ -58,7 +58,7 @@ class SoapService
 
             $client = new SoapClient(null, $options);
 
-            $result = $client->__soapCall('executeCommand', [new \SoapParam($command, 'command')]);
+            $result = $client->executeCommand(new \SoapParam($command, 'command'));
 
             Log::info('SOAP command executed', [
                 'command' => $command,

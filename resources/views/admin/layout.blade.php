@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ app()->getLocale() }}">
+<html lang="{{ app()->getLocale() }}" data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
     <title>@yield('title', __('main.site_management'))</title>

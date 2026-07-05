@@ -13,17 +13,21 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <form method="GET" class="d-flex align-items-center gap-2">
-                    <input type="text" name="search" class="form-control form-control-sm w-auto" value="{{ request('search') }}" placeholder="ID или название...">
-                    <select name="category" class="form-select form-select-sm w-auto">
+                <form method="GET" action="{{ route('admin.shop.index') }}" class="d-flex align-items-center gap-2">
+                    <input type="text" name="search" class="form-control form-control-sm me-2" value="{{ request('search') }}" placeholder="ID или название...">
+                    <select name="category" class="form-select form-select-sm w-auto me-2">
                         <option value="">{{ __('main.shop_all_categories') }}</option>
                         @foreach($categories as $cat)
                         <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>{{ $cat->localizedName() }}</option>
                         @endforeach
                     </select>
-                    <button type="submit" class="btn btn-sm btn-primary">{{ __('main.search') }}</button>
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <i class="fas fa-search"></i> {{ __('main.search') }}
+                    </button>
                     @if(request('search'))
-                    <a href="{{ route('admin.shop.index') }}" class="btn btn-sm btn-secondary">{{ __('main.close') }}</a>
+                    <a href="{{ route('admin.shop.index') }}" class="btn btn-sm btn-secondary ms-2">
+                        <i class="fas fa-times"></i>
+                    </a>
                     @endif
                 </form>
             </div>

@@ -18,7 +18,19 @@
             @error('name_ru')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
         <div class="mb-3"><label class="form-label">{{ __('main.sort') }}</label><input type="number" name="sort_order" class="form-control" value="{{ old('sort_order', $category->sort_order) }}" min="0"></div>
-        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> {{ __('main.save') }}</button>
+        <button type="submit" class="btn btn-primary" id="save-btn" disabled><i class="fas fa-save me-1"></i> {{ __('main.save') }}</button>
     </form>
 </div></div></div></div>
+@push('scripts')
+<script>
+(function() {
+    var form = document.querySelector('form');
+    var btn = document.getElementById('save-btn');
+    var fields = form.querySelectorAll('[required]');
+    function check() { btn.disabled = !form.checkValidity(); }
+    fields.forEach(function(f) { f.addEventListener('input', check); f.addEventListener('change', check); });
+    check();
+})();
+</script>
+@endpush
 @endsection

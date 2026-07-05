@@ -19,9 +19,9 @@
                 @endforeach
             </select>@error('subcategory_id')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
         <div class="mb-3"><label class="form-label">{{ __('main.name') }}</label>
-            <input type="text" name="name_ru" class="form-control" value="{{ old('name_ru', $item->name_ru) }}"></div>
+            <input type="text" name="name_ru" class="form-control" value="{{ old('name_ru', $item->name_ru) }}" required></div>
         <div class="mb-3"><label class="form-label">{{ __('main.shop_icon') }}</label>
-            <input type="text" name="icon_name" class="form-control" value="{{ old('icon_name', $item->icon_name) }}" placeholder="inv_misc_questionmark"></div>
+            <input type="text" name="icon_name" class="form-control" value="{{ old('icon_name', $item->icon_name) }}" placeholder="inv_misc_questionmark" required></div>
         <div class="mb-3"><label class="form-label">{{ __('main.shop_item_entry') }}</label>
             <input type="number" name="item_entry" class="form-control @error('item_entry') is-invalid @enderror" value="{{ old('item_entry', $item->item_entry) }}" required>
             @error('item_entry')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
@@ -35,7 +35,19 @@
         <div class="mb-3"><div class="form-check form-switch">
             <input class="form-check-input" type="checkbox" name="enabled" value="1" id="enabled" {{ old('enabled', $item->enabled) ? 'checked' : '' }}>
             <label class="form-check-label" for="enabled">{{ __('main.enabled') }}</label></div></div>
-        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> {{ __('main.save') }}</button>
+        <button type="submit" class="btn btn-primary" id="save-btn" disabled><i class="fas fa-save me-1"></i> {{ __('main.save') }}</button>
     </form>
 </div></div></div></div>
+@push('scripts')
+<script>
+(function() {
+    var form = document.querySelector('form');
+    var btn = document.getElementById('save-btn');
+    var fields = form.querySelectorAll('[required]');
+    function check() { btn.disabled = !form.checkValidity(); }
+    fields.forEach(function(f) { f.addEventListener('input', check); f.addEventListener('change', check); });
+    check();
+})();
+</script>
+@endpush
 @endsection
