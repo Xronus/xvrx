@@ -13,61 +13,62 @@
                 @include('cabinet.partials.sidebar', ['active' => 'characters'])
 
                 <div class="nk-content-body">
-                    <div class="nk-content-wrap">
-                        <div class="nk-block-head">
+                    <div class="nk-content-wrap xvrx-cabinet-page">
+                        <div class="nk-block-head xvrx-cabinet-head">
                             <div class="nk-block-head-content">
+                                <span class="xvrx-cabinet-eyebrow">{{ __('main.personal_account') }}</span>
                                 <h4 class="nk-block-title">{{ __('main.characters') }}</h4>
                                 <p class="text-soft">{{ __('main.characters_list') }}</p>
+                            </div>
+                            <div class="xvrx-cabinet-head-count">
+                                <span>{{ __('main.characters_count') }}</span>
+                                <strong>{{ $characters->count() }}</strong>
                             </div>
                         </div>
 
                         <div class="nk-block">
                             @if($characters->count() > 0)
-                            <div class="card card-bordered">
-                                <div class="card-inner p-0">
-                                    <div class="table-responsive">
-                                        <table class="table table-hover mb-0">
-                                            <thead class="thead-light">
-                                                <tr>
-                                                    <th>{{ __('main.nickname') }}</th>
-                                                    <th>{{ __('main.level') }}</th>
-                                                    <th>{{ __('main.race') }}</th>
-                                                    <th>{{ __('main.class') }}</th>
-                                                    <th>{{ __('main.faction') }}</th>
-                                                    <th>{{ __('main.status') }}</th>
-                                                    <th>{{ __('main.last_login') }}</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($characters as $char)
-                                                <tr>
-                                                    <td><strong>{{ $char->name }}</strong></td>
-                                                    <td>{{ $char->level }}</td>
-                                                    <td>{{ $char->race_name }}</td>
-                                                    <td>{{ $char->class_name }}</td>
-                                                    <td>
-                                                        {{ $char->faction }}
-                                                    </td>
-                                                    <td>
-                                                        @if($char->online)
-                                                        {{ __('main.online') }}
-                                                        @else
-                                                        {{ __('main.offline') }}
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ $char->last_login }}</td>
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                            <div class="xvrx-character-grid">
+                                @foreach($characters as $char)
+                                <article class="xvrx-character-card">
+                                    <div class="xvrx-character-card-top">
+                                        <div class="xvrx-character-avatar">
+                                            {{ mb_substr($char->name, 0, 1) }}
+                                        </div>
+                                        <div>
+                                            <h5>{{ $char->name }}</h5>
+                                            <span>{{ __('main.level') }} {{ $char->level }}</span>
+                                        </div>
+                                        <span class="xvrx-status-badge {{ $char->online ? 'is-online' : 'is-offline' }}">
+                                            {{ $char->online ? __('main.online') : __('main.offline') }}
+                                        </span>
                                     </div>
-                                </div>
+
+                                    <div class="xvrx-character-meta">
+                                        <div>
+                                            <span>{{ __('main.race') }}</span>
+                                            <strong>{{ $char->race_name }}</strong>
+                                        </div>
+                                        <div>
+                                            <span>{{ __('main.class') }}</span>
+                                            <strong>{{ $char->class_name }}</strong>
+                                        </div>
+                                        <div>
+                                            <span>{{ __('main.faction') }}</span>
+                                            <strong>{{ $char->faction }}</strong>
+                                        </div>
+                                        <div>
+                                            <span>{{ __('main.last_login') }}</span>
+                                            <strong>{{ $char->last_login }}</strong>
+                                        </div>
+                                    </div>
+                                </article>
+                                @endforeach
                             </div>
                             @else
-                            <div class="card card-bordered">
-                                <div class="card-inner text-center text-soft py-4">
-                                    {{ __('main.no_characters') }}
-                                </div>
+                            <div class="xvrx-cabinet-empty">
+                                <span><em class="icon ni ni-users"></em></span>
+                                <p>{{ __('main.no_characters') }}</p>
                             </div>
                             @endif
                         </div>
