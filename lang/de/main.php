@@ -18,6 +18,11 @@ return [
     'on' => 'An',
     'off' => 'Aus',
     'close' => 'Schließen',
+    'ban' => 'Sperren',
+    'unban' => 'Entsperren',
+    'ban_reason' => 'Sperrgrund',
+    'ban_reason_placeholder' => 'Sperrgrund eingeben',
+    'since' => 'seit',
     'add' => 'Hinzufügen',
     'edit' => 'Bearbeiten',
     'enabled' => 'Aktiviert',
@@ -108,7 +113,24 @@ return [
     'server_error' => 'Serverfehler',
     'captcha_validation_error' => 'Captcha-Überprüfung fehlgeschlagen. Bitte laden Sie die Seite neu und versuchen Sie es erneut.',
 
+    'shop_error_title' => 'Fehler',
+    'shop' => 'Shop', 'shop_balance' => 'Guthaben', 'shop_buy' => 'Kaufen', 'shop_price' => 'Preis', 'shop_select_char' => 'Charakter wählen', 'shop_no_items' => 'Keine Artikel', 'shop_purchase_ok' => 'Artikel gesendet!', 'shop_purchase_funds' => 'Nicht genug Guthaben', 'shop_purchase_error' => 'Fehler. Später versuchen.', 'shop_char_invalid' => 'Charakter gehört nicht Ihnen', 'shop_item_entry' => 'Artikel-ID', 'shop_quantity' => 'Menge', 'shop_manage' => 'Shop-Verwaltung', 'shop_categories' => 'Kategorien', 'shop_subcategory' => 'Unterkategorie', 'shop_all_categories' => 'Alle Kategorien', 'shop_select_subcategory' => 'Unterkategorie wählen', 'shop_parent_category' => 'Übergeordnete Kategorie', 'shop_top_level' => 'Oberste Ebene', 'shop_item_added' => 'Artikel hinzugefügt', 'shop_item_updated' => 'Artikel aktualisiert', 'shop_item_deleted' => 'Artikel gelöscht', 'shop_category_added' => 'Kategorie hinzugefügt', 'shop_category_updated' => 'Kategorie aktualisiert', 'shop_category_deleted' => 'Kategorie gelöscht', 'shop_category_has_items' => 'Kategorie mit Artikeln kann nicht gelöscht werden',
+
     'thanks' => 'Mit freundlichen Grüßen',
+
+    'user_updated' => 'Benutzer aktualisiert',
+    'banned' => 'Gesperrt',
+    'user_banned' => 'Benutzer gesperrt',
+    'user_unbanned' => 'Benutzer entsperrt',
+    'email_verified_at' => 'E-Mail bestätigt',
+    'not_verified' => 'Nicht bestätigt',
+    'site_status' => 'Website',
+    'game_status' => 'Spiel',
+    'game_banned_title' => 'Spielsperre',
+    'game_banned_until' => 'Bis',
+    'game_banned_permanent' => 'Dauerhaft',
+    'game_banned_default' => 'Ihr Konto wurde im Spiel gesperrt. Kontaktieren Sie die Administration.',
+    'clear' => 'Löschen',
 
     'reset_email_body' => 'Wir haben eine Anfrage zum Zurücksetzen Ihres Passworts erhalten. Klicken Sie auf die Schaltfläche unten, um ein neues Passwort festzulegen.',
 

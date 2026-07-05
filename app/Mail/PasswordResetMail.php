@@ -27,7 +27,7 @@ class PasswordResetMail extends Mailable
         $fromAddress = config('mail.from.address') ?: env('MAIL_FROM_ADDRESS');
 
         return new Envelope(
-            from: $fromAddress ? new Address($fromAddress, $this->fromName ?: config('app.name')) : null,
+            from: $fromAddress ? new Address($fromAddress, $this->fromName ?: (\App\Models\SiteSetting::first()?->title ?: config('app.name'))) : null,
             subject: $this->subjectLine ?: __('main.reset_password'),
         );
     }

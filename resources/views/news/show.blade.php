@@ -29,7 +29,7 @@
         <h1>{{ $news->localized('text') }}</h1>
 
         @if($news->localized('content'))
-            <div class="xvrx-news-article-content">{{ $news->localized('content') }}</div>
+            <div class="xvrx-news-article-content">{!! $news->localized('content') !!}</div>
         @endif
     </article>
 </main>

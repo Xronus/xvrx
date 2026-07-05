@@ -243,11 +243,22 @@ class LoginController extends Controller
             ]);
         }
 
-        $user = User::where('username', $request->username)->first();
+        $user = User::whereRaw('LOWER(username) = ?', [strtolower($request->username)])->first();
 
         if (! $user) {
             throw ValidationException::withMessages([
                 'username' => [__('validation.invalid_credentials')],
+            ]);
+        }
+
+        // Check if user is banned on the website
+        if ($user->isBanned()) {
+            $reason = $user->ban_reason
+                ? __('main.banned_by_admin').': '.$user->ban_reason
+                : __('main.banned_by_admin');
+
+            throw ValidationException::withMessages([
+                'username' => [$reason],
             ]);
         }
 
@@ -287,6 +298,9 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
+        // Check for active game ban and store in session for cabinet warning
+        $this->checkGameBan($request, $user);
+
         return response()->json([
             'status' => true,
             'redirect' => route('cabinet'),
@@ -301,5 +315,46 @@ class LoginController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('home');
+    }
+
+    /**
+     * Check if the user has an active game ban and store it in session.
+     */
+    private function checkGameBan(Request $request, $user): void
+    {
+        try {
+            // Get account ID from game auth DB
+            $accountId = DB::connection('game_auth')
+                ->table('account')
+                ->where('username', strtoupper($user->username))
+                ->value('id');
+
+            if (! $accountId) {
+                $request->session()->forget('game_ban');
+
+                return;
+            }
+
+            // Check for active ban
+            $gameBan = DB::connection('game_auth')
+                ->table('account_banned')
+                ->where('account', $accountId)
+                ->where('active', 1)
+                ->first();
+
+            if ($gameBan) {
+                $request->session()->put('game_ban', [
+                    'reason' => $gameBan->banreason ?? __('main.game_banned_default'),
+                    'bandate' => $gameBan->bandate,
+                    'unbandate' => $gameBan->unbandate,
+                    'bannedby' => $gameBan->bannedby ?? '',
+                ]);
+            } else {
+                $request->session()->forget('game_ban');
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to check game ban: '.$e->getMessage());
+            $request->session()->forget('game_ban');
+        }
     }
 }

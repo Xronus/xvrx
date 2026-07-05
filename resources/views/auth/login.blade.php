@@ -128,7 +128,12 @@ $(document).ready(function() {
             data: data,
             success: function(data) {
                 if (data.status) {
-                    document.location.href = data.redirect || '{{ route("cabinet") }}';
+                    var redirect = data.redirect;
+                    if (redirect && (redirect.startsWith('/') || redirect.startsWith(window.location.origin))) {
+                        document.location.href = redirect;
+                    } else {
+                        document.location.href = '{{ route("cabinet") }}';
+                    }
                 } else {
                     $('.msg').removeClass('none').text(data.message || '{{ __("main.login_error") }}');
                 }

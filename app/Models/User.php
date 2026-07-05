@@ -16,10 +16,12 @@ class User extends Authenticatable
         'password',
         'salt',
         'verifier',
-        'is_admin',
-        'bonuses',
+        'banned_at',
+        'ban_reason',
         'votes',
     ];
+
+    protected $guarded = ['is_admin', 'bonuses'];
 
     protected $hidden = [
         'password',
@@ -32,6 +34,7 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'banned_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -52,6 +55,36 @@ class User extends Authenticatable
         }
 
         return (bool) $value;
+    }
+
+    /**
+     * Check if the user is banned on the website.
+     */
+    public function isBanned(): bool
+    {
+        return $this->banned_at !== null;
+    }
+
+    /**
+     * Ban the user with an optional reason.
+     */
+    public function ban(?string $reason = null): void
+    {
+        $this->update([
+            'banned_at' => now(),
+            'ban_reason' => $reason,
+        ]);
+    }
+
+    /**
+     * Unban the user.
+     */
+    public function unban(): void
+    {
+        $this->update([
+            'banned_at' => null,
+            'ban_reason' => null,
+        ]);
     }
 
     protected function getSaltAttribute($value)

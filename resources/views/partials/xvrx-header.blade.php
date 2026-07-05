@@ -1,6 +1,6 @@
 @php
     $xvrxSettings = $settings ?? null;
-    $xvrxSiteTitle = 'xvrx';
+    $xvrxSiteTitle = $siteName ?? 'Xronus';
     $xvrxLogoPath = $xvrxSettings && !empty($xvrxSettings->logo_path) ? $xvrxSettings->logo_path : null;
 @endphp
 <header class="xvrx-header">
@@ -21,7 +21,19 @@
         <a href="{{ route('ladder') }}">{{ __('main.ladder') }}</a>
         <a href="{{ route('register') }}">{{ __('main.registration') }}</a>
         @auth
-            <a class="xvrx-account" href="{{ route('cabinet') }}"><i class="ri-user-3-line"></i>{{ __('main.personal_account') }}</a>
+            <div class="xvrx-dropdown">
+                <a class="xvrx-account" href="#" onclick="event.preventDefault();this.parentElement.classList.toggle('open')" aria-label="{{ __('main.personal_account') }}">
+                    <i class="ri-user-3-line"></i>{{ auth()->user()->username }}
+                </a>
+                <div class="xvrx-dropdown-menu">
+                    <a href="{{ route('cabinet') }}"><i class="ri-user-3-line"></i>{{ __('main.personal_account') }}</a>
+                    <hr>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"><i class="ri-logout-box-r-line"></i>{{ __('main.logout') }}</button>
+                    </form>
+                </div>
+            </div>
         @else
             <a class="xvrx-account" href="{{ route('login') }}"><i class="ri-user-3-line"></i>{{ __('main.personal_account') }}</a>
         @endauth
@@ -36,5 +48,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     syncHeaderState();
     window.addEventListener('scroll', syncHeaderState, { passive: true });
+
+    // Close dropdown on outside click
+    document.addEventListener('click', function (e) {
+        var dropdowns = document.querySelectorAll('.xvrx-dropdown.open');
+        dropdowns.forEach(function (d) {
+            if (!d.contains(e.target)) d.classList.remove('open');
+        });
+    });
 });
 </script>

@@ -363,7 +363,7 @@ body::after {
     border-right: 1px solid var(--admin-line);
     background:
         linear-gradient(180deg, rgba(9, 13, 20, .96), rgba(6, 9, 14, .92)),
-        url("/xvrx-assets/images/bg_texture.jpg") center / cover no-repeat !important;
+        url("/xvrx-assets/images/wotlk-page-bg-2.png") center / cover no-repeat !important;
     box-shadow: 20px 0 44px rgba(0, 0, 0, .28);
 }
 

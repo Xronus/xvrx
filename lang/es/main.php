@@ -18,6 +18,11 @@ return [
     'on' => 'Enc',
     'off' => 'Apag',
     'close' => 'Cerrar',
+    'ban' => 'Banear',
+    'unban' => 'Desbanear',
+    'ban_reason' => 'Motivo del baneo',
+    'ban_reason_placeholder' => 'Ingrese el motivo',
+    'since' => 'desde',
     'add' => 'Añadir',
     'edit' => 'Editar',
     'enabled' => 'Activado',
@@ -108,7 +113,24 @@ return [
     'server_error' => 'Error del servidor',
     'captcha_validation_error' => 'Error de verificación del captcha. Actualice la página e intente de nuevo.',
 
+    'shop_error_title' => 'Error',
+    'shop' => 'Tienda', 'shop_balance' => 'Saldo', 'shop_buy' => 'Comprar', 'shop_price' => 'Precio', 'shop_select_char' => 'Seleccionar personaje', 'shop_no_items' => 'Sin artículos', 'shop_purchase_ok' => 'Artículo enviado!', 'shop_purchase_funds' => 'Saldo insuficiente', 'shop_purchase_error' => 'Error. Intente más tarde.', 'shop_char_invalid' => 'El personaje no le pertenece', 'shop_item_entry' => 'ID del artículo', 'shop_quantity' => 'Cantidad', 'shop_manage' => 'Gestión de tienda', 'shop_categories' => 'Categorías', 'shop_subcategory' => 'Subcategoría', 'shop_all_categories' => 'Todas las categorías', 'shop_select_subcategory' => 'Seleccionar subcategoría', 'shop_parent_category' => 'Categoría principal', 'shop_top_level' => 'Nivel superior', 'shop_item_added' => 'Artículo añadido', 'shop_item_updated' => 'Artículo actualizado', 'shop_item_deleted' => 'Artículo eliminado', 'shop_category_added' => 'Categoría añadida', 'shop_category_updated' => 'Categoría actualizada', 'shop_category_deleted' => 'Categoría eliminada', 'shop_category_has_items' => 'No se puede eliminar categoría con artículos',
+
     'thanks' => 'Saludos',
+
+    'user_updated' => 'Usuario actualizado',
+    'banned' => 'Bloqueado',
+    'user_banned' => 'Usuario bloqueado',
+    'user_unbanned' => 'Usuario desbloqueado',
+    'email_verified_at' => 'Email confirmado',
+    'not_verified' => 'No confirmado',
+    'site_status' => 'Sitio',
+    'game_status' => 'Juego',
+    'game_banned_title' => 'Baneo en el juego',
+    'game_banned_until' => 'Hasta',
+    'game_banned_permanent' => 'Permanente',
+    'game_banned_default' => 'Su cuenta ha sido baneada del juego. Contacte a la administración.',
+    'clear' => 'Limpiar',
 
     'reset_email_body' => 'Recibimos una solicitud para restablecer la contraseña de su cuenta. Haga clic en el botón de abajo para establecer una nueva contraseña.',
 

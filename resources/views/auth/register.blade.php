@@ -150,7 +150,12 @@ $(document).ready(function() {
             data: formData,
             success: function(data) {
                 if (data.status) {
-                    document.location.href = data.redirect || '{{ route("cabinet") }}';
+                    var redirect = data.redirect;
+                    if (redirect && (redirect.startsWith('/') || redirect.startsWith(window.location.origin))) {
+                        document.location.href = redirect;
+                    } else {
+                        document.location.href = '{{ route("cabinet") }}';
+                    }
                 } else {
                     if (data.type === 1 && data.fields) {
                         data.fields.forEach(function (field) {

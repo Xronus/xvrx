@@ -6,6 +6,7 @@ use App\Models\SiteSetting;
 use App\Models\VoteLog;
 use App\Models\VoteTop;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class VoteController extends Controller
@@ -30,13 +31,8 @@ class VoteController extends Controller
         $user = auth()->user();
         $ip = $request->ip();
 
-        $alreadyClaimed = VoteLog::where('user_id', $user->id)
-            ->where('vote_top_id', $voteTop->id)
-            ->whereDate('rewarded_at', today())
-            ->exists();
-
-        if ($alreadyClaimed) {
-            return back()->with('error', 'Вы уже получили награду за голосование на '.$voteTop->name.' сегодня');
+        if (! $voteTop->is_active) {
+            return back()->with('error', 'Этот топ временно недоступен.');
         }
 
         if (empty($voteTop->api_key) || empty($voteTop->api_url)) {
@@ -75,14 +71,33 @@ class VoteController extends Controller
             return back()->with('error', 'Не удалось связаться с сервером голосования. Попробуйте позже.');
         }
 
-        VoteLog::create([
-            'user_id' => $user->id,
-            'vote_top_id' => $voteTop->id,
-            'ip_address' => $ip,
-            'rewarded_at' => now(),
-        ]);
+        // Atomic claim to prevent race condition
+        DB::beginTransaction();
+        try {
+            $locked = VoteLog::where('user_id', $user->id)
+                ->where('vote_top_id', $voteTop->id)
+                ->whereDate('rewarded_at', today())
+                ->lockForUpdate()
+                ->exists();
 
-        $user->increment('bonuses', $voteTop->bonus_amount);
+            if ($locked) {
+                DB::rollBack();
+                return back()->with('error', 'Вы уже получили награду за голосование на '.$voteTop->name.' сегодня');
+            }
+
+            VoteLog::create([
+                'user_id' => $user->id,
+                'vote_top_id' => $voteTop->id,
+                'ip_address' => $ip,
+                'rewarded_at' => now(),
+            ]);
+
+            $user->increment('bonuses', $voteTop->bonus_amount);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
 
         return back()->with('success', 'Спасибо за голос! Вы получили '.$voteTop->bonus_amount.' бонусов.');
     }

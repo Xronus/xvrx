@@ -146,7 +146,7 @@
     <div class="features__container _container">
         <div class="info__line gorizontal-line"></div>
         <footer class="footer">
-            <div class="footer__copy">WoW Free server &middot; 2026</div>
+            <div class="footer__copy">&copy; {{ date('Y') }} {{ $siteName }}. All rights reserved. &bull; Designed &amp; Developed by <a href="https://xronus.ru" target="_blank" rel="noopener">Xronus Studio</a></div>
         </footer>
     </div>
 </section>

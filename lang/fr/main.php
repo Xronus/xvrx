@@ -18,6 +18,11 @@ return [
     'on' => 'Activé',
     'off' => 'Désactivé',
     'close' => 'Fermer',
+    'ban' => 'Bannir',
+    'unban' => 'Débannir',
+    'ban_reason' => 'Raison du bannissement',
+    'ban_reason_placeholder' => 'Entrez la raison',
+    'since' => 'depuis',
     'add' => 'Ajouter',
     'edit' => 'Modifier',
     'enabled' => 'Activé',
@@ -108,7 +113,24 @@ return [
     'server_error' => 'Erreur du serveur',
     'captcha_validation_error' => 'Échec de la vérification du captcha. Veuillez actualiser la page et réessayer.',
 
+    'shop_error_title' => 'Erreur',
+    'shop' => 'Boutique', 'shop_balance' => 'Solde', 'shop_buy' => 'Acheter', 'shop_price' => 'Prix', 'shop_select_char' => 'Choisir personnage', 'shop_no_items' => 'Aucun article', 'shop_purchase_ok' => 'Article envoyé!', 'shop_purchase_funds' => 'Solde insuffisant', 'shop_purchase_error' => 'Erreur. Réessayez plus tard.', 'shop_char_invalid' => 'Le personnage ne vous appartient pas', 'shop_item_entry' => 'ID article', 'shop_quantity' => 'Quantité', 'shop_manage' => 'Gestion boutique', 'shop_categories' => 'Catégories', 'shop_subcategory' => 'Sous-catégorie', 'shop_all_categories' => 'Toutes catégories', 'shop_select_subcategory' => 'Choisir sous-catégorie', 'shop_parent_category' => 'Catégorie parente', 'shop_top_level' => 'Niveau supérieur', 'shop_item_added' => 'Article ajouté', 'shop_item_updated' => 'Article mis à jour', 'shop_item_deleted' => 'Article supprimé', 'shop_category_added' => 'Catégorie ajoutée', 'shop_category_updated' => 'Catégorie mise à jour', 'shop_category_deleted' => 'Catégorie supprimée', 'shop_category_has_items' => 'Impossible de supprimer une catégorie avec des articles',
+
     'thanks' => 'Cordialement',
+
+    'user_updated' => 'Utilisateur mis à jour',
+    'banned' => 'Banni',
+    'user_banned' => 'Utilisateur banni',
+    'user_unbanned' => 'Utilisateur débanni',
+    'email_verified_at' => 'Email vérifié',
+    'not_verified' => 'Non vérifié',
+    'site_status' => 'Site',
+    'game_status' => 'Jeu',
+    'game_banned_title' => 'Bannissement en jeu',
+    'game_banned_until' => 'Jusqu\'au',
+    'game_banned_permanent' => 'Permanent',
+    'game_banned_default' => 'Votre compte a été banni en jeu. Contactez l\'administration.',
+    'clear' => 'Effacer',
 
     'reset_email_body' => 'Nous avons reçu une demande de réinitialisation du mot de passe de votre compte. Cliquez sur le bouton ci-dessous pour définir un nouveau mot de passe.',
 

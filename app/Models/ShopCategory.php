@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class ShopCategory extends Model
+{
+    protected $fillable = [
+        'parent_id', 'name_ru', 'name_en', 'name_de', 'name_es', 'name_fr', 'sort_order',
+    ];
+
+    public function subcategories(): HasMany
+    {
+        return $this->hasMany(ShopCategory::class, 'parent_id')->orderBy('sort_order');
+    }
+
+    public function items(): HasMany
+    {
+        return $this->hasMany(ShopItem::class, 'subcategory_id')->where('enabled', true)->orderBy('sort_order');
+    }
+
+    public function allItems(): HasMany
+    {
+        return $this->hasMany(ShopItem::class, 'subcategory_id');
+    }
+
+    public function localizedName(): string
+    {
+        $locale = app()->getLocale();
+        $field = 'name_' . $locale;
+
+        return $this->$field ?: ($this->name_ru ?: '');
+    }
+
+    public function scopeTopLevel(Builder $query): Builder
+    {
+        return $query->where('parent_id', 0)->orderBy('sort_order');
+    }
+
+    public function scopeOrdered(Builder $query): Builder
+    {
+        return $query->orderBy('sort_order');
+    }
+}

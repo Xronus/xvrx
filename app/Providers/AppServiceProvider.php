@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\CheckBanned;
 use App\Models\LanguageSetting;
 use App\Models\SocialLink;
 use Illuminate\Support\Facades\Log;
@@ -10,10 +11,23 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public function register(): void {}
+    public function register(): void
+    {
+        $this->app->bind('check.banned', CheckBanned::class);
+    }
 
     public function boot(): void
     {
+        // Share site name from DB across all views
+        View::composer('*', function ($view) {
+            try {
+                $settings = \App\Models\SiteSetting::first();
+                $view->with('siteName', $settings && $settings->title ? $settings->title : config('app.name'));
+            } catch (\Exception $e) {
+                $view->with('siteName', config('app.name'));
+            }
+        });
+
         // Warn if captcha is disabled on production
         if (app()->environment('production') && config('captcha.method') === 'false') {
             Log::warning('CAPTCHA_METHOD is disabled on production environment. Enable google or cloudflare captcha for security.');

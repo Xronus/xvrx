@@ -66,11 +66,11 @@ class CabinetController extends Controller
                 ->orderBy('level', 'desc')
                 ->get()
                 ->map(function ($char) use ($races, $factions, $classes) {
-                    $char->class_name = $classes[$char->class] ?? 'Неизвестно';
-                    $char->race_name = $races[$char->race] ?? 'Неизвестно';
+                    $char->class_name = $classes[$char->class] ?? __('main.unknown');
+                    $char->race_name = $races[$char->race] ?? __('main.unknown');
                     $faction = $factions[$char->race] ?? 0;
-                    $char->faction = $faction === 0 ? 'Альянс' : 'Орда';
-                    $char->last_login = $char->logout_time > 0 ? date('d.m.Y H:i', $char->logout_time) : 'Нет данных';
+                    $char->faction = $faction === 0 ? __('main.alliance') : __('main.horde');
+                    $char->last_login = $char->logout_time > 0 ? date('d.m.Y H:i', $char->logout_time) : __('main.no_data');
 
                     return $char;
                 });

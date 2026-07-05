@@ -1,8 +1,8 @@
 @php
     $realm = $realms->first();
-    $siteTitle = 'xvrx';
-    $heroTitle = 'Твоя история начинается здесь';
-    $heroText = 'Отважные подвиги, загадочные земли и судьбоносные встречи — всё это ждёт тебя. Начни своё путешествие прямо сейчас!';
+    $siteTitle = $settings && $settings->title ? $settings->title : 'Xronus';
+    $heroTitle = $settings && $settings->main__title ? $settings->main__title : 'Твоя история начинается здесь';
+    $heroText = $settings && $settings->main__text ? $settings->main__text : 'Отважные подвиги, загадочные земли и судьбоносные встречи — всё это ждёт тебя. Начни своё путешествие прямо сейчас!';
 @endphp
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}">
@@ -22,7 +22,7 @@
 
 <main>
     <section class="xvrx-hero">
-        <video class="xvrx-hero-video" src="{{ asset('xvrx-assets/images/impressivewow-hero.mp4') }}" poster="{{ asset('xvrx-assets/images/hero.jpg') }}" loop muted autoplay playsinline></video>
+        <video class="xvrx-hero-video" src="{{ asset('xvrx-assets/images/impressivewow-hero.mp4') }}" poster="{{ asset('xvrx-assets/images/wotlk-page-bg-2.png') }}" loop muted autoplay playsinline></video>
         <div class="xvrx-hero-shade"></div>
         <div class="xvrx-hero-magic xvrx-hero-magic-one" aria-hidden="true"></div>
         <div class="xvrx-hero-magic xvrx-hero-magic-two" aria-hidden="true"></div>

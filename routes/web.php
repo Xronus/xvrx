@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\AdminLogoController;
 use App\Http\Controllers\Admin\AdminNewsController;
 use App\Http\Controllers\Admin\AdminRaceController;
 use App\Http\Controllers\Admin\AdminRealmController;
+use App\Http\Controllers\Admin\AdminShopCategoryController;
+use App\Http\Controllers\Admin\AdminShopController;
 use App\Http\Controllers\Admin\AdminSocialController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminVoteController;
@@ -18,6 +20,7 @@ use App\Http\Controllers\CabinetController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LadderController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\ShopController;
 use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,15 +45,17 @@ Route::middleware('guest')->group(function () {
     Route::post('/cp/register', [RegisterController::class, 'register'])->middleware('throttle:6,1');
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'check.banned'])->group(function () {
     Route::post('/cp/logout', [LoginController::class, 'logout'])->name('logout');
     Route::get('/cp/cabinet', [CabinetController::class, 'index'])->name('cabinet');
     Route::get('/cp/characters', [CabinetController::class, 'characters'])->name('cabinet.characters');
     Route::get('/cp/votes', [VoteController::class, 'index'])->name('cabinet.votes');
     Route::post('/cp/votes/{voteTop}/claim', [VoteController::class, 'claim'])->name('cabinet.votes.claim');
+    Route::get('/cp/shop', [ShopController::class, 'index'])->name('shop');
+    Route::post('/cp/shop/buy', [ShopController::class, 'buy'])->name('shop.buy')->middleware('throttle:10,1');
 });
 
-Route::middleware(['auth', 'admin'])->prefix('powerpuffsiteadmin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'check.banned', 'admin'])->prefix('powerpuffsiteadmin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
     Route::put('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
     Route::get('/languages', [AdminController::class, 'languages'])->name('languages.index');
@@ -116,6 +121,13 @@ Route::middleware(['auth', 'admin'])->prefix('powerpuffsiteadmin')->name('admin.
     Route::delete('/features/{feature}', [AdminFeatureController::class, 'destroy'])->name('features.destroy');
 
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
+    Route::post('/users/{user}/ban', [AdminUserController::class, 'ban'])->name('users.ban');
+    Route::post('/users/{user}/unban', [AdminUserController::class, 'unban'])->name('users.unban');
+
+    Route::resource('shop', AdminShopController::class)->except(['show']);
+    Route::resource('shop-categories', AdminShopCategoryController::class)->except(['show']);
 });
 
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');

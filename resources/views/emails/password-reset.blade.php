@@ -8,5 +8,5 @@
 </x-mail::button>
 
 {{ __('main.thanks') }},<br>
-{{ config('app.name') }}
+{{ $siteName ?? config('app.name') }}
 </x-mail::message>

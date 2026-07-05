@@ -81,13 +81,20 @@ class AdminLogoController extends Controller
             'logo_path' => 'required|string',
         ]);
 
+        $logoPath = $request->logo_path;
+
+        // Prevent path traversal
+        if (! $this->isValidLogoPath($logoPath)) {
+            return redirect()->route('admin.logo.index')->with('error', __('main.logo_set_error'));
+        }
+
         try {
             $settings = SiteSetting::first();
             if (! $settings) {
                 $settings = new SiteSetting;
             }
 
-            $settings->logo_path = $request->logo_path;
+            $settings->logo_path = $logoPath;
             $settings->save();
 
             return redirect()->route('admin.logo.index')->with('success', __('main.logo_set_successfully'));
@@ -102,8 +109,15 @@ class AdminLogoController extends Controller
             'logo_path' => 'required|string',
         ]);
 
+        $logoPath = $request->logo_path;
+
+        // Prevent path traversal
+        if (! $this->isValidLogoPath($logoPath)) {
+            return redirect()->route('admin.logo.index')->with('error', __('main.logo_delete_error'));
+        }
+
         try {
-            $filePath = public_path($request->logo_path);
+            $filePath = public_path($logoPath);
 
             if (File::exists($filePath)) {
                 File::delete($filePath);
@@ -111,7 +125,7 @@ class AdminLogoController extends Controller
 
             // Если удаляемый логотип был текущим, сбрасываем настройку
             $settings = SiteSetting::first();
-            if ($settings && $settings->logo_path === $request->logo_path) {
+            if ($settings && $settings->logo_path === $logoPath) {
                 $settings->logo_path = null;
                 $settings->save();
             }
@@ -120,5 +134,19 @@ class AdminLogoController extends Controller
         } catch (\Exception $e) {
             return redirect()->route('admin.logo.index')->with('error', __('main.logo_delete_error').': '.$e->getMessage());
         }
+    }
+
+    private function isValidLogoPath(string $path): bool
+    {
+        // Only allow files within the logo directory
+        $allowedDir = config('xvrx.images.logo', 'powerpuffsite/images/logo');
+        $realPath = realpath(public_path($path));
+        $realAllowed = realpath(public_path($allowedDir));
+
+        if ($realPath === false || $realAllowed === false) {
+            return false;
+        }
+
+        return str_starts_with($realPath, $realAllowed);
     }
 }

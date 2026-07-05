@@ -76,101 +76,88 @@ class RegisterController extends Controller
             ], 422);
         }
 
-        $existingUser = User::where('username', $request->username)->first();
+        [$salt, $verifier] = $this->srp6Service->getRegistrationData(
+            strtoupper($request->username),
+            $request->password
+        );
 
-        if ($existingUser) {
-            return response()->json([
-                'status' => false,
-                'type' => 1,
-                'message' => __('validation.username_exists'),
-                'fields' => ['username'],
-            ], 422);
-        }
+        // 1. Create website user first (transaction on default connection)
+        DB::beginTransaction();
 
         try {
-            DB::beginTransaction();
-
-            [$salt, $verifier] = $this->srp6Service->getRegistrationData(
-                strtoupper($request->username),
-                $request->password
-            );
-
-            // Создаем аккаунт в игровой базе данных (auth)
-            // Проверяем, существует ли уже аккаунт с таким username в игровой БД
-            $existingGameAccount = DB::connection('game_auth')->table('account')
-                ->where('username', strtoupper($request->username))
-                ->first();
-
-            if ($existingGameAccount) {
+            // Check uniqueness atomically with lock
+            $exists = User::where('username', $request->username)->lockForUpdate()->exists();
+            if ($exists) {
                 DB::rollBack();
 
                 return response()->json([
-                    'status' => false,
-                    'type' => 1,
-                    'message' => __('validation.account_already_exists'),
+                    'status' => false, 'type' => 1,
+                    'message' => __('validation.username_exists'),
                     'fields' => ['username'],
                 ], 422);
             }
 
-            try {
-                // Вставляем аккаунт в игровую БД с бинарными данными salt и verifier
-                DB::connection('game_auth')->table('account')->insert([
-                    'username' => strtoupper($request->username),
-                    'email' => $request->email,
-                    'salt' => $salt, // Бинарные данные, не base64
-                    'verifier' => $verifier, // Бинарные данные, не base64
-                    'totaltime' => 0,
-                ]);
-            } catch (\Exception $e) {
-                DB::rollBack();
-                Log::error('Game account creation error: '.$e->getMessage(), [
-                    'trace' => $e->getTraceAsString(),
-                    'username' => $request->username,
-                ]);
-
-                return response()->json([
-                    'status' => false,
-                    'message' => __('validation.game_account_error'),
-                ], 500);
-            }
-
-            // Создаем аккаунт на сайте
-            $columns = ['username', 'email', 'salt', 'verifier', 'password', 'bonuses', 'votes', 'is_admin', 'created_at', 'updated_at'];
-            $values = [
-                $request->username,
-                $request->email,
-                base64_encode($salt),
-                base64_encode($verifier),
-                Hash::make($request->password, ['rounds' => 12]),
-                0,
-                0,
-                0,
-                now(),
-                now(),
-            ];
-
-            if (Schema::hasColumn('users', 'name')) {
-                $columns[] = 'name';
-                $values[] = $request->username;
-            }
-
-            $placeholders = implode(',', array_fill(0, count($values), '?'));
-            $columnsList = implode(', ', $columns);
-
-            DB::statement("INSERT INTO users ({$columnsList}) VALUES ({$placeholders})", $values);
-
-            $user = User::where('username', $request->username)->first();
+            $user = User::create([
+                'username' => $request->username,
+                'email' => $request->email,
+                'salt' => base64_encode($salt),
+                'verifier' => base64_encode($verifier),
+                'password' => Hash::make($request->password, ['rounds' => 12]),
+                'votes' => 0,
+            ]);
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Registration error: '.$e->getMessage(), [
+            Log::error('Website user creation error: '.$e->getMessage(), [
+                'username' => $request->username,
                 'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'status' => false,
                 'message' => __('validation.registration_error'),
+            ], 500);
+        }
+
+        // 2. Create game account (separate connection — clean up website user on failure)
+        try {
+            $gameExists = DB::connection('game_auth')->table('account')
+                ->where('username', strtoupper($request->username))
+                ->exists();
+
+            if ($gameExists) {
+                // Rollback: delete website user we just created
+                $user->delete();
+                Log::warning('Registration: game account already exists, deleted website user', [
+                    'username' => $request->username,
+                ]);
+
+                return response()->json([
+                    'status' => false, 'type' => 1,
+                    'message' => __('validation.account_already_exists'),
+                    'fields' => ['username'],
+                ], 422);
+            }
+
+            DB::connection('game_auth')->table('account')->insert([
+                'username' => strtoupper($request->username),
+                'email' => $request->email,
+                'salt' => $salt,
+                'verifier' => $verifier,
+                'totaltime' => 0,
+            ]);
+        } catch (\Exception $e) {
+            // Clean up orphan: delete website user since game account failed
+            $user->delete();
+            Log::error('Game account creation failed, website user deleted: '.$e->getMessage(), [
+                'username' => $request->username,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'status' => false,
+                'message' => __('validation.game_account_error'),
             ], 500);
         }
 

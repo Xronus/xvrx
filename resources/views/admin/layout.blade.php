@@ -5,7 +5,7 @@
     <title>@yield('title', __('main.site_management'))</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="shortcut icon" href="{{ asset('ppadmin-static/assets/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('powerpuffsite/images/favicon.ico') }}">
     <link rel="stylesheet" href="{{ asset('ppadmin-static/assets/css/preloader.min.css') }}" type="text/css" />
     <link href="{{ asset('ppadmin-static/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('ppadmin-static/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
@@ -119,13 +119,19 @@
                             <span>{{ __('main.users') }}</span>
                         </a>
                     </li>
-                    <li class="menu-title" data-key="t-settings">{{ __('main.settings') }}</li>
                     <li>
-                        <a href="{{ route('admin.languages.index') }}">
-                            <i class="fas fa-globe"></i>
-                            <span>{{ __('main.languages') }}</span>
+                        <a href="{{ route('admin.shop.index') }}">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>{{ __('main.shop_manage') }}</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.shop-categories.index') }}">
+                            <i class="fas fa-tags"></i>
+                            <span>{{ __('main.shop_categories') }}</span>
+                        </a>
+                    </li>
+                    <li class="menu-title" data-key="t-settings">{{ __('main.settings') }}</li>
                     <li>
                         <a href="{{ route('admin.mail.index') }}">
                             <i class="fas fa-envelope"></i>
@@ -185,13 +191,10 @@
             <div class="container-fluid">
                 <div class="row align-items-center">
                     <div class="col-sm-6">
-                        <script>document.write(new Date().getFullYear())</script> © Powerpuff website
+                        &copy; {{ date('Y') }} {{ $siteName }}. All rights reserved.
                     </div>
                     <div class="col-sm-6 text-end">
-                        <a href="https://powerpuff.pro/" target="_blank" rel="noopener noreferrer" class="text-decoration-none d-inline-flex align-items-center gap-1 footer-developed">
-                            <span class="text-muted">Developed by</span>
-                            <img src="https://wow1.powerpuff.pro/powerpuffsite/fonts/powerpuff.png" alt="Powerpuff - website creation" height="20" class="d-inline-block">
-                        </a>
+                        Designed &amp; Developed by <a href="https://xronus.ru" target="_blank" rel="noopener">Xronus Studio</a>
                     </div>
                 </div>
             </div>

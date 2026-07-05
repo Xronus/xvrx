@@ -4,6 +4,6 @@
             <a href="{{ route('terms') }}">{{ __('main.terms_of_service') }}</a>
             <a href="{{ route('policy') }}">{{ __('main.privacy_policy') }}</a>
         </nav>
-        <p>WoW Free server &middot; 2026</p>
+        <p>&copy; {{ date('Y') }} {{ $siteName }}. All rights reserved. &bull; Designed &amp; Developed by <a href="https://xronus.ru" target="_blank" rel="noopener">Xronus Studio</a></p>
     </div>
 </footer>

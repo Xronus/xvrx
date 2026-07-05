@@ -1,0 +1,42 @@
+@extends('admin.layout')
+@section('title', __('main.add'))
+@section('content')
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="page-title-box d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">{{ __('main.add') }}</h4>
+            <a href="{{ route('admin.shop.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-left me-1"></i> {{ __('main.back') }}</a>
+        </div>
+    </div>
+</div>
+<div class="row"><div class="col-lg-6"><div class="card"><div class="card-body">
+    <form action="{{ route('admin.shop.store') }}" method="POST">
+        @csrf
+        <div class="mb-3"><label class="form-label">{{ __('main.shop_categories') }}</label>
+            <select name="subcategory_id" class="form-select @error('subcategory_id') is-invalid @enderror" required>
+                <option value="">{{ __('main.shop_select_subcategory') }}</option>
+                @foreach($categories as $cat)
+                <option value="{{ $cat->id }}" {{ old('subcategory_id') == $cat->id ? 'selected' : '' }}>{{ $cat->localizedName() }}</option>
+                @endforeach
+            </select>@error('subcategory_id')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
+        <div class="mb-3"><label class="form-label">{{ __('main.name') }}</label>
+            <input type="text" name="name_ru" class="form-control" value="{{ old('name_ru') }}"></div>
+        <div class="mb-3"><label class="form-label">{{ __('main.shop_icon') }}</label>
+            <input type="text" name="icon_name" class="form-control" value="{{ old('icon_name') }}" placeholder="inv_misc_questionmark"></div>
+        <div class="mb-3"><label class="form-label">{{ __('main.shop_item_entry') }}</label>
+            <input type="number" name="item_entry" class="form-control @error('item_entry') is-invalid @enderror" value="{{ old('item_entry') }}" required>
+            @error('item_entry')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
+        <div class="mb-3"><label class="form-label">{{ __('main.shop_price') }}</label>
+            <input type="number" name="price" class="form-control @error('price') is-invalid @enderror" value="{{ old('price') }}" min="1" required>
+            @error('price')<div class="invalid-feedback">{{ $message }}</div>@enderror</div>
+        <div class="mb-3"><label class="form-label">{{ __('main.shop_quantity') }}</label>
+            <input type="number" name="quantity" class="form-control" value="{{ old('quantity', 1) }}" min="1"></div>
+        <div class="mb-3"><label class="form-label">{{ __('main.sort') }}</label>
+            <input type="number" name="sort_order" class="form-control" value="{{ old('sort_order', 0) }}" min="0"></div>
+        <div class="mb-3"><div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" name="enabled" value="1" id="enabled" checked>
+            <label class="form-check-label" for="enabled">{{ __('main.enabled') }}</label></div></div>
+        <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> {{ __('main.save') }}</button>
+    </form>
+</div></div></div></div>
+@endsection

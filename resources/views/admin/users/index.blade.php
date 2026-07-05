@@ -47,7 +47,9 @@
                                 <th style="width: 100px;">{{ __('main.bonuses') }}</th>
                                 <th style="width: 100px;">{{ __('main.characters_count') }}</th>
                                 <th style="width: 120px;">{{ __('main.registration_date') }}</th>
-                                <th style="width: 100px;">{{ __('main.status') }}</th>
+                                <th style="width: 90px;">{{ __('main.site_status') }}</th>
+                                <th style="width: 90px;">{{ __('main.game_status') }}</th>
+                                <th style="width: 120px;">{{ __('main.actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -66,9 +68,14 @@
                                     @php
                                         $charCount = 0;
                                         try {
-                                            $charCount = \DB::connection('game_char')->table('characters')
-                                                ->where('account', $user->id)
-                                                ->count();
+                                            $gameAccId = \DB::connection('game_auth')->table('account')
+                                                ->where('username', strtoupper($user->username))
+                                                ->value('id');
+                                            if ($gameAccId) {
+                                                $charCount = \DB::connection('game_char')->table('characters')
+                                                    ->where('account', $gameAccId)
+                                                    ->count();
+                                            }
                                         } catch (\Exception $e) {
                                             $charCount = 0;
                                         }
@@ -76,17 +83,38 @@
                                     {{ $charCount }}
                                 </td>
                                 <td>{{ $user->created_at ? $user->created_at->format('d.m.Y H:i') : '-' }}</td>
+                                {{-- Site status --}}
                                 <td>
-                                    @if($user->is_admin)
+                                    @if($user->isBanned())
+                                    <span class="badge bg-warning text-dark" @if($user->ban_reason) title="{{ $user->ban_reason }}" data-bs-toggle="tooltip" @endif>{{ __('main.banned') }}</span>
+                                    @elseif($user->is_admin)
                                     <span class="badge bg-danger">{{ __('main.admin') }}</span>
                                     @else
-                                    <span class="badge bg-success">{{ __('main.user') }}</span>
+                                    <span class="badge bg-success">{{ __('main.active') }}</span>
                                     @endif
+                                </td>
+
+                                {{-- Game status --}}
+                                <td>
+                                    @php
+                                        $gameAccountId = $gameAccounts[strtoupper($user->username)] ?? null;
+                                        $gameBanReason = $gameAccountId ? ($gameBanned[$gameAccountId] ?? null) : null;
+                                    @endphp
+                                    @if($gameBanReason !== null)
+                                    <span class="badge bg-danger" title="{{ $gameBanReason }}" data-bs-toggle="tooltip">{{ __('main.banned') }}</span>
+                                    @else
+                                    <span class="badge bg-secondary">{{ __('main.active') }}</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-primary" title="{{ __('main.edit') }}">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-4">{{ __('main.no_users') }}</td>
+                                <td colspan="9" class="text-center text-muted py-4">{{ __('main.no_users') }}</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -102,4 +130,5 @@
         </div>
     </div>
 </div>
+
 @endsection
