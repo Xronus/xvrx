@@ -42,15 +42,21 @@ class SoapService
         }
 
         try {
-            $client = new SoapClient(null, [
+            $options = [
                 'location' => 'http://' . $this->host . ':' . $this->port . '/',
                 'uri' => $this->uri,
-                'login' => $this->user,
-                'password' => $this->password,
                 'connection_timeout' => $this->timeout,
                 'exceptions' => true,
                 'trace' => true,
-            ]);
+            ];
+
+            // Only add auth if credentials are set
+            if ($this->user !== '' && $this->password !== '') {
+                $options['login'] = $this->user;
+                $options['password'] = $this->password;
+            }
+
+            $client = new SoapClient(null, $options);
 
             $result = $client->__soapCall('executeCommand', [new \SoapParam($command, 'command')]);
 

@@ -59,7 +59,9 @@ class ShopService
             $safeCharName = preg_replace('/[^a-zA-Z0-9]/', '', $characterName);
 
             // Build SOAP command
-            $command = '.send items ' . $safeCharName . ' "Shop" "Thank you for your purchase!" ' . $item->item_entry . ':' . $item->quantity;
+            $subject = config('shop.mail_subject', 'Shop');
+            $body = config('shop.mail_body', 'Thank you for your purchase!');
+            $command = '.send items ' . $safeCharName . ' "' . $subject . '" "' . $body . '" ' . $item->item_entry . ':' . $item->quantity;
 
             $result = $this->soap->executeCommand($command);
 
