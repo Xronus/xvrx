@@ -25,6 +25,7 @@ return [
     'since' => 'seit',
     'add' => 'Hinzufügen',
     'edit' => 'Bearbeiten',
+    'sort' => 'Sortierung',
     'enabled' => 'Aktiviert',
     'id' => 'ID',
 

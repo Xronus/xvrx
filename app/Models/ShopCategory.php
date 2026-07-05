@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class ShopCategory extends Model
 {
     protected $fillable = [
-        'parent_id', 'name_ru', 'name_en', 'name_de', 'name_es', 'name_fr', 'sort_order',
+        'parent_id', 'name_ru', 'sort_order',
     ];
 
     public function subcategories(): HasMany
@@ -29,10 +29,7 @@ class ShopCategory extends Model
 
     public function localizedName(): string
     {
-        $locale = app()->getLocale();
-        $field = 'name_' . $locale;
-
-        return $this->$field ?: ($this->name_ru ?: '');
+        return $this->name_ru ?: '';
     }
 
     public function scopeTopLevel(Builder $query): Builder

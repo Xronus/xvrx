@@ -9,15 +9,13 @@
         </div>
     </div>
 </div>
-<div class="row"><div class="col-lg-8"><div class="card"><div class="card-body">
+<div class="row"><div class="col-lg-6"><div class="card"><div class="card-body">
     <form action="{{ route('admin.shop-categories.update', ['shop_category' => $category]) }}" method="POST">
         @csrf @method('PUT')
-        <div class="row">
-            <div class="col-md-6"><div class="mb-3"><label class="form-label">RU</label><input type="text" name="name_ru" class="form-control @error('name_ru') is-invalid @enderror" value="{{ old('name_ru', $category->name_ru) }}" required></div></div>
-            <div class="col-md-6"><div class="mb-3"><label class="form-label">EN</label><input type="text" name="name_en" class="form-control" value="{{ old('name_en', $category->name_en) }}"></div></div>
-            <div class="col-md-6"><div class="mb-3"><label class="form-label">DE</label><input type="text" name="name_de" class="form-control" value="{{ old('name_de', $category->name_de) }}"></div></div>
-            <div class="col-md-6"><div class="mb-3"><label class="form-label">ES</label><input type="text" name="name_es" class="form-control" value="{{ old('name_es', $category->name_es) }}"></div></div>
-            <div class="col-md-6"><div class="mb-3"><label class="form-label">FR</label><input type="text" name="name_fr" class="form-control" value="{{ old('name_fr', $category->name_fr) }}"></div></div>
+        <div class="mb-3">
+            <label class="form-label">{{ __('main.name') }}</label>
+            <input type="text" name="name_ru" class="form-control @error('name_ru') is-invalid @enderror" value="{{ old('name_ru', $category->name_ru) }}" required>
+            @error('name_ru')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
         <div class="mb-3"><label class="form-label">{{ __('main.sort') }}</label><input type="number" name="sort_order" class="form-control" value="{{ old('sort_order', $category->sort_order) }}" min="0"></div>
         <button type="submit" class="btn btn-primary"><i class="fas fa-save me-1"></i> {{ __('main.save') }}</button>

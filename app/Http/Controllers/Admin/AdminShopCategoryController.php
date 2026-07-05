@@ -26,10 +26,6 @@ class AdminShopCategoryController extends Controller
     {
         $validated = $request->validate([
             'name_ru' => 'required|string|max:128',
-            'name_en' => 'nullable|string|max:128',
-            'name_de' => 'nullable|string|max:128',
-            'name_es' => 'nullable|string|max:128',
-            'name_fr' => 'nullable|string|max:128',
             'sort_order' => 'integer|min:0',
         ]);
 
@@ -53,10 +49,6 @@ class AdminShopCategoryController extends Controller
 
         $validated = $request->validate([
             'name_ru' => 'required|string|max:128',
-            'name_en' => 'nullable|string|max:128',
-            'name_de' => 'nullable|string|max:128',
-            'name_es' => 'nullable|string|max:128',
-            'name_fr' => 'nullable|string|max:128',
             'sort_order' => 'integer|min:0',
         ]);
 
