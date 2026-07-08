@@ -21,7 +21,7 @@ class ShopController extends Controller
     public function index(): View
     {
         $user = auth()->user();
-        $settings = SiteSetting::first();
+        $settings = site_settings();
 
         $categories = ShopCategory::topLevel()->get();
 

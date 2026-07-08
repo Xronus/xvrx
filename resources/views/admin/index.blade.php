@@ -12,68 +12,36 @@
 </div>
 
 <div class="row">
-    <div class="col-xl-3 col-md-6">
-        <div class="card card-h-100">
+    <div class="col-xl-4 col-md-6">
+        <div class="card">
             <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span class="text-muted mb-3 lh-1 d-block text-truncate">{{ __('main.total_accounts') }}</span>
-                        <h4 class="mb-3">
-                            <font color="green"><span class="counter-value" data-target="{{ $totalAccounts }}"></span></font>
-                        </h4>
-                    </div>
-                </div>
+                <p class="text-uppercase fw-medium text-muted mb-1">{{ __('main.total_accounts') }}</p>
+                <h4 class="my-0"><span class="counter-value" data-target="{{ $totalAccounts }}"></span></h4>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="card card-h-100">
+    <div class="col-xl-4 col-md-6">
+        <div class="card">
             <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span class="text-muted mb-3 lh-1 text-truncate">{{ __('main.total_banned') }}</span>
-                        <h4 class="mb-3">
-                            <font color="red"><span class="counter-value" data-target="{{ $totalBanned }}"></span></font>
-                        </h4>
-                    </div>
-                </div>
+                <p class="text-uppercase fw-medium text-muted mb-1">{{ __('main.total_banned') }}</p>
+                <h4 class="my-0"><span class="counter-value" data-target="{{ $totalBanned }}"></span></h4>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="card card-h-100">
+    <div class="col-xl-4 col-md-6">
+        <div class="card">
             <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span class="text-muted mb-3 lh-1 text-truncate">{{ __('main.total_premium') }}</span>
-                        <h4 class="mb-3">
-                            <font color="gold"><span class="counter-value" data-target="{{ $totalPremium }}"></span></font>
-                        </h4>
-                    </div>
-                </div>
+                <p class="text-uppercase fw-medium text-muted mb-1">{{ __('main.online') }}</p>
+                <h4 class="my-0"><span class="counter-value" data-target="{{ $onlineCount }}"></span></h4>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="card card-h-100">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <span class="text-muted mb-3 lh-1 text-truncate">{{ __('main.total_realms') }}</span>
-                        <h4 class="mb-3">
-                            <font color="blue"><span class="counter-value" data-target="{{ $totalRealms }}"></span></font>
-                        </h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
-<div class="row">
+<div class="row mt-3">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
@@ -124,9 +92,9 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i> {{ __('main.save_settings') }}
-                    </button>
+                    <div style="text-align:right;">
+                        <button type="submit" class="btn btn-primary">{{ __('main.save_settings') }}</button>
+                    </div>
                 </form>
             </div>
         </div>

@@ -5,7 +5,6 @@ namespace App\Services;
 use Illuminate\Support\Facades\Log;
 use SoapClient;
 use SoapFault;
-use SoapParam;
 
 class SoapService
 {
@@ -58,9 +57,11 @@ class SoapService
 
             $client = new SoapClient(null, $options);
 
-            $result = $client->executeCommand(new \SoapParam($command, 'command'));
+            $result = $client->__soapCall('executeCommand', [
+                ['command' => $command],
+            ]);
 
-            Log::info('SOAP command executed', [
+            Log::debug('SOAP command executed', [
                 'command' => $command,
                 'result' => $result,
             ]);

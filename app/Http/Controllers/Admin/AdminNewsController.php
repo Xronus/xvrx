@@ -25,16 +25,14 @@ class AdminNewsController extends Controller
     {
         $request->validate([
             'text' => 'required|string|max:255',
-            'text_en' => 'nullable|string|max:255',
-            'text_de' => 'nullable|string|max:255',
-            'text_es' => 'nullable|string|max:255',
-            'text_fr' => 'nullable|string|max:255',
             'content' => 'required|string',
-            'content_en' => 'nullable|string',
-            'content_de' => 'nullable|string',
-            'content_es' => 'nullable|string',
-            'content_fr' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
+            'image' => 'required|image|mimes:jpeg,jpg,png,gif,webp|max:10240',
+        ], [
+            'image.required' => 'Выберите изображение.',
+            'image.image' => 'Файл должен быть изображением.',
+            'image.mimes' => 'Допустимые форматы: jpeg, png, gif, webp.',
+            'image.max' => 'Размер изображения не должен превышать 10MB.',
+            'image.uploaded' => 'Не удалось загрузить изображение. Возможно, файл слишком большой.',
         ]);
 
         $imagePath = $this->uploadImage($request->file('image'));
@@ -42,19 +40,11 @@ class AdminNewsController extends Controller
         News::create([
             'date' => now()->format('d.m.Y'),
             'text' => $request->text,
-            'text_en' => $request->text_en,
-            'text_de' => $request->text_de,
-            'text_es' => $request->text_es,
-            'text_fr' => $request->text_fr,
             'content' => $request->content,
-            'content_en' => $request->content_en,
-            'content_de' => $request->content_de,
-            'content_es' => $request->content_es,
-            'content_fr' => $request->content_fr,
             'images' => $imagePath,
         ]);
 
-        return redirect()->route('admin.news.index')->with('success', 'Новость успешно добавлена');
+        return redirect()->route('admin.news.index')->with('success', __('main.news_added'));
     }
 
     public function edit(News $news)
@@ -66,29 +56,18 @@ class AdminNewsController extends Controller
     {
         $request->validate([
             'text' => 'required|string|max:255',
-            'text_en' => 'nullable|string|max:255',
-            'text_de' => 'nullable|string|max:255',
-            'text_es' => 'nullable|string|max:255',
-            'text_fr' => 'nullable|string|max:255',
             'content' => 'required|string',
-            'content_en' => 'nullable|string',
-            'content_de' => 'nullable|string',
-            'content_es' => 'nullable|string',
-            'content_fr' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:10240',
+        ], [
+            'image.image' => 'Файл должен быть изображением.',
+            'image.mimes' => 'Допустимые форматы: jpeg, png, gif, webp.',
+            'image.max' => 'Размер изображения не должен превышать 10MB.',
+            'image.uploaded' => 'Не удалось загрузить изображение. Возможно, файл слишком большой.',
         ]);
 
         $data = [
             'text' => $request->text,
-            'text_en' => $request->text_en,
-            'text_de' => $request->text_de,
-            'text_es' => $request->text_es,
-            'text_fr' => $request->text_fr,
             'content' => $request->content,
-            'content_en' => $request->content_en,
-            'content_de' => $request->content_de,
-            'content_es' => $request->content_es,
-            'content_fr' => $request->content_fr,
         ];
 
         if ($request->hasFile('image')) {
@@ -98,7 +77,7 @@ class AdminNewsController extends Controller
 
         $news->update($data);
 
-        return redirect()->route('admin.news.index')->with('success', 'Новость успешно обновлена');
+        return redirect()->route('admin.news.index')->with('success', __('main.news_updated'));
     }
 
     public function destroy(News $news)
@@ -106,7 +85,7 @@ class AdminNewsController extends Controller
         $this->deleteOldImage($news->getRawOriginal('images'));
         $news->delete();
 
-        return redirect()->route('admin.news.index')->with('success', 'Новость успешно удалена');
+        return redirect()->route('admin.news.index')->with('success', __('main.news_deleted'));
     }
 
     private function uploadImage($file): string

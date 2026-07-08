@@ -10,25 +10,9 @@ class AdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! auth()->check()) {
-            return redirect()->route('login');
-        }
-
-        $user = auth()->user();
-        $isAdmin = $user->is_admin;
-
-        if (is_string($isAdmin)) {
-            $isAdmin = $isAdmin === '1' || $isAdmin === 'true';
-        } elseif (is_int($isAdmin)) {
-            $isAdmin = $isAdmin === 1;
-        } elseif (is_bool($isAdmin)) {
-            $isAdmin = $isAdmin === true;
-        } else {
-            $isAdmin = false;
-        }
-
-        if (! $isAdmin) {
-            abort(403, 'Доступ запрещен. Требуются права администратора.');
+        // auth middleware runs before this, so auth()->user() is guaranteed
+        if (! auth()->user()->is_admin) {
+            abort(403, __('main.admin_access_denied'));
         }
 
         return $next($request);

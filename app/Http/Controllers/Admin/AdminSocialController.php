@@ -22,7 +22,7 @@ class AdminSocialController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate($this->rules());
+        $request->validate($this->rules(), $this->messages());
 
         SocialLink::create([
             'name' => $request->name,
@@ -32,7 +32,7 @@ class AdminSocialController extends Controller
             'is_active' => $request->boolean('is_active', true),
         ]);
 
-        return redirect()->route('admin.socials.index')->with('success', 'Соц.сеть успешно добавлена');
+        return redirect()->route('admin.socials.index')->with('success', __('main.social_added'));
     }
 
     public function edit(SocialLink $social)
@@ -42,35 +42,42 @@ class AdminSocialController extends Controller
 
     public function update(Request $request, SocialLink $social)
     {
-        $request->validate($this->rules());
+        $request->validate($this->rules($social->id), $this->messages());
 
         $social->update([
             'name' => $request->name,
             'link' => $request->link,
             'class' => $request->class,
             'icon' => $request->class,
-            'is_active' => $request->boolean('is_active', true),
+            'is_active' => $request->boolean('is_active'),
         ]);
 
-        return redirect()->route('admin.socials.index')->with('success', 'Соц.сеть успешно обновлена');
+        return redirect()->route('admin.socials.index')->with('success', __('main.social_updated'));
     }
 
     public function toggle(SocialLink $social)
     {
         $social->update(['is_active' => ! $social->is_active]);
 
-        return redirect()->route('admin.socials.index')->with('success', ($social->is_active ? 'Включено' : 'Отключено').': '.$social->name);
+        return redirect()->route('admin.socials.index')->with('success',
+            ($social->is_active ? __('main.social_enabled') : __('main.social_disabled')).': '.$social->name
+        );
     }
 
     public function destroy(SocialLink $social)
     {
         $social->delete();
 
-        return redirect()->route('admin.socials.index')->with('success', 'Соц.сеть успешно удалена');
+        return redirect()->route('admin.socials.index')->with('success', __('main.social_deleted'));
     }
 
-    private function rules(): array
+    private function rules(?int $socialId = null): array
     {
+        $uniqueRule = 'unique:social_link,class';
+        if ($socialId !== null) {
+            $uniqueRule .= ','.$socialId;
+        }
+
         return [
             'name' => 'required|string|max:100',
             'link' => [
@@ -82,11 +89,18 @@ class AdminSocialController extends Controller
                         return;
                     }
 
-                    $fail('Ссылка должна начинаться с http://, https:// или быть временным значением #.');
+                    $fail(__('main.social_link_invalid'));
                 },
             ],
-            'class' => 'required|string|max:255',
+            'class' => 'required|string|max:255|'.$uniqueRule,
             'is_active' => 'nullable|boolean',
+        ];
+    }
+
+    private function messages(): array
+    {
+        return [
+            'class.unique' => __('main.social_class_unique'),
         ];
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Feature;
-use App\Models\LanguageSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -13,32 +12,21 @@ class AdminFeatureController extends Controller
     public function index()
     {
         $features = Feature::orderBy('sort')->orderBy('id')->get();
-        $enabledLangs = LanguageSetting::getActiveCodes();
 
-        return view('admin.features.index', compact('features', 'enabledLangs'));
+        return view('admin.features.index', compact('features'));
     }
 
     public function create()
     {
-        $enabledLangs = LanguageSetting::getActiveCodes();
-
-        return view('admin.features.create', compact('enabledLangs'));
+        return view('admin.features.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'title_ru' => 'required|string|max:255',
-            'title_en' => 'nullable|string|max:255',
-            'title_de' => 'nullable|string|max:255',
-            'title_es' => 'nullable|string|max:255',
-            'title_fr' => 'nullable|string|max:255',
             'description_ru' => 'required|string',
-            'description_en' => 'nullable|string',
-            'description_de' => 'nullable|string',
-            'description_es' => 'nullable|string',
-            'description_fr' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
+            'image' => 'required|image|mimes:jpeg,jpg,png,gif,webp|max:10240',
             'status' => 'nullable|boolean',
             'sort' => 'nullable|integer',
         ]);
@@ -47,17 +35,9 @@ class AdminFeatureController extends Controller
 
         Feature::create([
             'title_ru' => $request->title_ru,
-            'title_en' => $request->title_en,
-            'title_de' => $request->title_de,
-            'title_es' => $request->title_es,
-            'title_fr' => $request->title_fr,
             'description_ru' => $request->description_ru,
-            'description_en' => $request->description_en,
-            'description_de' => $request->description_de,
-            'description_es' => $request->description_es,
-            'description_fr' => $request->description_fr,
             'image' => $imagePath,
-            'status' => $request->has('status') ? true : false,
+            'status' => $request->boolean('status', true),
             'sort' => $request->sort ?? 0,
         ]);
 
@@ -66,41 +46,23 @@ class AdminFeatureController extends Controller
 
     public function edit(Feature $feature)
     {
-        $enabledLangs = LanguageSetting::getActiveCodes();
-
-        return view('admin.features.edit', compact('feature', 'enabledLangs'));
+        return view('admin.features.edit', compact('feature'));
     }
 
     public function update(Request $request, Feature $feature)
     {
         $request->validate([
             'title_ru' => 'required|string|max:255',
-            'title_en' => 'nullable|string|max:255',
-            'title_de' => 'nullable|string|max:255',
-            'title_es' => 'nullable|string|max:255',
-            'title_fr' => 'nullable|string|max:255',
             'description_ru' => 'required|string',
-            'description_en' => 'nullable|string',
-            'description_de' => 'nullable|string',
-            'description_es' => 'nullable|string',
-            'description_fr' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,gif,webp|max:10240',
             'status' => 'nullable|boolean',
             'sort' => 'nullable|integer',
         ]);
 
         $data = [
             'title_ru' => $request->title_ru,
-            'title_en' => $request->title_en,
-            'title_de' => $request->title_de,
-            'title_es' => $request->title_es,
-            'title_fr' => $request->title_fr,
             'description_ru' => $request->description_ru,
-            'description_en' => $request->description_en,
-            'description_de' => $request->description_de,
-            'description_es' => $request->description_es,
-            'description_fr' => $request->description_fr,
-            'status' => $request->has('status') ? true : false,
+            'status' => $request->boolean('status', true),
             'sort' => $request->sort ?? 0,
         ];
 

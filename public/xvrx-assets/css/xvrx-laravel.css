@@ -726,9 +726,13 @@ input[type="password"] {
         radial-gradient(circle at 50% 0, rgba(134, 200, 255, .24), transparent 68%),
         rgba(6, 8, 12, .66);
     box-shadow: 0 14px 28px rgba(0, 0, 0, .34);
-    font-size: 25px;
-    font-weight: 900;
-    text-transform: uppercase;
+    overflow: hidden;
+}
+
+.xvrx-character-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .xvrx-vote-logo img {
@@ -793,7 +797,7 @@ input[type="password"] {
 .xvrx-character-meta span {
     display: block;
     margin-bottom: 4px;
-    color: rgba(244, 239, 228, .56);
+    color: rgba(244, 239, 228, .78);
     font-size: 11px;
     font-weight: 900;
     text-transform: uppercase;
@@ -806,6 +810,15 @@ input[type="password"] {
     font-size: 13px;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.xvrx-faction-icon {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    margin-right: 4px;
+    margin-top: -2px;
+    border-radius: 2px;
 }
 
 .xvrx-vote-reward {
@@ -1522,6 +1535,9 @@ body.xvrx-home .xvrx-header:not(.is-scrolled) .xvrx-nav a {
     grid-template-columns: minmax(260px, .9fr) minmax(320px, 1.3fr);
     gap: 28px;
     align-items: center;
+    background: rgba(10, 15, 25, 0.8);
+    border-radius: 16px;
+    padding: 40px;
 }
 
 .xvrx-realm-copy h2 {
@@ -1816,7 +1832,7 @@ body.xvrx-home .xvrx-header:not(.is-scrolled) .xvrx-nav a {
     display: block;
     width: 100%;
     max-height: 470px;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .xvrx-news-article-meta {

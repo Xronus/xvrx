@@ -9,7 +9,7 @@
             <h4 class="mb-sm-0 font-size-18">{{ __('main.add_race') }}</h4>
             <div class="page-title-right">
                 <a href="{{ route('admin.races.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-1"></i> {{ __('main.back') }}
+                    <i class="ri-arrow-left-line me-1"></i> {{ __('main.back') }}
                 </a>
             </div>
         </div>
@@ -17,14 +17,14 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-12">
         <div class="card">
             <div class="card-body">
                 <form action="{{ route('admin.races.store') }}" method="POST">
                     @csrf
 
                     <div class="mb-3">
-                        <label class="form-label">{{ __('main.race_id_db') }}</label>
+                        <label class="form-label">{{ __('main.race_id') }}</label>
                         <input type="number" name="race_id" class="form-control @error('race_id') is-invalid @enderror" value="{{ old('race_id') }}" placeholder="1">
                         @error('race_id')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -32,30 +32,14 @@
                         <small class="text-muted">{{ __('main.race_id_hint') }}</small>
                     </div>
 
-                    <h5 class="mb-3">{{ __('main.race_name') }}</h5>
+                    <div class="mb-3">
+                        <label class="form-label">{{ __('main.name') }}</label>
+                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
+                        @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                     <div class="row">
-                        @if(in_array('ru', $enabledLangs))
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">{{ __('main.name_ru') }}</label>
-                                <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
-                                @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        @endif
-                        @if(in_array('en', $enabledLangs))
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">{{ __('main.name_en') }}</label>
-                                <input type="text" name="name_en" class="form-control @error('name_en') is-invalid @enderror" value="{{ old('name_en') }}">
-                                @error('name_en')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        @endif
                         @if(in_array('de', $enabledLangs))
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -102,9 +86,7 @@
                         @enderror
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i> {{ __('main.save') }}
-                    </button>
+                    <button type="submit" class="btn btn-primary">{{ __('main.save') }}</button>
                 </form>
             </div>
         </div>

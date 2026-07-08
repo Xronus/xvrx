@@ -22,30 +22,26 @@
                     <table class="table table-bordered mb-0">
                         <tbody>
                             <tr>
-                                <th>{{ __('main.status') }}</th>
+                                <th>{{ __('main.smtp_config_status') }}</th>
                                 <td>
                                     @if($smtp['configured'])
-                                        <span class="badge bg-success">{{ __('main.configured') }}</span>
+                                        <span class="badge bg-success" style="color:#fff">{{ __('main.configured') }}</span>
                                     @else
-                                        <span class="badge bg-danger">{{ __('main.not_configured') }}</span>
+                                        <span class="badge bg-danger" style="color:#fff">{{ __('main.not_configured') }}</span>
                                     @endif
                                 </td>
                             </tr>
                             <tr>
-                                <th>{{ __('main.mailer') }}</th>
-                                <td><code>{{ $smtp['mailer'] ?: '—' }}</code></td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('main.server') }}</th>
-                                <td><code>{{ $smtp['host'] ?: '—' }}</code></td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('main.port') }}</th>
-                                <td><code>{{ $smtp['port'] ?: '—' }}</code></td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('main.login_field') }}</th>
-                                <td><code>{{ $smtp['username'] ?: '—' }}</code></td>
+                                <th>{{ __('main.smtp_connect_status') }}</th>
+                                <td>
+                                    @if(!$smtp['configured'])
+                                        <span class="badge bg-secondary" style="color:#fff">{{ __('main.not_checked') }}</span>
+                                    @elseif($smtp['reachable'])
+                                        <span class="badge bg-success" style="color:#fff">{{ __('main.reachable') }}</span>
+                                    @else
+                                        <span class="badge bg-danger" style="color:#fff">{{ __('main.unreachable') }}</span>
+                                    @endif
+                                </td>
                             </tr>
                             <tr>
                                 <th>{{ __('main.password') }}</th>
@@ -54,10 +50,6 @@
                             <tr>
                                 <th>{{ __('main.from_address') }}</th>
                                 <td><code>{{ $smtp['from_address'] ?: '—' }}</code></td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('main.encryption') }}</th>
-                                <td><code>{{ $smtp['encryption'] ?: '—' }}</code></td>
                             </tr>
                         </tbody>
                     </table>
@@ -118,9 +110,7 @@
                         @enderror
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i> {{ __('main.save') }}
-                    </button>
+                    <div style="text-align:right;"><button type="submit" class="btn btn-primary">{{ __('main.save') }}</button></div>
                 </form>
             </div>
         </div>

@@ -14,14 +14,18 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind('check.banned', CheckBanned::class);
+
+        // Load helpers (also in composer.json autoload — belt and suspenders)
+        require_once app_path('Helpers/WowIconHelper.php');
+        require_once app_path('Helpers/SiteSettingsHelper.php');
     }
 
     public function boot(): void
     {
-        // Share site name from DB across all views
+        // Share site name from DB across all views (cached)
         View::composer('*', function ($view) {
             try {
-                $settings = \App\Models\SiteSetting::first();
+                $settings = site_settings();
                 $view->with('siteName', $settings && $settings->title ? $settings->title : config('app.name'));
             } catch (\Exception $e) {
                 $view->with('siteName', config('app.name'));

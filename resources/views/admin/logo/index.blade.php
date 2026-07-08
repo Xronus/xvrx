@@ -29,7 +29,7 @@
                         <small class="form-text text-muted">{{ __('main.logo_upload_hint') }}</small>
                     </div>
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-upload me-1"></i> {{ __('main.upload') }}
+                        <i class="ri-upload-line me-1"></i> {{ __('main.upload') }}
                     </button>
                 </form>
             </div>
@@ -54,16 +54,16 @@
                                 <form action="{{ route('admin.logo.set-current') }}" method="POST" class="d-inline mb-2">
                                     @csrf
                                     <input type="hidden" name="logo_path" value="{{ $logo['path'] }}">
-                                    <button type="submit" class="btn btn-sm btn-primary">
-                                        <i class="fas fa-check me-1"></i> {{ __('main.set_as_current') }}
+                                    <button type="submit" class="btn btn-sm btn-primary" title="{{ __('main.set_as_current') }}" style="width:30px;padding:0;margin:0 2px;">
+                                        <i class="ri-check-line"></i>
                                     </button>
                                 </form>
                                 @endif
                                 <form action="{{ route('admin.logo.delete') }}" method="POST" class="d-inline" onsubmit="return confirm('{{ __('main.delete_logo_confirm') }}');">
                                     @csrf
                                     <input type="hidden" name="logo_path" value="{{ $logo['path'] }}">
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="fas fa-trash me-1"></i> {{ __('main.delete') }}
+                                    <button type="submit" class="btn btn-sm btn-danger" title="{{ __('main.delete') }}" style="width:30px;padding:0;margin:0 2px;">
+                                        <i class="ri-delete-bin-line"></i>
                                     </button>
                                 </form>
                             </div>

@@ -8,6 +8,7 @@ use App\Models\VoteTop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class VoteController extends Controller
 {
@@ -21,7 +22,7 @@ class VoteController extends Controller
             ->pluck('vote_top_id')
             ->toArray();
 
-        $settings = SiteSetting::first();
+        $settings = site_settings();
 
         return view('cabinet.votes', compact('user', 'voteTops', 'todayLogs', 'settings'));
     }
@@ -96,7 +97,13 @@ class VoteController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
-            throw $e;
+            Log::error('Vote claim failed: '.$e->getMessage(), [
+                'user_id' => $user->id,
+                'vote_top_id' => $voteTop->id,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return back()->with('error', __('main.vote_claim_error'));
         }
 
         return back()->with('success', 'Спасибо за голос! Вы получили '.$voteTop->bonus_amount.' бонусов.');

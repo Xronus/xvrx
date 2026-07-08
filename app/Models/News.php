@@ -13,24 +13,7 @@ class News extends Model
     protected $fillable = [
         'date',
         'text',
-        'text_en',
-        'text_de',
-        'text_es',
-        'text_fr',
         'content',
-        'content_en',
-        'content_de',
-        'content_es',
-        'content_fr',
         'images',
     ];
-
-    public function getImagesAttribute($value)
-    {
-        if (empty($value)) {
-            return $value;
-        }
-
-        return $value;
-    }
 }

@@ -26,10 +26,10 @@ class RecaptchaService
     public function verify(string $token, ?string $ip = null): bool
     {
         if (empty($this->secretKey)) {
-            // If secret key is not configured, skip verification (for development)
-            Log::warning('reCAPTCHA secret key is not configured. Skipping verification.');
+            // If secret key is not configured, reject all attempts (fail-closed)
+            Log::error('reCAPTCHA secret key is not configured. CAPTCHA verification cannot proceed.');
 
-            return true;
+            return false;
         }
 
         if (empty($token)) {

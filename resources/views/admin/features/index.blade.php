@@ -8,9 +8,7 @@
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <h4 class="mb-sm-0 font-size-18">{{ __('main.features_title') }}</h4>
             <div class="page-title-right">
-                <a href="{{ route('admin.features.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i> {{ __('main.add_feature') }}
-                </a>
+                <a href="{{ route('admin.features.create') }}" class="btn btn-primary">{{ __('main.add_feature') }}</a>
             </div>
         </div>
     </div>
@@ -29,7 +27,7 @@
                                 <th>{{ __('main.title') }}</th>
                                 <th style="width: 100px;">{{ __('main.sort') }}</th>
                                 <th style="width: 100px;">{{ __('main.status') }}</th>
-                                <th style="width: 150px;">{{ __('main.actions') }}</th>
+                                <th style="width: 150px;"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -45,20 +43,20 @@
                                 <td>{{ $feature->sort }}</td>
                                 <td>
                                     @if($feature->status)
-                                    <span class="badge bg-success">{{ __('main.yes') }}</span>
+                                    <span class="badge bg-success" style="color:#fff">{{ __('main.active') }}</span>
                                     @else
-                                    <span class="badge bg-secondary">{{ __('main.no') }}</span>
+                                    <span class="badge bg-secondary" style="color:#fff">{{ __('main.inactive') }}</span>
                                     @endif
                                 </td>
                                 <td>
                                     <a href="{{ route('admin.features.edit', $feature) }}" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i>
+                                        <i class="ri-pencil-line"></i>
                                     </a>
                                     <form method="POST" action="{{ route('admin.features.destroy', $feature) }}" style="display: inline-block;" onsubmit="return confirm('{{ __('main.delete_feature_confirm') }}')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="ri-delete-bin-line"></i>
                                         </button>
                                     </form>
                                 </td>

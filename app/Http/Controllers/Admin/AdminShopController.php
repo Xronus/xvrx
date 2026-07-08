@@ -92,4 +92,13 @@ class AdminShopController extends Controller
 
         return redirect()->route('admin.shop.index')->with('success', __('main.shop_item_deleted'));
     }
+
+    public function toggle(ShopItem $shop): RedirectResponse
+    {
+        $shop->update(['enabled' => ! $shop->enabled]);
+
+        return back()->with('success', $shop->enabled
+            ? __('main.shop_item_enabled')
+            : __('main.shop_item_disabled'));
+    }
 }

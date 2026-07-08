@@ -9,7 +9,7 @@
             <h4 class="mb-sm-0 font-size-18">{{ __('main.edit') }}: {{ $social->name }}</h4>
             <div class="page-title-right">
                 <a href="{{ route('admin.socials.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-1"></i> {{ __('main.back') }}
+                    <i class="ri-arrow-left-line me-1"></i> {{ __('main.back') }}
                 </a>
             </div>
         </div>
@@ -17,7 +17,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-12">
         <div class="card">
             <div class="card-body">
                 <form action="{{ route('admin.socials.update', $social) }}" method="POST">
@@ -41,7 +41,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">{{ __('main.css_class') }}</label>
+                        <label class="form-label">{{ __('main.social_network') }}</label>
                         <select name="class" class="form-control @error('class') is-invalid @enderror">
                             @php($currentIcon = old('class', $social->remixIconClass()))
                             <option value="ri-discord-fill" {{ $currentIcon == 'ri-discord-fill' ? 'selected' : '' }}>Discord</option>
@@ -63,9 +63,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i> {{ __('main.save') }}
-                    </button>
+                    <button type="submit" class="btn btn-primary">{{ __('main.save') }}</button>
                 </form>
             </div>
         </div>

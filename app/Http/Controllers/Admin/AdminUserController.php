@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
 class AdminUserController extends Controller
 {
@@ -91,9 +94,10 @@ class AdminUserController extends Controller
                 ->value('id');
 
             if ($gameAccId) {
+                // TrinityCore: account_banned.id = account ID (PK)
                 $gameBan = DB::connection('game_auth')
                     ->table('account_banned')
-                    ->where('account', $gameAccId)
+                    ->where('id', $gameAccId)
                     ->where('active', 1)
                     ->where(function ($q) {
                         $q->where('unbandate', 0)
@@ -108,6 +112,9 @@ class AdminUserController extends Controller
                 }
             }
         } catch (\Exception $e) {
+            Log::error('Failed to fetch game ban info: '.$e->getMessage(), [
+                'username' => $user->username,
+            ]);
         }
 
         return view('admin.users.edit', compact('user', 'gameBanned', 'gameBanReason', 'gameBanDate'));
@@ -138,7 +145,7 @@ class AdminUserController extends Controller
             $user->unban();
             Log::info('User unbanned', ['admin' => $adminUser, 'user' => $user->username]);
         } elseif ($user->isBanned() && $request->boolean('banned')) {
-            $user->update(['ban_reason' => $validated['ban_reason'] ?: null]);
+            $user->forceFill(['ban_reason' => $validated['ban_reason'] ?: null])->save();
         }
 
         // Game ban/unban via toggle
@@ -159,9 +166,10 @@ class AdminUserController extends Controller
                 return;
             }
 
+            // TrinityCore: account_banned.id = account ID (PK)
             $existingBan = DB::connection('game_auth')
                 ->table('account_banned')
-                ->where('account', $gameAccId)
+                ->where('id', $gameAccId)
                 ->where('active', 1)
                 ->where(function ($q) {
                     $q->where('unbandate', 0)
@@ -195,5 +203,35 @@ class AdminUserController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
         }
+    }
+
+    public function create(): View
+    {
+        return view('admin.users.create');
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'username' => 'required|string|max:14|regex:/^[a-zA-Z]+$/|unique:users',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+        ]);
+
+        $user = new User();
+        $user->forceFill([
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password, ['rounds' => 12]),
+            'salt' => '',
+            'verifier' => '',
+            'bonuses' => 0,
+            'votes' => 0,
+            'is_admin' => 0,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ])->save();
+
+        return redirect()->route('admin.users.index')->with('success', __('main.user_created'));
     }
 }

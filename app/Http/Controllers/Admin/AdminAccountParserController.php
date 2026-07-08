@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Schema;
 
 class AdminAccountParserController extends Controller
 {
@@ -84,23 +83,24 @@ class AdminAccountParserController extends Controller
                         $email = strtolower($gameAccount->username).'@'.$defaultEmailDomain;
                     }
 
-                    // Проверяем уникальность email
+                    // Fix email dedup: modify local part only, never the domain
                     $emailExists = User::where('email', $email)->exists();
                     if ($emailExists) {
-                        // Если email уже существует, добавляем суффикс
                         $counter = 1;
                         $originalEmail = $email;
+                        $parts = explode('@', $originalEmail, 2);
+                        $local = $parts[0];
+                        $domain = $parts[1] ?? $defaultEmailDomain;
                         while (User::where('email', $email)->exists()) {
-                            $email = str_replace('@', $counter.'@', $originalEmail);
+                            $email = $local . '+' . $counter . '@' . $domain;
                             $counter++;
                         }
                     }
 
-                    // Получаем salt и verifier из игровой БД
+                    // Normalize salt and verifier from game DB for Eloquent storage
                     $salt = $gameAccount->salt;
                     $verifier = $gameAccount->verifier;
 
-                    // Если salt/verifier в бинарном формате, конвертируем
                     if (is_resource($salt)) {
                         $salt = stream_get_contents($salt);
                     }
@@ -108,49 +108,28 @@ class AdminAccountParserController extends Controller
                         $verifier = stream_get_contents($verifier);
                     }
 
-                    // Если salt/verifier не пустые и не являются валидным base64, кодируем
-                    if (! empty($salt)) {
-                        $decoded = @base64_decode($salt, true);
-                        if ($decoded === false || base64_encode($decoded) !== $salt) {
-                            $salt = base64_encode($salt);
-                        }
-                    } else {
-                        $salt = '';
-                    }
+                    // Ensure base64-encoded storage
+                    $salt = is_string($salt) && $salt !== ''
+                        ? (base64_decode($salt, true) !== false ? $salt : base64_encode($salt))
+                        : '';
+                    $verifier = is_string($verifier) && $verifier !== ''
+                        ? (base64_decode($verifier, true) !== false ? $verifier : base64_encode($verifier))
+                        : '';
 
-                    if (! empty($verifier)) {
-                        $decoded = @base64_decode($verifier, true);
-                        if ($decoded === false || base64_encode($decoded) !== $verifier) {
-                            $verifier = base64_encode($verifier);
-                        }
-                    } else {
-                        $verifier = '';
-                    }
-
-                    // Создаем пользователя
-                    $columns = ['username', 'email', 'salt', 'verifier', 'password', 'bonuses', 'votes', 'is_admin', 'created_at', 'updated_at'];
-                    $values = [
-                        $gameAccount->username,
-                        $email,
-                        $salt ?? '',
-                        $verifier ?? '',
-                        Hash::make(uniqid('', true)), // Генерируем случайный пароль для Laravel
-                        0, // bonuses
-                        0, // votes
-                        0, // is_admin
-                        now(),
-                        now(),
-                    ];
-
-                    if (Schema::hasColumn('users', 'name')) {
-                        $columns[] = 'name';
-                        $values[] = $gameAccount->username;
-                    }
-
-                    $placeholders = implode(',', array_fill(0, count($values), '?'));
-                    $columnsList = implode(', ', $columns);
-
-                    DB::statement("INSERT INTO users ({$columnsList}) VALUES ({$placeholders})", $values);
+                    // Use Eloquent with forceFill for guarded fields (is_admin, bonuses, votes, etc.)
+                    $user = new User();
+                    $user->forceFill([
+                        'username' => $gameAccount->username,
+                        'email' => $email,
+                        'salt' => $salt,
+                        'verifier' => $verifier,
+                        'password' => Hash::make(uniqid('', true)),
+                        'bonuses' => 0,
+                        'votes' => 0,
+                        'is_admin' => 0,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ])->save();
 
                     $stats['created']++;
                 } catch (\Exception $e) {

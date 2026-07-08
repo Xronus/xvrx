@@ -69,7 +69,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i> {{ __('main.save_settings') }}
+                        <i class="ri-save-line me-1"></i> {{ __('main.save_settings') }}
                     </button>
                 </form>
             </div>

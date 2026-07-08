@@ -37,7 +37,7 @@ class AdminRaceController extends Controller
 
         Race::create($request->only(['race_id', 'name', 'name_en', 'name_de', 'name_es', 'name_fr', 'faction']));
 
-        return redirect()->route('admin.races.index')->with('success', 'Раса успешно добавлена');
+        return redirect()->route('admin.races.index')->with('success', __('main.race_added'));
     }
 
     public function edit(Race $race)
@@ -61,13 +61,13 @@ class AdminRaceController extends Controller
 
         $race->update($request->only(['race_id', 'name', 'name_en', 'name_de', 'name_es', 'name_fr', 'faction']));
 
-        return redirect()->route('admin.races.index')->with('success', 'Раса успешно обновлена');
+        return redirect()->route('admin.races.index')->with('success', __('main.race_updated'));
     }
 
     public function destroy(Race $race)
     {
         $race->delete();
 
-        return redirect()->route('admin.races.index')->with('success', 'Раса успешно удалена');
+        return redirect()->route('admin.races.index')->with('success', __('main.race_deleted'));
     }
 }

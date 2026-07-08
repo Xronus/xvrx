@@ -19,7 +19,7 @@ class CabinetController extends Controller
     {
         $user = auth()->user();
         $characters = $this->getCharacters($user);
-        $settings = SiteSetting::first();
+        $settings = site_settings();
 
         return view('cabinet.index', compact('user', 'characters', 'settings'));
     }
@@ -28,7 +28,7 @@ class CabinetController extends Controller
     {
         $user = auth()->user();
         $characters = $this->getCharacters($user);
-        $settings = SiteSetting::first();
+        $settings = site_settings();
 
         return view('cabinet.characters', compact('user', 'characters', 'settings'));
     }
@@ -36,7 +36,7 @@ class CabinetController extends Controller
     public function votes()
     {
         $user = auth()->user();
-        $settings = SiteSetting::first();
+        $settings = site_settings();
 
         return view('cabinet.votes', compact('user', 'settings'));
     }
@@ -62,14 +62,14 @@ class CabinetController extends Controller
             $characters = DB::connection('game_char')
                 ->table('characters')
                 ->where('account', $accountId)
-                ->select('name', 'level', 'class', 'race', 'online', 'logout_time')
+                ->select('name', 'level', 'class', 'race', 'gender', 'online', 'logout_time')
                 ->orderBy('level', 'desc')
                 ->get()
                 ->map(function ($char) use ($races, $factions, $classes) {
                     $char->class_name = $classes[$char->class] ?? __('main.unknown');
                     $char->race_name = $races[$char->race] ?? __('main.unknown');
-                    $faction = $factions[$char->race] ?? 0;
-                    $char->faction = $faction === 0 ? __('main.alliance') : __('main.horde');
+                    $char->faction_id = $factions[$char->race] ?? 0;
+                    $char->faction = $char->faction_id === 0 ? __('main.alliance') : __('main.horde');
                     $char->last_login = $char->logout_time > 0 ? date('d.m.Y H:i', $char->logout_time) : __('main.no_data');
 
                     return $char;

@@ -35,14 +35,14 @@ class LoginController extends Controller
 
     public function showLoginForm()
     {
-        $settings = SiteSetting::first();
+        $settings = site_settings();
 
         return view('auth.login', compact('settings'));
     }
 
     public function showForgotPasswordForm()
     {
-        $settings = SiteSetting::first();
+        $settings = site_settings();
 
         return view('auth.forgot-password', compact('settings'));
     }
@@ -54,7 +54,24 @@ class LoginController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
-        $settings = SiteSetting::first();
+
+        // Return the same "sent" message for non-existent emails to prevent enumeration
+        if (! $user) {
+            return back()->with('status', __('main.forgot_password_sent'));
+        }
+
+        $settings = site_settings();
+
+        // Check if mail is enabled BEFORE counting rate limiter attempts
+        if ($settings && $settings->mail_password_reset_enabled === false) {
+            Log::info('Password reset requested but mail is disabled in admin settings', [
+                'email' => $user->email,
+                'username' => $user->username,
+            ]);
+
+            return back()->with('status', __('main.forgot_password_sent'));
+        }
+
         $rateLimit = max(1, min(60, (int) ($settings?->mail_password_reset_rate_limit ?: 3)));
         $rateLimitKey = 'password-reset:'.Str::lower($request->email).'|'.$request->ip();
 
@@ -66,54 +83,48 @@ class LoginController extends Controller
             ])->withInput();
         }
 
-        RateLimiter::hit($rateLimitKey, 60);
+        // Use configured rate limit window (decay = seconds per attempt)
+        RateLimiter::hit($rateLimitKey, max(60, $rateLimit * 60));
 
-        if ($user) {
-            try {
-                if ($settings && $settings->mail_password_reset_enabled === false) {
-                    Log::warning('Password reset email skipped because mail is disabled in admin settings', [
-                        'email' => $user->email,
-                        'username' => $user->username,
-                    ]);
+        try {
+            $token = bin2hex(random_bytes(32));
 
-                    return back()->with('status', __('main.forgot_password_sent'));
-                }
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $user->email],
+                [
+                    'token' => hash('sha256', $token),
+                    'created_at' => now(),
+                ]
+            );
 
-                $token = bin2hex(random_bytes(32));
+            $resetUrl = route('password.reset', [
+                'token' => $token,
+                'email' => $user->email,
+            ]);
 
-                DB::table('password_reset_tokens')->updateOrInsert(
-                    ['email' => $user->email],
-                    [
-                        'token' => $token,
-                        'created_at' => now(),
-                    ]
-                );
+            Mail::to($user->email)->send(new PasswordResetMail(
+                resetUrl: $resetUrl,
+                subjectLine: $settings?->mail_reset_subject,
+                bodyText: $settings?->mail_reset_body,
+                fromName: $settings?->mail_from_name,
+            ));
 
-                $resetUrl = route('password.reset', [
-                    'token' => $token,
-                    'email' => $user->email,
-                ]);
+            Log::info('Password reset email sent', [
+                'email' => $user->email,
+                'username' => $user->username,
+            ]);
 
-                Mail::to($user->email)->send(new PasswordResetMail(
-                    resetUrl: $resetUrl,
-                    subjectLine: $settings?->mail_reset_subject,
-                    bodyText: $settings?->mail_reset_body,
-                    fromName: $settings?->mail_from_name,
-                ));
+            return back()->with('status', __('main.forgot_password_sent'));
+        } catch (\Exception $e) {
+            Log::error('Failed to send password reset email: '.$e->getMessage(), [
+                'email' => $request->email,
+                'trace' => $e->getTraceAsString(),
+            ]);
 
-                Log::info('Password reset email sent', [
-                    'email' => $user->email,
-                    'username' => $user->username,
-                ]);
-            } catch (\Exception $e) {
-                Log::error('Failed to send password reset email: '.$e->getMessage(), [
-                    'email' => $request->email,
-                    'trace' => $e->getTraceAsString(),
-                ]);
-            }
+            return back()->withErrors([
+                'email' => __('main.password_reset_mail_error'),
+            ])->withInput();
         }
-
-        return back()->with('status', __('main.forgot_password_sent'));
     }
 
     public function showResetForm(Request $request)
@@ -123,7 +134,7 @@ class LoginController extends Controller
                 ->withErrors(['email' => __('main.invalid_reset_token')]);
         }
 
-        $settings = SiteSetting::first();
+        $settings = site_settings();
 
         return view('auth.reset-password', [
             'token' => $request->token,
@@ -148,7 +159,7 @@ class LoginController extends Controller
             ->where('email', $request->email)
             ->first();
 
-        if (! $record || $record->token !== $request->token) {
+        if (! $record || $record->token !== hash('sha256', $request->token)) {
             return back()->withErrors(['email' => __('main.invalid_reset_token')]);
         }
 
@@ -262,32 +273,12 @@ class LoginController extends Controller
             ]);
         }
 
-        $saltRaw = $user->getRawOriginal('salt');
-        $verifierRaw = $user->getRawOriginal('verifier');
-
-        if (is_resource($saltRaw)) {
-            $salt = stream_get_contents($saltRaw);
-        } elseif (is_string($saltRaw)) {
-            $decoded = base64_decode($saltRaw, true);
-            $salt = $decoded !== false ? $decoded : $saltRaw;
-        } else {
-            $salt = $saltRaw;
-        }
-
-        if (is_resource($verifierRaw)) {
-            $verifier = stream_get_contents($verifierRaw);
-        } elseif (is_string($verifierRaw)) {
-            $decoded = base64_decode($verifierRaw, true);
-            $verifier = $decoded !== false ? $decoded : $verifierRaw;
-        } else {
-            $verifier = $verifierRaw;
-        }
-
+        // User model accessors handle salt/verifier decoding
         if (! $this->srp6Service->verifyLogin(
             strtoupper($request->username),
             $request->password,
-            $salt,
-            $verifier
+            $user->salt,
+            $user->verifier
         )) {
             throw ValidationException::withMessages([
                 'username' => [__('validation.invalid_credentials')],
@@ -336,9 +327,10 @@ class LoginController extends Controller
             }
 
             // Check for active ban
+            // TrinityCore: account_banned.id = account ID (PK)
             $gameBan = DB::connection('game_auth')
                 ->table('account_banned')
-                ->where('account', $accountId)
+                ->where('id', $accountId)
                 ->where('active', 1)
                 ->first();
 

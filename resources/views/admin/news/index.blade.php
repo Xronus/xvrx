@@ -8,9 +8,7 @@
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <h4 class="mb-sm-0 font-size-18">{{ __('main.news') }}</h4>
             <div class="page-title-right">
-                <a href="{{ route('admin.news.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i> {{ __('main.add_news') }}
-                </a>
+                <a href="{{ route('admin.news.create') }}" class="btn btn-primary">{{ __('main.add_news') }}</a>
             </div>
         </div>
     </div>
@@ -28,7 +26,7 @@
                                 <th style="width: 80px;">{{ __('main.photo') }}</th>
                                 <th>{{ __('main.date') }}</th>
                                 <th>{{ __('main.title') }}</th>
-                                <th style="width: 150px;">{{ __('main.actions') }}</th>
+                                <th style="width: 150px;"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,13 +42,13 @@
                                 <td>{{ Str::limit($item->text, 80) }}</td>
                                 <td>
                                     <a href="{{ route('admin.news.edit', $item) }}" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i>
+                                        <i class="ri-pencil-line"></i>
                                     </a>
                                     <form method="POST" action="{{ route('admin.news.destroy', $item) }}" style="display: inline-block;" onsubmit="return confirm('{{ __('main.delete_news_confirm') }}')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="ri-delete-bin-line"></i>
                                         </button>
                                     </form>
                                 </td>

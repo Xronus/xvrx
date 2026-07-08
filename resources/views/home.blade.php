@@ -29,11 +29,11 @@
         <div class="xvrx-hero-runes" aria-hidden="true"></div>
 
         <div class="xvrx-hero-content">
-            <p class="xvrx-eyebrow">WotLK 3.3.5a</p>
+            <p class="xvrx-eyebrow">{{ $realm ? $realm->name : 'WotLK' }} {{ $realm ? $realm->patch : '3.3.5a' }}</p>
             <h1>{{ $heroTitle }}</h1>
             <p>{{ $heroText }}</p>
             <div class="xvrx-actions">
-                <a class="xvrx-button xvrx-button-primary" href="{{ route('register') }}">Начать путь</a>
+                <a class="xvrx-button xvrx-button-primary" href="{{ route('register') }}">{{ __('main.start_journey') }}</a>
                 <a class="xvrx-button xvrx-button-ghost" href="#howtostart">{{ __('main.download_full_game') }}</a>
             </div>
         </div>
@@ -45,11 +45,11 @@
             </div>
             <div>
                 <strong>{{ $realm ? $realm->rate : 'x5' }}</strong>
-                <span>Rate</span>
+                <span>{{ __('main.rate') }}</span>
             </div>
             <div>
-                <strong>3.3.5a</strong>
-                <span>Patch</span>
+                <strong>{{ $realm ? $realm->patch : '3.3.5a' }}</strong>
+                <span>{{ __('main.patch') }}</span>
             </div>
             <div>
                 @if($onlineError ?? false)
@@ -65,7 +65,7 @@
     <section class="xvrx-section xvrx-news-section" id="news">
         <div class="xvrx-section-head">
             <div>
-                <p class="xvrx-eyebrow">Хроники мира</p>
+                <p class="xvrx-eyebrow">{{ __('main.world_chronicles') }}</p>
                 <h2>{{ __('main.news') }}</h2>
             </div>
             <a class="xvrx-button xvrx-button-ghost" href="{{ route('news.index') }}">{{ __('main.all_news') }}</a>
@@ -73,7 +73,7 @@
 
         @if($news->count() > 0)
             <div class="xvrx-news-carousel">
-                <button class="xvrx-carousel-btn xvrx-carousel-prev" type="button" aria-label="Предыдущие новости"><i class="ri-arrow-left-s-line"></i></button>
+                <button class="xvrx-carousel-btn xvrx-carousel-prev" type="button" aria-label="{{ __('main.previous_news') }}"><i class="ri-arrow-left-s-line"></i></button>
                 <div class="xvrx-news-track">
                     @foreach($news as $item)
                         <article class="xvrx-news-card">
@@ -87,24 +87,24 @@
                                     @if($item->localized('content'))
                                         <p>{{ \Illuminate\Support\Str::limit(strip_tags($item->localized('content')), 130) }}</p>
                                     @endif
-                                    <span>Подробнее</span>
+                                    <span>{{ __('main.read_more') }}</span>
                                 </div>
                             </a>
                         </article>
                     @endforeach
                 </div>
-                <button class="xvrx-carousel-btn xvrx-carousel-next" type="button" aria-label="Следующие новости"><i class="ri-arrow-right-s-line"></i></button>
+                <button class="xvrx-carousel-btn xvrx-carousel-next" type="button" aria-label="{{ __('main.next_news') }}"><i class="ri-arrow-right-s-line"></i></button>
             </div>
         @else
-            <div class="xvrx-empty">Новости скоро появятся.</div>
+            <div class="xvrx-empty">{{ __('main.no_news_yet') }}</div>
         @endif
     </section>
 
     @if($realm)
         <section class="xvrx-section xvrx-realm-section">
             <div class="xvrx-realm-copy">
-                <p class="xvrx-eyebrow">Realm Status</p>
-                <h2>Vive la Révolution "xVRx"</h2>
+                <p class="xvrx-eyebrow">{{ __('main.realm_status') }}</p>
+                <h2>{{ $realm && $realm->full_name ? $realm->full_name : \App\Models\SiteSetting::first()?->title ?? 'xVRx' }}</h2>
                 <p>{{ $realm->localized('description') }}</p>
             </div>
             <div class="xvrx-realm-grid">
@@ -121,34 +121,34 @@
     <section class="xvrx-section xvrx-download-section" id="howtostart">
         <div class="xvrx-section-head">
             <div>
-                <p class="xvrx-eyebrow">How to start</p>
+                <p class="xvrx-eyebrow">{{ __('main.how_to_start') }}</p>
                 <h2>{{ __('main.download_full_game') }}</h2>
             </div>
             <span class="xvrx-download-size">{{ __('main.client_size_text') }} {{ $hts->client_size ?? '25.6 GB' }}</span>
         </div>
         <div class="xvrx-download-grid">
             <div class="xvrx-download-card xvrx-download-main">
-                <h3>Клиент WotLK 3.3.5a</h3>
+                <h3>{{ __('main.wotlk_client') }}</h3>
                 <p>{{ __('main.download_problems_text') }}</p>
                 <div class="xvrx-download-links">
                     @if(($hts->google_drive_active ?? false) && ($hts->google_drive_url ?? ''))
-                        <a class="xvrx-button xvrx-button-primary" href="{{ $hts->google_drive_url }}" target="_blank" rel="noopener">Google Drive</a>
+                        <a class="xvrx-button xvrx-button-primary" href="{{ $hts->google_drive_url }}" target="_blank" rel="noopener noreferrer">Google Drive</a>
                     @endif
                     @if(($hts->yandex_disk_active ?? false) && ($hts->yandex_disk_url ?? ''))
-                        <a class="xvrx-button xvrx-button-primary" href="{{ $hts->yandex_disk_url }}" target="_blank" rel="noopener">Yandex Disk</a>
+                        <a class="xvrx-button xvrx-button-primary" href="{{ $hts->yandex_disk_url }}" target="_blank" rel="noopener noreferrer">Yandex Disk</a>
                     @endif
                     @if(($hts->mega_active ?? false) && ($hts->mega_url ?? ''))
-                        <a class="xvrx-button xvrx-button-primary" href="{{ $hts->mega_url }}" target="_blank" rel="noopener">MegaNZ</a>
+                        <a class="xvrx-button xvrx-button-primary" href="{{ $hts->mega_url }}" target="_blank" rel="noopener noreferrer">MegaNZ</a>
                     @endif
                     @if(($hts->torrent_active ?? false) && ($hts->torrent_url ?? ''))
-                        <a class="xvrx-button xvrx-button-ghost" href="{{ $hts->torrent_url }}" target="_blank" rel="noopener">Torrent</a>
+                        <a class="xvrx-button xvrx-button-ghost" href="{{ $hts->torrent_url }}" target="_blank" rel="noopener noreferrer">Torrent</a>
                     @endif
                 </div>
             </div>
             <div class="xvrx-download-card">
                 <h3>{{ __('main.launcher') }}</h3>
                 <p>{{ $hts ? $hts->localizedLauncherDescription() : '' }}</p>
-                <a class="xvrx-button xvrx-button-ghost" href="{{ $hts->launcher_url ?? '#' }}" target="_blank" rel="noopener">
+                <a class="xvrx-button xvrx-button-ghost" href="{{ $hts->launcher_url ?? '#' }}" target="_blank" rel="noopener noreferrer">
                     {{ $hts ? $hts->localizedLauncherText() : __('main.launcher') }}
                 </a>
             </div>

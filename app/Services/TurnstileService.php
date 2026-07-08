@@ -23,9 +23,9 @@ class TurnstileService
     public function verify(string $token, ?string $ip = null): bool
     {
         if (empty($this->secretKey)) {
-            Log::warning('Turnstile secret key is not configured. Skipping verification.');
+            Log::error('Turnstile secret key is not configured. CAPTCHA verification cannot proceed.');
 
-            return true;
+            return false;
         }
 
         if (empty($token)) {

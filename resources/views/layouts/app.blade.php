@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,11 +24,10 @@
     @include('partials.xvrx-social')
     @include('partials.xvrx-footer')
 
-    <script src="{{ asset('powerpuffsite/js/jquery-2.1.1.min.js') }}"></script>
+    <script src="{{ asset('powerpuffsite/js/jquery-3.4.1.min.js') }}"></script>
     <script src="{{ asset('powerpuffsite/js/bundle.js') }}"></script>
     <script src="{{ asset('powerpuffsite/js/scripts.js') }}"></script>
     <script src="{{ asset('powerpuffsite/js/ion.rangeSlider.min.js') }}"></script>
-    <script src="{{ asset('powerpuffsite/js/jquery-3.4.1.min.js') }}"></script>
     <script src="{{ asset('powerpuffsite/js/main.js') }}"></script>
     @stack('scripts')
 </body>

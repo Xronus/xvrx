@@ -12,15 +12,7 @@ class Feature extends Model
 
     protected $fillable = [
         'title_ru',
-        'title_en',
-        'title_de',
-        'title_es',
-        'title_fr',
         'description_ru',
-        'description_en',
-        'description_de',
-        'description_es',
-        'description_fr',
         'image',
         'status',
         'sort',

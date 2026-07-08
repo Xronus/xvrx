@@ -312,107 +312,55 @@ body::after {
     background-size: 64px 64px, 64px 64px, auto;
 }
 
-#layout-wrapper,
-.main-content,
-.page-content,
-.container-fluid,
-.footer {
+.xvrx-admin-wrap,
+.xvrx-admin-page {
     background: transparent !important;
 }
 
-.page-content {
-    padding-bottom: 36px;
+.xvrx-admin-page {
+    width: 100%;
 }
 
-#page-topbar {
-    border-bottom: 1px solid rgba(214, 185, 107, .12);
-    background: rgba(6, 9, 14, .86) !important;
-    backdrop-filter: blur(16px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, .22);
+.xvrx-admin-page .row {
+    --bs-gutter-x: 18px;
+    --bs-gutter-y: 18px;
 }
 
-.navbar-header {
-    color: var(--admin-text);
-    background: transparent !important;
+.xvrx-admin-page .nk-block + .row,
+.xvrx-admin-page .row + .row {
+    margin-top: 0;
 }
 
-.navbar-brand-box {
-    border-right: 1px solid rgba(214, 185, 107, .12);
-    background: rgba(6, 9, 14, .54) !important;
-    box-shadow: none !important;
+.xvrx-admin-page .nk-menu-link,
+.xvrx-admin-page .nk-menu-link:hover {
+    text-decoration: none;
 }
 
-.logo-lg img,
-.logo-sm img {
-    height: auto !important;
-    max-height: 40px;
-    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, .56));
+.xvrx-admin-page .card-h-100 {
+    height: 100%;
 }
 
-.header-item,
-.header-item:hover,
-.header-item:focus {
-    color: var(--admin-text) !important;
+.xvrx-admin-page .card-h-100 .card-body {
+    min-height: 124px;
 }
 
-.header-item:hover {
-    background: rgba(214, 185, 107, .08) !important;
+.xvrx-admin-page .card-h-100 .col-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+    width: 100%;
 }
 
-.vertical-menu {
-    border-right: 1px solid var(--admin-line);
-    background:
-        linear-gradient(180deg, rgba(9, 13, 20, .96), rgba(6, 9, 14, .92)),
-        url("/xvrx-assets/images/wotlk-page-bg-2.png") center / cover no-repeat !important;
-    box-shadow: 20px 0 44px rgba(0, 0, 0, .28);
-}
-
-#sidebar-menu {
-    padding-top: 18px;
-}
-
-#sidebar-menu .menu-title {
-    color: rgba(214, 185, 107, .72) !important;
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-}
-
-#sidebar-menu ul li a {
-    min-height: 42px;
-    margin: 3px 12px;
-    border: 1px solid transparent;
-    border-radius: 7px;
-    color: rgba(244, 239, 228, .78) !important;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: .02em;
-    transition: color .18s ease, background .18s ease, border-color .18s ease, transform .18s ease;
-}
-
-#sidebar-menu ul li a i {
-    color: rgba(134, 200, 255, .76) !important;
-    font-size: 15px;
-}
-
-#sidebar-menu ul li a:hover,
-#sidebar-menu ul li.mm-active > a,
-#sidebar-menu ul li a.active {
-    color: var(--admin-gold-strong) !important;
-    border-color: rgba(214, 185, 107, .26);
-    background: rgba(214, 185, 107, .09);
-    transform: translateX(2px);
-}
-
-#sidebar-menu ul li a:hover i,
-#sidebar-menu ul li.mm-active > a i,
-#sidebar-menu ul li a.active i {
-    color: var(--admin-gold-strong) !important;
+.xvrx-admin-page .card-h-100 .text-truncate {
+    display: block;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
 }
 
 .page-title-box {
+    min-height: 0;
     margin-bottom: 22px;
+    padding-bottom: 0;
 }
 
 .page-title-box h4,
@@ -487,12 +435,23 @@ font[color="blue"] {
 .form-select,
 textarea.form-control,
 select.form-control {
+    width: 100%;
     min-height: 44px;
+    padding: .375rem .75rem;
     border: 1px solid rgba(214, 185, 107, .26) !important;
     border-radius: 7px !important;
     color: var(--admin-text) !important;
     background: rgba(4, 7, 11, .72) !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03);
+    -webkit-appearance: none;
+    appearance: none;
+}
+select.form-control {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23d6b96b' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem;
 }
 
 .form-control:focus,
@@ -553,7 +512,7 @@ textarea.form-control:focus {
 .table {
     --bs-table-bg: transparent;
     --bs-table-striped-bg: rgba(255, 255, 255, .025);
-    --bs-table-hover-bg: rgba(214, 185, 107, .06);
+    --bs-table-hover-bg: rgba(255, 255, 255, .03);
     --bs-table-color: var(--admin-muted);
     --bs-table-border-color: rgba(214, 185, 107, .16);
     border-color: var(--admin-line) !important;
@@ -623,6 +582,12 @@ textarea.form-control:focus {
     line-height: 1;
 }
 
+.table > thead > tr > th:last-child,
+.table > tbody > tr > td:last-child {
+    text-align: right;
+    padding-right: 16px;
+}
+
 .table td .btn-sm + .btn-sm,
 .table td .btn-sm + form,
 .table td form + .btn-sm,
@@ -642,10 +607,63 @@ textarea.form-control:focus {
     border-color: rgba(214, 185, 107, .12) !important;
 }
 
+.table tbody tr:hover,
 .table tbody tr:hover > * {
     color: var(--admin-text) !important;
-    background-color: rgba(214, 185, 107, .06) !important;
+    background-color: rgba(255, 255, 255, .03) !important;
 }
+
+/* Toggle switches — gold active state */
+.form-check-input {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 1em;
+    height: 1em;
+    margin-top: .25em;
+    background-color: rgba(255, 255, 255, .15);
+    border: 1px solid rgba(214, 185, 107, .26);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+.form-check-input:checked {
+    background-color: #b98732;
+    border-color: #d6b96b;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='%23170f08' d='M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z'%3e%3c/path%3e%3c/svg%3e");
+}
+.form-check-input:focus {
+    border-color: #d6b96b;
+    box-shadow: 0 0 0 3px rgba(214, 185, 107, .18);
+}
+.form-switch {
+    padding-left: 2.5em;
+}
+.form-switch .form-check-input {
+    width: 2em;
+    margin-top: 0;
+    margin-left: -2.5em;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, .15);
+    border-color: rgba(214, 185, 107, .26);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba(255,255,255,.4)'/%3e%3c/svg%3e");
+    background-position: left center;
+    border-radius: 2em;
+}
+.form-switch .form-check-input:checked {
+    background-position: right center;
+    background-color: #b98732;
+    border-color: #d6b96b;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%23170f08'/%3e%3c/svg%3e");
+}
+.form-switch .form-check-input:focus {
+    border-color: #d6b96b;
+    box-shadow: 0 0 0 3px rgba(214, 185, 107, .18);
+}
+
+.badge-success { color: #0a0f14 !important; }
+.badge-danger { color: #0a0f14 !important; }
+.badge-warning { color: #0a0f14 !important; }
 
 .dropdown-menu {
     border: 1px solid var(--admin-line);
@@ -680,10 +698,13 @@ textarea.form-control:focus {
 }
 
 .footer {
-    border-top: 1px solid var(--admin-line);
+    position: static;
+    height: auto;
+    padding: 20px 0 0;
+    border-top: 1px solid rgba(214, 185, 107, .18);
     color: var(--admin-muted);
-    background: rgba(6, 9, 14, .72) !important;
-    backdrop-filter: blur(14px);
+    background: transparent !important;
+    backdrop-filter: none;
 }
 
 .footer-developed,
@@ -691,11 +712,21 @@ textarea.form-control:focus {
     color: var(--admin-muted) !important;
 }
 
-@media (max-width: 991.98px) {
-    .vertical-menu {
-        box-shadow: none;
-    }
+.pace .pace-activity {
+    display: none !important;
+}
 
+.pace .pace-progress {
+    background: linear-gradient(90deg, var(--admin-gold), var(--admin-blue), var(--admin-gold-strong)) !important;
+}
+
+@media (min-width: 992px) {
+    .page-title-box .btn {
+        min-height: 46px;
+    }
+}
+
+@media (max-width: 991.98px) {
     .page-title-box h4 {
         font-size: 27px !important;
     }
