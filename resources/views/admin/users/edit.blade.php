@@ -1,15 +1,15 @@
 @extends('admin.layout')
 
-@section('title', __('main.edit'))
+@section('title', __('main.edit_user'))
 
 @section('content')
 <div class="row">
     <div class="col-12">
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0 font-size-18">{{ __('main.edit') }}: {{ $user->username }}</h4>
+            <h4 class="mb-sm-0 font-size-18">{{ __('main.edit_user') }}</h4>
             <div class="page-title-right">
                 <a href="{{ route('admin.users.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-1"></i> {{ __('main.back') }}
+                    <i class="ri-arrow-left-line me-1"></i> {{ __('main.back') }}
                 </a>
             </div>
         </div>
@@ -17,7 +17,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-6">
+    <div class="col-md-6">
         <div class="card">
             <div class="card-body">
                 <form id="user-edit-form" action="{{ route('admin.users.update', $user) }}" method="POST">
@@ -54,16 +54,14 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i> {{ __('main.save') }}
-                    </button>
+                    <button type="submit" class="btn btn-primary">{{ __('main.save') }}</button>
                 </form>
             </div>
         </div>
     </div>
 
     {{-- Ban cards --}}
-    <div class="col-lg-6">
+    <div class="col-md-6">
         {{-- Site ban --}}
         <div class="card mb-3">
             <div class="card-header">

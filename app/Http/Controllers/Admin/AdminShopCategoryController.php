@@ -59,6 +59,10 @@ class AdminShopCategoryController extends Controller
 
     public function destroy(ShopCategory $shop_category): RedirectResponse
     {
+        if ($shop_category->subcategories()->exists()) {
+            return back()->withErrors(['message' => __('main.shop_category_has_subcategories')]);
+        }
+
         if ($shop_category->allItems()->exists()) {
             return back()->withErrors(['message' => __('main.shop_category_has_items')]);
         }

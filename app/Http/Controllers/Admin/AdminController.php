@@ -13,28 +13,24 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $settings = SiteSetting::first();
+        $settings = site_settings();
         $enabledLangs = LanguageSetting::getActiveCodes();
 
         $totalAccounts = 0;
         $totalBanned = 0;
-        $totalPremium = 0;
-        $totalRealms = 0;
+        $onlineCount = 0;
         $gameStatsError = false;
 
         try {
             $totalAccounts = DB::connection('game_auth')->table('account')->count();
             $totalBanned = DB::connection('game_auth')->table('account_banned')->count();
-            if (Schema::connection('game_auth')->hasTable('account_premium')) {
-                $totalPremium = DB::connection('game_auth')->table('account_premium')->where('active', 1)->count();
-            }
-            $totalRealms = DB::connection('game_auth')->table('realmlist')->count();
+            $onlineCount = DB::connection('trinity')->table('characters')->where('online', 1)->count();
         } catch (\Exception $e) {
             \Log::error('Admin dashboard: failed to fetch game stats: '.$e->getMessage());
             $gameStatsError = true;
         }
 
-        return view('admin.index', compact('settings', 'totalAccounts', 'totalBanned', 'totalPremium', 'totalRealms', 'gameStatsError', 'enabledLangs'));
+        return view('admin.index', compact('settings', 'totalAccounts', 'totalBanned', 'onlineCount', 'gameStatsError', 'enabledLangs'));
     }
 
     public function languages()
@@ -46,19 +42,37 @@ class AdminController extends Controller
 
     public function mail()
     {
-        $settings = SiteSetting::first();
+        $settings = site_settings();
+        // Only expose non-sensitive SMTP info: configured status and from address
         $smtp = [
-            'mailer' => config('mail.default', env('MAIL_MAILER')),
-            'host' => env('MAIL_HOST'),
-            'port' => env('MAIL_PORT'),
-            'username' => env('MAIL_USERNAME'),
             'from_address' => env('MAIL_FROM_ADDRESS'),
-            'encryption' => env('MAIL_ENCRYPTION'),
             'password_configured' => filled(env('MAIL_PASSWORD')),
             'configured' => filled(env('MAIL_HOST')) && filled(env('MAIL_USERNAME')) && filled(env('MAIL_PASSWORD')),
+            'reachable' => $this->checkSmtpReachable(),
         ];
 
         return view('admin.mail.index', compact('settings', 'smtp'));
+    }
+
+    private function checkSmtpReachable(): bool
+    {
+        $host = env('MAIL_HOST');
+        $port = (int) env('MAIL_PORT', 587);
+
+        if (empty($host)) {
+            return false;
+        }
+
+        try {
+            $socket = @fsockopen($host, $port, $errno, $errstr, 5);
+            if ($socket) {
+                fclose($socket);
+                return true;
+            }
+        } catch (\Exception $e) {
+        }
+
+        return false;
     }
 
     public function updateMail(Request $request)
@@ -71,7 +85,7 @@ class AdminController extends Controller
             'mail_password_reset_rate_limit' => 'required|integer|min:1|max:60',
         ]);
 
-        $settings = SiteSetting::first() ?: new SiteSetting();
+        $settings = site_settings() ?: new SiteSetting();
 
         $settings->fill([
             'mail_password_reset_enabled' => $request->boolean('mail_password_reset_enabled'),
@@ -81,6 +95,8 @@ class AdminController extends Controller
             'mail_password_reset_rate_limit' => $request->integer('mail_password_reset_rate_limit'),
         ]);
         $settings->save();
+
+        site_settings_forget();
 
         return redirect()->route('admin.mail.index')->with('success', __('main.mail_settings_saved'));
     }
@@ -110,7 +126,7 @@ class AdminController extends Controller
             'main__text_fr' => 'nullable|string|max:255',
         ]);
 
-        $settings = SiteSetting::first();
+        $settings = site_settings();
 
         $data = $request->only([
             'title', 'title_en', 'title_de', 'title_es', 'title_fr',
@@ -124,6 +140,8 @@ class AdminController extends Controller
         } else {
             SiteSetting::create($data);
         }
+
+        site_settings_forget();
 
         return redirect()->route('admin.index')->with('success', __('main.save_settings'));
     }

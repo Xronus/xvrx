@@ -8,9 +8,7 @@
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <h4 class="mb-sm-0 font-size-18">{{ __('main.social_networks') }}</h4>
             <div class="page-title-right">
-                <a href="{{ route('admin.socials.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i> {{ __('main.add') }}
-                </a>
+                <a href="{{ route('admin.socials.create') }}" class="btn btn-primary">{{ __('main.add') }}</a>
             </div>
         </div>
     </div>
@@ -29,7 +27,7 @@
                                 <th>{{ __('main.link') }}</th>
                                 <th>{{ __('main.css_class') }}</th>
                                 <th style="width: 120px;">{{ __('main.status') }}</th>
-                                <th style="width: 200px;">{{ __('main.actions') }}</th>
+                                <th style="width: 130px;"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,23 +37,23 @@
                                 <td>{{ $social->name }}</td>
                                 <td><a href="{{ $social->link }}" target="_blank">{{ Str::limit($social->link, 40) }}</a></td>
                                 <td><code>{{ $social->remixIconClass() }}</code></td>
-                                <td>
-                                    <form method="POST" action="{{ route('admin.socials.toggle', $social) }}" style="display: inline;">
+                                <td class="text-center">
+                                    <form method="POST" action="{{ route('admin.socials.toggle', $social) }}" class="toggle-form">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm {{ $social->is_active ? 'btn-success' : 'btn-secondary' }}">
-                                            {{ $social->is_active ? __('main.on') : __('main.off') }}
-                                        </button>
+                                        <div class="form-check form-switch d-flex justify-content-center mb-0">
+                                            <input class="form-check-input toggle-submit" type="checkbox" {{ $social->is_active ? 'checked' : '' }}>
+                                        </div>
                                     </form>
                                 </td>
                                 <td>
                                     <a href="{{ route('admin.socials.edit', $social) }}" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i>
+                                        <i class="ri-pencil-line"></i>
                                     </a>
                                     <form method="POST" action="{{ route('admin.socials.destroy', $social) }}" style="display: inline-block;" onsubmit="return confirm('{{ __('main.delete_confirm') }}')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="ri-delete-bin-line"></i>
                                         </button>
                                     </form>
                                 </td>
@@ -69,19 +67,18 @@
                     </table>
                 </div>
 
-                <div class="mt-4">
-                    <h6>{{ __('main.available_css') }}</h6>
-                    <ul class="list-unstyled">
-                        <li><code>ri-discord-fill</code> — Discord</li>
-                        <li><code>ri-telegram-fill</code> — Telegram</li>
-                        <li><code>ri-vk-fill</code> — VK</li>
-                        <li><code>ri-youtube-fill</code> — YouTube</li>
-                        <li><code>ri-facebook-fill</code> — Facebook</li>
-                        <li><code>ri-twitter-x-fill</code> — X / Twitter</li>
-                    </ul>
-                </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.querySelectorAll('.toggle-submit').forEach(function(el) {
+    el.addEventListener('change', function() {
+        this.closest('form').submit();
+    });
+});
+</script>
+@endpush

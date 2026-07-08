@@ -16,67 +16,6 @@
 <body class="news-page-body">
 @include('partials.xvrx-header')
 <div class="wrapper">
-<header class="header">
-    <div class="header__wrapper">
-        <div class="header__container _container">
-            <div class="header__body">
-                <button type="button" class="menu__icon icon-menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <div class="header__menu menu">
-                    <nav class="menu__body" style="--logo-path: url('{{ asset($settings && $settings->logo_path ? $settings->logo_path : 'powerpuffsite/images/main/logo.png') }}');">
-                        <ul class="menu__list">
-                            <li class="menu__item">
-                                <a href="{{ route('home') }}" class="menu__link">{{ __('main.home') }}</a>
-                            </li>
-                            <li class="menu__item">
-                                <a href="{{ route('news.index') }}" class="menu__link">{{ __('main.news') }}</a>
-                            </li>
-                            <li class="menu__item">
-                                <a href="{{ route('home') }}#howtostart" class="menu__link">{{ __('main.download_full_game') }}</a>
-                            </li>
-                            <li class="menu__item">
-                                <a href="{{ route('ladder') }}" class="menu__link">{{ __('main.ladder') }}</a>
-                            </li>
-                            <li class="menu__item">
-                                <a href="{{ route('register') }}" class="menu__link">{{ __('main.registration') }}</a>
-                            </li>
-                            @auth
-                            <li class="menu__item" style="padding-left: 53px;">
-                                <a href="{{ route('cabinet') }}" class="actions-header__user menu__link">{{ __('main.personal_account') }}</a>
-                            </li>
-                            @else
-                            <li class="menu__item" style="padding-left: 53px;">
-                                <a href="{{ route('login') }}" class="actions-header__user menu__link">{{ __('main.personal_account') }}</a>
-                            </li>
-                            @endauth
-                            @if(isset($activeLangs) && $activeLangs->count() > 1)
-                            <li class="menu__item" style="padding-left: 30px; position: relative;">
-                                <div class="lang-selector" style="position: relative; display: inline-block;">
-                                    <a href="#" class="menu__link lang-current" onclick="event.preventDefault(); document.getElementById('lang-dropdown').classList.toggle('lang-show');" style="display: inline-flex; align-items: center; gap: 5px;">
-                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                                        {{ strtoupper(app()->getLocale()) }}
-                                    </a>
-                                    <div id="lang-dropdown" style="display: none; position: absolute; top: 100%; right: 0; background: rgba(20,20,30,0.95); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; min-width: 120px; z-index: 999; padding: 5px 0; margin-top: 5px;">
-                                        @foreach($activeLangs as $lang)
-                                        <a href="{{ route('locale.switch', $lang->code) }}" style="display: block; padding: 8px 16px; color: {{ app()->getLocale() === $lang->code ? '#fff' : '#aaa' }}; text-decoration: none; font-size: 14px; white-space: nowrap;">
-                                            {{ $lang->native_name }}
-                                        </a>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </li>
-                            @endif
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-
 <main class="page">
     <section class="page__news-all news-all">
         <div class="news-all__container _container">
@@ -146,19 +85,18 @@
     <div class="features__container _container">
         <div class="info__line gorizontal-line"></div>
         <footer class="footer">
-            <div class="footer__copy">&copy; {{ date('Y') }} {{ $siteName }}. All rights reserved. &bull; Designed &amp; Developed by <a href="https://xronus.ru" target="_blank" rel="noopener">Xronus Studio</a></div>
+            <div class="footer__copy">&copy; {{ date('Y') }} {{ $siteName }}. {{ __('main.all_rights_reserved') }} &bull; {{ __('main.designed_by') }} <a href="https://xronus.ru" target="_blank" rel="noopener noreferrer">Xronus Studio</a></div>
         </footer>
     </div>
 </section>
 
 @include('partials.xvrx-social')
 @include('partials.xvrx-footer')
-<script src="{{ asset('powerpuffsite/js/jquery-2.1.1.min.js') }}"></script>
 <script src="{{ asset('powerpuffsite/js/vendor.min.js') }}"></script>
 <script src="{{ asset('powerpuffsite/js/main_home.min.js') }}"></script>
 <script>
 document.addEventListener('click', function(e) {
-    var dd = document.getElementById('lang-dropdown');
+    const dd = document.getElementById('lang-dropdown');
     if (dd && !e.target.closest('.lang-selector')) {
         dd.classList.remove('lang-show');
         dd.style.display = 'none';
@@ -166,7 +104,7 @@ document.addEventListener('click', function(e) {
 });
 document.querySelectorAll('.lang-current').forEach(function(el) {
     el.addEventListener('click', function() {
-        var dd = document.getElementById('lang-dropdown');
+        const dd = document.getElementById('lang-dropdown');
         dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
     });
 });

@@ -24,7 +24,7 @@ class LadderController extends Controller
         }
 
         $activeLangs = LanguageSetting::where('is_active', true)->orderBy('sort_order')->get();
-        $settings = SiteSetting::first();
+        $settings = site_settings();
 
         $ladderData = [];
         try {

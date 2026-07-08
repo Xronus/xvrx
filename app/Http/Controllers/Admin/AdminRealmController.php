@@ -11,8 +11,9 @@ class AdminRealmController extends Controller
     public function index()
     {
         $realms = Realm::orderBy('id')->get();
+        $canCreate = $realms->isEmpty();
 
-        return view('admin.realms.index', compact('realms'));
+        return view('admin.realms.index', compact('realms', 'canCreate'));
     }
 
     public function create()
@@ -30,6 +31,7 @@ class AdminRealmController extends Controller
             'name_fr' => 'nullable|string|max:255',
             'rate' => 'required|string|max:255',
             'version' => 'required|string|max:255',
+            'full_name' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:255',
             'description_en' => 'nullable|string|max:255',
             'description_de' => 'nullable|string|max:255',
@@ -44,7 +46,7 @@ class AdminRealmController extends Controller
 
         $data = $request->only([
             'name', 'name_en', 'name_de', 'name_es', 'name_fr',
-            'rate', 'version',
+            'rate', 'version', 'full_name',
             'description', 'description_en', 'description_de', 'description_es', 'description_fr',
             'proffesion', 'gold', 'rep', 'loot', 'honor',
         ]);
@@ -69,6 +71,7 @@ class AdminRealmController extends Controller
             'name_fr' => 'nullable|string|max:255',
             'rate' => 'required|string|max:255',
             'version' => 'required|string|max:255',
+            'full_name' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:255',
             'description_en' => 'nullable|string|max:255',
             'description_de' => 'nullable|string|max:255',
@@ -83,7 +86,7 @@ class AdminRealmController extends Controller
 
         $data = $request->only([
             'name', 'name_en', 'name_de', 'name_es', 'name_fr',
-            'rate', 'version',
+            'rate', 'version', 'full_name',
             'description', 'description_en', 'description_de', 'description_es', 'description_fr',
             'proffesion', 'gold', 'rep', 'loot', 'honor',
         ]);

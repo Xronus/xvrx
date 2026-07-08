@@ -13,13 +13,14 @@ class Admin extends Model
 
     protected $fillable = [
         'username',
-        'password',
-        'is_admin', // обязательно добавьте это поле
-        'email',      // Обязательно добавьте email
+        'email',
         'comment',
     ];
 
+    protected $guarded = ['is_admin', 'password'];
+
     protected $hidden = [
         'password',
+        'is_admin',
     ];
 }

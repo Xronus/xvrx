@@ -36,7 +36,7 @@ class AdminClassController extends Controller
 
         CharacterClass::create($request->only(['class_id', 'name', 'name_en', 'name_de', 'name_es', 'name_fr']));
 
-        return redirect()->route('admin.classes.index')->with('success', 'Класс успешно добавлен');
+        return redirect()->route('admin.classes.index')->with('success', __('main.class_added'));
     }
 
     public function edit(CharacterClass $class)
@@ -59,13 +59,13 @@ class AdminClassController extends Controller
 
         $class->update($request->only(['class_id', 'name', 'name_en', 'name_de', 'name_es', 'name_fr']));
 
-        return redirect()->route('admin.classes.index')->with('success', 'Класс успешно обновлён');
+        return redirect()->route('admin.classes.index')->with('success', __('main.class_updated'));
     }
 
     public function destroy(CharacterClass $class)
     {
         $class->delete();
 
-        return redirect()->route('admin.classes.index')->with('success', 'Класс успешно удалён');
+        return redirect()->route('admin.classes.index')->with('success', __('main.class_deleted'));
     }
 }

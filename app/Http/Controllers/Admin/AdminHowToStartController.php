@@ -76,6 +76,6 @@ class AdminHowToStartController extends Controller
             HowToStart::create($data);
         }
 
-        return redirect()->route('admin.howtostart.index')->with('success', 'Настройки сохранены');
+        return redirect()->route('admin.howtostart.index')->with('success', __('main.hts_settings_saved'));
     }
 }

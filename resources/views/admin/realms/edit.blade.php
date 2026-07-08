@@ -9,7 +9,7 @@
             <h4 class="mb-sm-0 font-size-18">{{ __('main.edit_realm') }}: {{ $realm->name }}</h4>
             <div class="page-title-right">
                 <a href="{{ route('admin.realms.index') }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-1"></i> {{ __('main.back') }}
+                    <i class="ri-arrow-left-line me-1"></i> {{ __('main.back') }}
                 </a>
             </div>
         </div>
@@ -17,7 +17,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-8">
+    <div class="col-12">
         <div class="card">
             <div class="card-body">
                 <form action="{{ route('admin.realms.update', $realm) }}" method="POST">
@@ -27,22 +27,11 @@
                     <h5 class="mb-3">{{ __('main.name') }}</h5>
                     <div class="row">
                         @if(in_array('ru', $enabledLangs))
-                        <div class="col-md-6">
+                        <div class="col-12">
                             <div class="mb-3">
-                                <label class="form-label">{{ __('main.name_ru') }}</label>
+                                <label class="form-label">{{ __('main.name') }}</label>
                                 <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $realm->name) }}">
                                 @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-                        @endif
-                        @if(in_array('en', $enabledLangs))
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">{{ __('main.name_en') }}</label>
-                                <input type="text" name="name_en" class="form-control @error('name_en') is-invalid @enderror" value="{{ old('name_en', $realm->name_en) }}">
-                                @error('name_en')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -84,7 +73,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">{{ __('main.rate') }}</label>
                                 <input type="text" name="rate" class="form-control @error('rate') is-invalid @enderror" value="{{ old('rate', $realm->rate) }}">
@@ -93,7 +82,7 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">{{ __('main.version') }}</label>
                                 <select name="version" class="form-control">
@@ -106,21 +95,19 @@
                         </div>
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">{{ __('main.full_name') }}</label>
+                        <input type="text" name="full_name" class="form-control" value="{{ old('full_name', $realm->full_name) }}" placeholder="xVRx">
+                        <small class="text-muted">{{ __('main.full_name_hint') }}</small>
+                    </div>
+
                     <h5 class="mb-3">{{ __('main.description') }}</h5>
                     <div class="row">
                         @if(in_array('ru', $enabledLangs))
-                        <div class="col-md-6">
+                        <div class="col-12">
                             <div class="mb-3">
-                                <label class="form-label">{{ __('main.description_ru') }}</label>
+                                <label class="form-label">{{ __('main.description') }}</label>
                                 <textarea name="description" class="form-control" rows="3">{{ old('description', $realm->description) }}</textarea>
-                            </div>
-                        </div>
-                        @endif
-                        @if(in_array('en', $enabledLangs))
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">{{ __('main.description_en') }}</label>
-                                <textarea name="description_en" class="form-control" rows="3">{{ old('description_en', $realm->description_en) }}</textarea>
                             </div>
                         </div>
                         @endif
@@ -187,9 +174,9 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save me-1"></i> {{ __('main.save') }}
-                    </button>
+                    <div style="text-align:right;">
+                        <button type="submit" class="btn btn-primary">{{ __('main.save') }}</button>
+                    </div>
                 </form>
             </div>
         </div>

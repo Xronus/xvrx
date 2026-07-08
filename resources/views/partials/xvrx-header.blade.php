@@ -13,7 +13,7 @@
         <span>{{ $xvrxSiteTitle }}</span>
     </a>
     <input type="checkbox" id="xvrx-menu-toggle" class="xvrx-menu-toggle">
-    <label for="xvrx-menu-toggle" class="xvrx-menu-button" aria-label="Меню"><span></span><span></span><span></span></label>
+    <label for="xvrx-menu-toggle" class="xvrx-menu-button" aria-label="{{ __('main.menu') }}"><span></span><span></span><span></span></label>
     <nav class="xvrx-nav">
         <a href="{{ route('home') }}">{{ __('main.home') }}</a>
         <a href="{{ route('news.index') }}">{{ __('main.news') }}</a>

@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/lang/{locale}', function (string $locale) {
+Route::post('/lang/{locale}', function (string $locale) {
     if (in_array($locale, ['ru', 'en', 'de', 'es', 'fr'])) {
         session(['locale' => $locale]);
     }
@@ -38,7 +38,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/cp', [LoginController::class, 'showLoginForm'])->name('login')->middleware('throttle:6,1');
     Route::post('/cp', [LoginController::class, 'login'])->middleware('throttle:6,1');
     Route::get('/cp/forgot-password', [LoginController::class, 'showForgotPasswordForm'])->name('password.request')->middleware('throttle:6,1');
-    Route::post('/cp/forgot-password', [LoginController::class, 'sendPasswordResetLink'])->name('password.email');
+    Route::post('/cp/forgot-password', [LoginController::class, 'sendPasswordResetLink'])->name('password.email')->middleware('throttle:10,1');
     Route::get('/cp/reset-password', [LoginController::class, 'showResetForm'])->name('password.reset')->middleware('throttle:6,1');
     Route::post('/cp/reset-password', [LoginController::class, 'reset'])->name('password.update')->middleware('throttle:6,1');
     Route::get('/cp/register', [RegisterController::class, 'showRegistrationForm'])->name('register')->middleware('throttle:6,1');
@@ -50,7 +50,7 @@ Route::middleware(['auth', 'check.banned'])->group(function () {
     Route::get('/cp/cabinet', [CabinetController::class, 'index'])->name('cabinet');
     Route::get('/cp/characters', [CabinetController::class, 'characters'])->name('cabinet.characters');
     Route::get('/cp/votes', [VoteController::class, 'index'])->name('cabinet.votes');
-    Route::post('/cp/votes/{voteTop}/claim', [VoteController::class, 'claim'])->name('cabinet.votes.claim');
+    Route::post('/cp/votes/{voteTop}/claim', [VoteController::class, 'claim'])->name('cabinet.votes.claim')->middleware('throttle:6,1');
     Route::get('/cp/shop', [ShopController::class, 'index'])->name('shop');
     Route::post('/cp/shop/buy', [ShopController::class, 'buy'])->name('shop.buy')->middleware('throttle:10,1');
 });
@@ -121,11 +121,14 @@ Route::middleware(['auth', 'check.banned', 'admin'])->prefix('powerpuffsiteadmin
     Route::delete('/features/{feature}', [AdminFeatureController::class, 'destroy'])->name('features.destroy');
 
     Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [AdminUserController::class, 'create'])->name('users.create');
+    Route::post('/users', [AdminUserController::class, 'store'])->name('users.store');
     Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
     Route::post('/users/{user}/ban', [AdminUserController::class, 'ban'])->name('users.ban');
     Route::post('/users/{user}/unban', [AdminUserController::class, 'unban'])->name('users.unban');
 
+    Route::post('/shop/{shop}/toggle', [AdminShopController::class, 'toggle'])->name('shop.toggle');
     Route::resource('shop', AdminShopController::class)->except(['show']);
     Route::resource('shop-categories', AdminShopCategoryController::class)->except(['show']);
 });

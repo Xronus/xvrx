@@ -34,7 +34,7 @@ class NewsController extends Controller
         $searchTerm = $request->input('search', '');
 
         // Получаем настройки и активные языки для хедера
-        $settings = SiteSetting::first();
+        $settings = site_settings();
         $activeLangs = LanguageSetting::where('is_active', true)->orderBy('sort_order')->get();
 
         return view('news.index', compact('news', 'searchTerm', 'settings', 'activeLangs'));
@@ -42,7 +42,7 @@ class NewsController extends Controller
 
     public function show(News $news)
     {
-        $settings = SiteSetting::first();
+        $settings = site_settings();
         $activeLangs = LanguageSetting::where('is_active', true)->orderBy('sort_order')->get();
 
         return view('news.show', compact('news', 'settings', 'activeLangs'));

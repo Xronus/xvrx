@@ -15,19 +15,8 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="avatar-sm rounded-circle bg-primary bg-soft">
-                            <span class="avatar-title bg-primary text-white rounded-circle">
-                                <i class="fas fa-database font-size-18"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <p class="text-uppercase fw-medium text-muted mb-0">{{ __('main.game_accounts') }}</p>
-                        <h4 class="my-1"><span id="total-game-accounts">{{ $totalGameAccounts }}</span></h4>
-                    </div>
-                </div>
+                <p class="text-uppercase fw-medium text-muted mb-1">{{ __('main.game_accounts') }}</p>
+                <h4 class="my-0"><span id="total-game-accounts">{{ $totalGameAccounts }}</span></h4>
             </div>
         </div>
     </div>
@@ -35,19 +24,8 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="avatar-sm rounded-circle bg-success bg-soft">
-                            <span class="avatar-title bg-success text-white rounded-circle">
-                                <i class="fas fa-users font-size-18"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <p class="text-uppercase fw-medium text-muted mb-0">{{ __('main.website_accounts') }}</p>
-                        <h4 class="my-1"><span id="total-website-accounts">{{ $totalWebsiteAccounts }}</span></h4>
-                    </div>
-                </div>
+                <p class="text-uppercase fw-medium text-muted mb-1">{{ __('main.website_accounts') }}</p>
+                <h4 class="my-0"><span id="total-website-accounts">{{ $totalWebsiteAccounts }}</span></h4>
             </div>
         </div>
     </div>
@@ -55,25 +33,14 @@
     <div class="col-lg-4">
         <div class="card">
             <div class="card-body">
-                <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                        <div class="avatar-sm rounded-circle bg-warning bg-soft">
-                            <span class="avatar-title bg-warning text-white rounded-circle">
-                                <i class="fas fa-sync-alt font-size-18"></i>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="flex-grow-1 ms-3">
-                        <p class="text-uppercase fw-medium text-muted mb-0">{{ __('main.accounts_to_import') }}</p>
-                        <h4 class="my-1"><span id="accounts-to-import">{{ $accountsToImport }}</span></h4>
-                    </div>
-                </div>
+                <p class="text-uppercase fw-medium text-muted mb-1">{{ __('main.accounts_to_import') }}</p>
+                <h4 class="my-0"><span id="accounts-to-import">{{ $accountsToImport }}</span></h4>
             </div>
         </div>
     </div>
 </div>
 
-<div class="row">
+<div class="row mt-3">
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
@@ -98,9 +65,7 @@
                             </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" id="parse-btn">
-                        <i class="fas fa-play me-1"></i> {{ __('main.start_import') }}
-                    </button>
+                    <div style="text-align:right;"><button type="submit" class="btn btn-primary" id="parse-btn">{{ __('main.start_import') }}</button></div>
                 </form>
             </div>
         </div>
@@ -161,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         
         parseBtn.disabled = true;
-        parseBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> {{ __('main.importing') }}...';
+        parseBtn.innerHTML = '{{ __('main.importing') }}...';
         
         const formData = new FormData(form);
         
@@ -215,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .finally(() => {
             parseBtn.disabled = false;
-            parseBtn.innerHTML = '<i class="fas fa-play me-1"></i> {{ __('main.start_import') }}';
+            parseBtn.innerHTML = '{{ __('main.start_import') }}';
         });
     });
 });

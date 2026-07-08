@@ -18,6 +18,7 @@ class Realm extends Model
         'name_fr',
         'rate',
         'version',
+        'full_name',
         'description',
         'description_en',
         'description_de',
@@ -29,4 +30,15 @@ class Realm extends Model
         'loot',
         'honor',
     ];
+
+    public function getPatchAttribute(): string
+    {
+        return match ($this->version) {
+            'lich' => '3.3.5a',
+            'legion' => '7.3.5',
+            'bfa' => '8.3',
+            'sl' => '9.2',
+            default => (string) $this->version,
+        };
+    }
 }

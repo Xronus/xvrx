@@ -13,21 +13,18 @@ class User extends Authenticatable
     protected $fillable = [
         'username',
         'email',
-        'password',
-        'salt',
-        'verifier',
-        'banned_at',
-        'ban_reason',
-        'votes',
     ];
-
-    protected $guarded = ['is_admin', 'bonuses'];
 
     protected $hidden = [
         'password',
         'salt',
         'verifier',
         'remember_token',
+        'is_admin',
+        'bonuses',
+        'banned_at',
+        'ban_reason',
+        'votes',
     ];
 
     protected function casts(): array
@@ -70,10 +67,10 @@ class User extends Authenticatable
      */
     public function ban(?string $reason = null): void
     {
-        $this->update([
+        $this->forceFill([
             'banned_at' => now(),
             'ban_reason' => $reason,
-        ]);
+        ])->save();
     }
 
     /**
@@ -81,10 +78,10 @@ class User extends Authenticatable
      */
     public function unban(): void
     {
-        $this->update([
+        $this->forceFill([
             'banned_at' => null,
             'ban_reason' => null,
-        ]);
+        ])->save();
     }
 
     protected function getSaltAttribute($value)

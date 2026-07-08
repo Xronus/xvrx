@@ -8,9 +8,9 @@
         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
             <h4 class="mb-sm-0 font-size-18">{{ __('main.realms') }}</h4>
             <div class="page-title-right">
-                <a href="{{ route('admin.realms.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-1"></i> {{ __('main.add_realm') }}
-                </a>
+                @if($canCreate)
+                <a href="{{ route('admin.realms.create') }}" class="btn btn-primary">{{ __('main.add_realm') }}</a>
+                @endif
             </div>
         </div>
     </div>
@@ -28,7 +28,7 @@
                                 <th>{{ __('main.name_ru') }}</th>
                                 <th>{{ __('main.rate') }}</th>
                                 <th>{{ __('main.version') }}</th>
-                                <th style="width: 150px;">{{ __('main.actions') }}</th>
+                                <th style="width: 150px;"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -40,13 +40,13 @@
                                 <td>{{ $realm->version }}</td>
                                 <td>
                                     <a href="{{ route('admin.realms.edit', $realm) }}" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-edit"></i>
+                                        <i class="ri-pencil-line"></i>
                                     </a>
                                     <form method="POST" action="{{ route('admin.realms.destroy', $realm) }}" style="display: inline-block;" onsubmit="return confirm('{{ __('main.delete_realm_confirm') }}')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash"></i>
+                                            <i class="ri-delete-bin-line"></i>
                                         </button>
                                     </form>
                                 </td>

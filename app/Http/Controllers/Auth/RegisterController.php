@@ -31,7 +31,7 @@ class RegisterController extends Controller
 
     public function showRegistrationForm()
     {
-        $settings = SiteSetting::first();
+        $settings = site_settings();
 
         return view('auth.register', compact('settings'));
     }
@@ -100,11 +100,14 @@ class RegisterController extends Controller
             $user = User::create([
                 'username' => $request->username,
                 'email' => $request->email,
+            ]);
+
+            $user->forceFill([
                 'salt' => base64_encode($salt),
                 'verifier' => base64_encode($verifier),
                 'password' => Hash::make($request->password, ['rounds' => 12]),
                 'votes' => 0,
-            ]);
+            ])->save();
 
             DB::commit();
         } catch (\Exception $e) {
@@ -165,7 +168,7 @@ class RegisterController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Регистрация прошла успешно!',
+            'message' => __('main.register_success'),
             'redirect' => route('cabinet'),
         ]);
 

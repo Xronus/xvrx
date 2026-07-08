@@ -12,7 +12,7 @@ class AdminLogoController extends Controller
 {
     public function index()
     {
-        $settings = SiteSetting::first();
+        $settings = site_settings();
         $currentLogo = $settings->logo_path ?? null;
 
         // Получаем список существующих логотипов
@@ -60,7 +60,7 @@ class AdminLogoController extends Controller
             $request->file('logo')->move($logoPath, $fileName);
 
             // Сохраняем путь в настройках
-            $settings = SiteSetting::first();
+            $settings = site_settings();
             if (! $settings) {
                 $settings = new SiteSetting;
             }
@@ -68,6 +68,7 @@ class AdminLogoController extends Controller
             $logoRelativePath = $logoDir.'/'.$fileName;
             $settings->logo_path = $logoRelativePath;
             $settings->save();
+            site_settings_forget();
 
             return redirect()->route('admin.logo.index')->with('success', __('main.logo_uploaded_successfully'));
         } catch (\Exception $e) {
@@ -89,13 +90,14 @@ class AdminLogoController extends Controller
         }
 
         try {
-            $settings = SiteSetting::first();
+            $settings = site_settings();
             if (! $settings) {
                 $settings = new SiteSetting;
             }
 
             $settings->logo_path = $logoPath;
             $settings->save();
+            site_settings_forget();
 
             return redirect()->route('admin.logo.index')->with('success', __('main.logo_set_successfully'));
         } catch (\Exception $e) {
@@ -124,10 +126,11 @@ class AdminLogoController extends Controller
             }
 
             // Если удаляемый логотип был текущим, сбрасываем настройку
-            $settings = SiteSetting::first();
+            $settings = site_settings();
             if ($settings && $settings->logo_path === $logoPath) {
                 $settings->logo_path = null;
                 $settings->save();
+                site_settings_forget();
             }
 
             return redirect()->route('admin.logo.index')->with('success', __('main.logo_deleted_successfully'));

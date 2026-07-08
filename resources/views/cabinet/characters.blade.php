@@ -33,7 +33,9 @@
                                 <article class="xvrx-character-card">
                                     <div class="xvrx-character-card-top">
                                         <div class="xvrx-character-avatar">
-                                            {{ mb_substr($char->name, 0, 1) }}
+                                            <img src="{{ race_icon_url($char->race, $char->gender) }}"
+                                                 alt="{{ $char->race_name }}"
+                                                 loading="lazy">
                                         </div>
                                         <div>
                                             <h5>{{ $char->name }}</h5>
@@ -46,15 +48,24 @@
 
                                     <div class="xvrx-character-meta">
                                         <div>
-                                            <span>{{ __('main.race') }}</span>
+                                            <span>
+                                                <img src="{{ race_icon_url($char->race, $char->gender, false) }}" alt="" class="xvrx-faction-icon">
+                                                {{ __('main.race') }}
+                                            </span>
                                             <strong>{{ $char->race_name }}</strong>
                                         </div>
                                         <div>
-                                            <span>{{ __('main.class') }}</span>
+                                            <span>
+                                                <img src="{{ class_icon_url($char->class) }}" alt="" class="xvrx-faction-icon">
+                                                {{ __('main.class') }}
+                                            </span>
                                             <strong>{{ $char->class_name }}</strong>
                                         </div>
                                         <div>
-                                            <span>{{ __('main.faction') }}</span>
+                                            <span>
+                                                <img src="{{ faction_icon_url($char->faction_id) }}" alt="" class="xvrx-faction-icon">
+                                                {{ __('main.faction') }}
+                                            </span>
                                             <strong>{{ $char->faction }}</strong>
                                         </div>
                                         <div>

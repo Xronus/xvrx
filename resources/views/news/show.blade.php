@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ asset('powerpuffsite/images/favicon.ico') }}" type="image/x-icon">
+    <meta name="description" content="{{ \Illuminate\Support\Str::limit(strip_tags($news->localized('content') ?: $news->localized('text')), 160) }}">
     <title>{{ $news->localized('text') }}</title>
     <link rel="stylesheet" href="{{ asset('xvrx-assets/css/remixicon.css') }}">
     <link rel="stylesheet" href="{{ asset('xvrx-assets/css/xvrx-laravel.css') }}">
@@ -16,7 +17,7 @@
     <article class="xvrx-news-article">
         <a class="xvrx-back-link" href="{{ route('news.index') }}">
             <i class="ri-arrow-left-line"></i>
-            Назад
+            {{ __('main.back') }}
         </a>
 
         @if($news->images)
