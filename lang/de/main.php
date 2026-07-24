@@ -182,6 +182,8 @@ return [
     'start_game_title' => 'Spiel starten Titel',
     'start_game_description' => 'Spiel starten Beschreibung',
     'save_settings' => 'Einstellungen speichern',
+    'terms_of_service_text' => 'Text der Nutzungsbedingungen',
+    'privacy_policy_text' => 'Text der Datenschutzrichtlinie',
     'account_parser' => 'Spiel-Account-Parser',
     'game_accounts' => 'Spiel-Accounts',
     'website_accounts' => 'Website-Accounts',

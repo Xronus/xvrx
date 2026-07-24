@@ -36,6 +36,7 @@
                             <th>{{ __('main.name') }}</th>
                             <th>{{ __('main.shop_item_entry') }}</th>
                             <th>{{ __('main.shop_categories') }}</th>
+                            <th>{{ __('main.type') }}</th>
                             <th>{{ __('main.shop_price') }}</th>
                             <th>{{ __('main.shop_quantity') }}</th>
                             <th style="width:70px;">{{ __('main.status') }}</th>
@@ -53,6 +54,7 @@
                             </td>
                             <td><a href="https://www.wowhead.com/ru/item={{ $item->item_entry }}" target="_blank" rel="noopener noreferrer">{{ $item->item_entry }}</a></td>
                             <td>{{ $item->category?->localizedName() ?? '-' }}</td>
+                            <td>{{ $item->type?->name_ru ?? '-' }}</td>
                             <td>{{ $item->price }}</td>
                             <td>{{ $item->quantity }}</td>
                             <td class="text-center">
@@ -72,7 +74,7 @@
                             </td>
                         </tr>
                         @empty
-                        <tr><td colspan="7" class="text-center py-4 text-muted">{{ __('main.shop_no_items') }}</td></tr>
+                        <tr><td colspan="8" class="text-center py-4 text-muted">{{ __('main.shop_no_items') }}</td></tr>
                         @endforelse
                     </tbody>
                 </table>

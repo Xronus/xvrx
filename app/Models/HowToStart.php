@@ -45,6 +45,7 @@ class HowToStart extends Model
         'req_gpu_rec',
         'req_internet_min',
         'req_internet_rec',
+        'download_problems_text',
     ];
 
     protected function casts(): array

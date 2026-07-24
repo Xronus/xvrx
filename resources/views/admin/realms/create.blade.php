@@ -173,6 +173,22 @@
                         </div>
                     </div>
 
+                    <h5 class="mt-4 mb-3">{{ __('main.realm_link') }}</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ __('main.link_url') }}</label>
+                                <input type="text" name="link_url" class="form-control" value="{{ old('link_url') }}" placeholder="https://...">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">{{ __('main.link_text') }}</label>
+                                <input type="text" name="link_text" class="form-control" value="{{ old('link_text') }}" placeholder="{{ __('main.start_playing') }}">
+                            </div>
+                        </div>
+                    </div>
+
                     <div style="text-align:right;">
                         <button type="submit" class="btn btn-primary">{{ __('main.save') }}</button>
                     </div>

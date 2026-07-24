@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\SocialLink;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AdminSocialController extends Controller
 {
@@ -32,6 +33,8 @@ class AdminSocialController extends Controller
             'is_active' => $request->boolean('is_active', true),
         ]);
 
+        Cache::forget('homepage_socials');
+
         return redirect()->route('admin.socials.index')->with('success', __('main.social_added'));
     }
 
@@ -52,12 +55,16 @@ class AdminSocialController extends Controller
             'is_active' => $request->boolean('is_active'),
         ]);
 
+        Cache::forget('homepage_socials');
+
         return redirect()->route('admin.socials.index')->with('success', __('main.social_updated'));
     }
 
     public function toggle(SocialLink $social)
     {
         $social->update(['is_active' => ! $social->is_active]);
+
+        Cache::forget('homepage_socials');
 
         return redirect()->route('admin.socials.index')->with('success',
             ($social->is_active ? __('main.social_enabled') : __('main.social_disabled')).': '.$social->name
@@ -67,6 +74,8 @@ class AdminSocialController extends Controller
     public function destroy(SocialLink $social)
     {
         $social->delete();
+
+        Cache::forget('homepage_socials');
 
         return redirect()->route('admin.socials.index')->with('success', __('main.social_deleted'));
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\VoteTop;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AdminVoteController extends Controller
 {
@@ -39,6 +40,8 @@ class AdminVoteController extends Controller
         } else {
             VoteTop::create($data);
         }
+
+        Cache::forget('homepage_votes');
 
         return redirect()->route('admin.votes.index')->with('success', 'Настройки mmorating.top сохранены');
     }

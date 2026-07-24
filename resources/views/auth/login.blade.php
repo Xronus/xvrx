@@ -21,6 +21,12 @@
                             <h5 class="nk-block-title">{{ __('main.login') }}</h5>
                         </div>
                     </div>
+                    @if(session('status'))
+                    <div class="alert alert-success">{{ session('status') }}</div>
+                    @endif
+                    @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
 
                     <div class="col-sm-12 tabs">
                         <div class="tab-content">

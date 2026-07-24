@@ -106,6 +106,9 @@
                 <p class="xvrx-eyebrow">{{ __('main.realm_status') }}</p>
                 <h2>{{ $realm && $realm->full_name ? $realm->full_name : \App\Models\SiteSetting::first()?->title ?? 'xVRx' }}</h2>
                 <p>{{ $realm->localized('description') }}</p>
+                @if($realm->link_url)
+                <p><a href="{{ $realm->link_url }}" target="_blank" rel="noopener noreferrer">{{ $realm->link_text ?: __('main.start_playing') }}</a></p>
+                @endif
             </div>
             <div class="xvrx-realm-grid">
                 <div><strong>{{ $realm->rate }}</strong><span>{{ __('main.experience') }}</span></div>
@@ -129,7 +132,7 @@
         <div class="xvrx-download-grid">
             <div class="xvrx-download-card xvrx-download-main">
                 <h3>{{ __('main.wotlk_client') }}</h3>
-                <p>{{ __('main.download_problems_text') }}</p>
+                <p>{{ $hts->download_problems_text ?? __('main.download_problems_text') }}</p>
                 <div class="xvrx-download-links">
                     @if(($hts->google_drive_active ?? false) && ($hts->google_drive_url ?? ''))
                         <a class="xvrx-button xvrx-button-primary" href="{{ $hts->google_drive_url }}" target="_blank" rel="noopener noreferrer">Google Drive</a>
@@ -155,10 +158,10 @@
             <div class="xvrx-download-card">
                 <h3>{{ __('main.system_requirements') }}</h3>
                 <dl class="xvrx-req-list">
-                    <div><dt>{{ __('main.storage') }}</dt><dd>{{ $hts->req_storage_rec ?? '30 GB' }}</dd></div>
-                    <div><dt>Windows</dt><dd>{{ $hts->req_windows_rec ?? 'Windows 10' }}</dd></div>
-                    <div><dt>{{ __('main.ram') }}</dt><dd>{{ $hts->req_ram_rec ?? '6 GB' }}</dd></div>
-                    <div><dt>{{ __('main.video_card') }}</dt><dd>{{ $hts->req_gpu_rec ?? '1024 MB' }}</dd></div>
+                    <div><dt>{{ __('main.storage') }}</dt><dd>{{ $hts->req_storage_min ?? '27 GB' }} / {{ $hts->req_storage_rec ?? '30 GB' }}</dd></div>
+                    <div><dt>Windows</dt><dd>{{ $hts->req_windows_min ?? 'Windows 7' }} / {{ $hts->req_windows_rec ?? 'Windows 10' }}</dd></div>
+                    <div><dt>{{ __('main.ram') }}</dt><dd>{{ $hts->req_ram_min ?? '2 GB' }} / {{ $hts->req_ram_rec ?? '6 GB' }}</dd></div>
+                    <div><dt>{{ __('main.video_card') }}</dt><dd>{{ $hts->req_gpu_min ?? '256 MB' }} / {{ $hts->req_gpu_rec ?? '1024 MB' }}</dd></div>
                 </dl>
             </div>
         </div>

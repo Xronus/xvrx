@@ -44,7 +44,7 @@ class ShopController extends Controller
         ]);
 
         $user = auth()->user();
-        $item = ShopItem::findOrFail($request->item_id);
+        $item = ShopItem::with('type')->findOrFail($request->item_id);
 
         $result = $shop->buy($user, $item, $request->character_name);
 

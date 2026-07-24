@@ -12,6 +12,7 @@
         ['route' => 'admin.users.index', 'active' => 'admin.users.*', 'icon' => 'ni-users', 'label' => __('main.users')],
         ['route' => 'admin.shop.index', 'active' => 'admin.shop.*', 'icon' => 'ni-cart', 'label' => __('main.shop_manage')],
         ['route' => 'admin.shop-categories.index', 'active' => 'admin.shop-categories.*', 'icon' => 'ni-tags', 'label' => __('main.shop_categories')],
+        ['route' => 'admin.shop-item-types.index', 'active' => 'admin.shop-item-types.*', 'icon' => 'ni-list-check', 'label' => __('main.shop_item_types')],
         ['route' => 'admin.mail.index', 'active' => 'admin.mail.*', 'icon' => 'ni-mail', 'label' => __('main.mail_settings')],
         ['route' => 'admin.account-parser.index', 'active' => 'admin.account-parser.*', 'icon' => 'ni-reload', 'label' => __('main.account_parser')],
     ];

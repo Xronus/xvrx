@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Realm;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AdminRealmController extends Controller
 {
@@ -42,6 +43,8 @@ class AdminRealmController extends Controller
             'rep' => 'nullable|string|max:255',
             'loot' => 'nullable|string|max:255',
             'honor' => 'nullable|string|max:255',
+            'link_url' => 'nullable|string|max:500',
+            'link_text' => 'nullable|string|max:100',
         ]);
 
         $data = $request->only([
@@ -49,9 +52,12 @@ class AdminRealmController extends Controller
             'rate', 'version', 'full_name',
             'description', 'description_en', 'description_de', 'description_es', 'description_fr',
             'proffesion', 'gold', 'rep', 'loot', 'honor',
+            'link_url', 'link_text',
         ]);
 
         Realm::create($data);
+
+        Cache::forget('homepage_realms');
 
         return redirect()->route('admin.realms.index')->with('success', 'Реалм успешно добавлен');
     }
@@ -82,6 +88,8 @@ class AdminRealmController extends Controller
             'rep' => 'nullable|string|max:255',
             'loot' => 'nullable|string|max:255',
             'honor' => 'nullable|string|max:255',
+            'link_url' => 'nullable|string|max:500',
+            'link_text' => 'nullable|string|max:100',
         ]);
 
         $data = $request->only([
@@ -89,9 +97,12 @@ class AdminRealmController extends Controller
             'rate', 'version', 'full_name',
             'description', 'description_en', 'description_de', 'description_es', 'description_fr',
             'proffesion', 'gold', 'rep', 'loot', 'honor',
+            'link_url', 'link_text',
         ]);
 
         $realm->update($data);
+
+        Cache::forget('homepage_realms');
 
         return redirect()->route('admin.realms.index')->with('success', 'Реалм успешно обновлён');
     }
@@ -99,6 +110,8 @@ class AdminRealmController extends Controller
     public function destroy(Realm $realm)
     {
         $realm->delete();
+
+        Cache::forget('homepage_realms');
 
         return redirect()->route('admin.realms.index')->with('success', 'Реалм успешно удалён');
     }

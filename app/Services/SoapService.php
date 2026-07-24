@@ -2,86 +2,82 @@
 
 namespace App\Services;
 
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
-use SoapClient;
-use SoapFault;
 
 class SoapService
 {
-    private string $host;
-
-    private int $port;
-
+    private string $url;
     private string $user;
-
-    private string $password;
-
-    private string $uri;
-
-    private int $timeout;
+    private string $pass;
+    private Client $client;
 
     public function __construct()
     {
-        $this->host = config('soap.host', '127.0.0.1');
-        $this->port = (int) config('soap.port', 7878);
-        $this->user = config('soap.user', '');
-        $this->password = config('soap.password', '');
-        $this->uri = config('soap.uri', 'urn:AC');
-        $this->timeout = (int) config('soap.timeout', 5);
+        $this->url  = env('SOAP_URL', 'http://127.0.0.1:7878/soap');
+        $this->user = env('SOAP_USER', 'SoapAdmin');
+        $this->pass = env('SOAP_PASS', 'Dext5aSd');
+
+        if (empty($this->user) || empty($this->pass)) {
+            Log::error('SOAP credentials missing in .env');
+            throw new \RuntimeException('SOAP credentials are missing');
+        }
+
+        $parsed = parse_url($this->url);
+        if (!$parsed || !isset($parsed['host'])) {
+            throw new \InvalidArgumentException('Invalid SOAP_URL in .env');
+        }
+
+        $baseUri = $parsed['scheme'] . '://' . $parsed['host'] . (isset($parsed['port']) ? ':' . $parsed['port'] : '');
+
+        $this->client = new Client([
+            'base_uri' => $baseUri,
+            'timeout'  => 10,
+        ]);
     }
 
-    public function executeCommand(string $command): array
+    /**
+     * Отправляет команду через SOAP (простой POST с XML)
+     */
+    public function execute(string $command): string
     {
-        if (! extension_loaded('soap')) {
-            return [
-                'ok' => false,
-                'error' => 'SOAP extension not loaded',
-                'result' => null,
-            ];
-        }
+        $xml = '<?xml version="1.0"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Header/>
+  <SOAP-ENV:Body>
+    <executeCommand xmlns="urn:TC">
+      <command>' . $this->escapeForXml($command) . '</command>
+    </executeCommand>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>';
 
         try {
-            $options = [
-                'location' => 'http://' . $this->host . ':' . $this->port . '/',
-                'uri' => $this->uri,
-                'connection_timeout' => $this->timeout,
-                'exceptions' => true,
-                'trace' => true,
-            ];
+            $response = $this->client->post('/soap', [
+                'headers' => [
+                    'Content-Type' => 'text/xml; charset=utf-8',
+                    'Authorization' => 'Basic ' . base64_encode($this->user . ':' . $this->pass),
+                ],
+                'body' => $xml,
+            ]);
 
-            // Only add auth if credentials are set
-            if ($this->user !== '' && $this->password !== '') {
-                $options['login'] = $this->user;
-                $options['password'] = $this->password;
+            $body = (string)$response->getBody();
+            Log::info('SOAP executed: ' . $command);
+            return $body;
+        } catch (\Exception $e) {
+            Log::error('SOAP error: ' . $e->getMessage());
+            if ($e->hasResponse()) {
+                Log::error('SOAP response body: ' . $e->getResponse()->getBody()->getContents());
             }
-
-            $client = new SoapClient(null, $options);
-
-            $result = $client->__soapCall('executeCommand', [
-                ['command' => $command],
-            ]);
-
-            Log::debug('SOAP command executed', [
-                'command' => $command,
-                'result' => $result,
-            ]);
-
-            return [
-                'ok' => true,
-                'error' => null,
-                'result' => $result,
-            ];
-        } catch (SoapFault $e) {
-            Log::error('SOAP fault: ' . $e->getMessage(), [
-                'command' => $command,
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return [
-                'ok' => false,
-                'error' => $e->getMessage(),
-                'result' => null,
-            ];
+            throw $e;
         }
+    }
+
+    private function escapeForXml(string $input): string
+    {
+        return str_replace(
+            ['&', '<', '>', '"', "'"],
+            ['&amp;', '&lt;', '&gt;', '&quot;', '&apos;'],
+            $input
+        );
     }
 }

@@ -32,6 +32,17 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label">{{ __('main.type') }}</label>
+                        <select name="type_id" class="form-select @error('type_id') is-invalid @enderror" required>
+                            <option value="">{{ __('main.select_type') }}</option>
+                            @foreach($types as $t)
+                            <option value="{{ $t->id }}" {{ old('type_id', $item->type_id) == $t->id ? 'selected' : '' }}>{{ $t->name_ru }}</option>
+                            @endforeach
+                        </select>
+                        @error('type_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label">{{ __('main.name') }}</label>
                         <input type="text" name="name_ru" class="form-control @error('name_ru') is-invalid @enderror" value="{{ old('name_ru', $item->name_ru) }}" required>
                         @error('name_ru')<div class="invalid-feedback">{{ $message }}</div>@enderror

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ShopItem extends Model
 {
     protected $fillable = [
-        'subcategory_id', 'item_entry', 'name_ru', 'icon_name', 'price', 'quantity', 'enabled', 'sort_order',
+        'subcategory_id', 'type_id', 'item_entry', 'name_ru', 'icon_name', 'price', 'quantity', 'enabled', 'sort_order',
     ];
 
     protected $casts = [
@@ -17,11 +17,17 @@ class ShopItem extends Model
         'price' => 'integer',
         'quantity' => 'integer',
         'item_entry' => 'integer',
+        'type_id' => 'integer',
     ];
 
     public function category(): BelongsTo
     {
         return $this->belongsTo(ShopCategory::class, 'subcategory_id');
+    }
+
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(ShopItemType::class, 'type_id');
     }
 
     public function scopeEnabled(Builder $query): Builder

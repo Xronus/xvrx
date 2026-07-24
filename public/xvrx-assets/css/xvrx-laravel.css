@@ -450,6 +450,45 @@ input[type="password"] {
     color: #9ee8c7 !important;
 }
 
+.xvrx-verify-card {
+    text-align: center;
+}
+
+.xvrx-verify-card .brand-logo {
+    padding-bottom: 18px !important;
+}
+
+.xvrx-verify-card .logo-img {
+    max-width: 132px;
+}
+
+.xvrx-verify-card .nk-block-head {
+    margin-bottom: 22px;
+}
+
+.xvrx-verify-card .nk-block-title {
+    font-family: "Lato", Arial, sans-serif;
+    font-size: clamp(26px, 2.4vw, 30px) !important;
+    font-weight: 900;
+    line-height: 1.12 !important;
+    text-align: center;
+}
+
+.xvrx-verify-card .xvrx-auth-hint {
+    max-width: 360px;
+    margin: 12px auto 0;
+    text-align: center;
+}
+
+.xvrx-verify-card .btn-primary:disabled {
+    border-color: rgba(214, 185, 107, .32) !important;
+    color: rgba(8, 11, 16, .74) !important;
+    background: linear-gradient(180deg, rgba(242, 216, 141, .72), rgba(185, 135, 50, .72)) !important;
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 1;
+}
+
 .nk-auth-body {
     width: 100% !important;
     padding: 0 !important;
@@ -1535,6 +1574,8 @@ body.xvrx-home .xvrx-header:not(.is-scrolled) .xvrx-nav a {
     grid-template-columns: minmax(260px, .9fr) minmax(320px, 1.3fr);
     gap: 28px;
     align-items: center;
+    width: min(1180px, calc(100% - clamp(36px, 14vw, 220px)));
+    margin: 0 auto;
     background: rgba(10, 15, 25, 0.8);
     border-radius: 16px;
     padding: 40px;
@@ -1543,7 +1584,7 @@ body.xvrx-home .xvrx-header:not(.is-scrolled) .xvrx-nav a {
 .xvrx-realm-copy h2 {
     font-size: clamp(24px, 2.5vw, 32px);
     line-height: 1.08;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
 }
 
 .xvrx-realm-grid {
@@ -1912,11 +1953,15 @@ body.xvrx-home .xvrx-header:not(.is-scrolled) .xvrx-nav a {
     }
 
     .xvrx-hero-stats,
-    .xvrx-realm-section,
     .xvrx-download-grid {
         grid-template-columns: 1fr 1fr;
         width: auto;
         left: clamp(18px, 7vw, 110px);
+    }
+
+    .xvrx-realm-section {
+        grid-template-columns: 1fr 1fr;
+        left: auto;
     }
 
     .xvrx-hero-stat-main {

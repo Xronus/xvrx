@@ -100,14 +100,11 @@ class RegisterController extends Controller
             $user = User::create([
                 'username' => $request->username,
                 'email' => $request->email,
-            ]);
-
-            $user->forceFill([
                 'salt' => base64_encode($salt),
                 'verifier' => base64_encode($verifier),
                 'password' => Hash::make($request->password, ['rounds' => 12]),
                 'votes' => 0,
-            ])->save();
+            ]);
 
             DB::commit();
         } catch (\Exception $e) {
@@ -164,12 +161,19 @@ class RegisterController extends Controller
             ], 500);
         }
 
-        Auth::login($user);
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (\Exception $e) {
+            Log::error('Verification email failed: ' . $e->getMessage(), [
+                'username' => $request->username,
+                'email' => $request->email,
+            ]);
+        }
 
         return response()->json([
             'status' => true,
-            'message' => __('main.register_success'),
-            'redirect' => route('cabinet'),
+            'message' => __('main.check_email'),
+            'redirect' => route('login'),
         ]);
 
     }

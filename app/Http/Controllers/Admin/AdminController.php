@@ -7,6 +7,7 @@ use App\Models\LanguageSetting;
 use App\Models\SiteSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 
 class AdminController extends Controller
@@ -124,6 +125,8 @@ class AdminController extends Controller
             'main__text_de' => 'nullable|string|max:255',
             'main__text_es' => 'nullable|string|max:255',
             'main__text_fr' => 'nullable|string|max:255',
+            'terms_text'            => 'nullable|string',
+            'policy_text'           => 'nullable|string',
         ]);
 
         $settings = site_settings();
@@ -133,6 +136,7 @@ class AdminController extends Controller
             'description', 'description_en', 'description_de', 'description_es', 'description_fr',
             'main__title', 'main__title_en', 'main__title_de', 'main__title_es', 'main__title_fr',
             'main__text', 'main__text_en', 'main__text_de', 'main__text_es', 'main__text_fr',
+            'terms_text', 'policy_text',
         ]);
 
         if ($settings) {
@@ -156,6 +160,8 @@ class AdminController extends Controller
         LanguageSetting::where('code', $request->code)->update([
             'is_active' => $request->is_active,
         ]);
+
+        Cache::forget('homepage_langs');
 
         return response()->json(['success' => true]);
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Feature;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class AdminFeatureController extends Controller
@@ -41,6 +42,8 @@ class AdminFeatureController extends Controller
             'sort' => $request->sort ?? 0,
         ]);
 
+        Cache::forget('homepage_features');
+
         return redirect()->route('admin.features.index')->with('success', __('main.feature_added'));
     }
 
@@ -73,6 +76,8 @@ class AdminFeatureController extends Controller
 
         $feature->update($data);
 
+        Cache::forget('homepage_features');
+
         return redirect()->route('admin.features.index')->with('success', __('main.feature_updated'));
     }
 
@@ -80,6 +85,8 @@ class AdminFeatureController extends Controller
     {
         $this->deleteOldImage($feature->getRawOriginal('image'));
         $feature->delete();
+
+        Cache::forget('homepage_features');
 
         return redirect()->route('admin.features.index')->with('success', __('main.feature_deleted'));
     }
