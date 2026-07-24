@@ -182,6 +182,8 @@ return [
     'start_game_title' => 'Titre "Commencer à jouer"',
     'start_game_description' => 'Description "Commencer à jouer"',
     'save_settings' => 'Enregistrer les paramètres',
+    'terms_of_service_text' => 'Texte des conditions d\'utilisation',
+    'privacy_policy_text' => 'Texte de la politique de confidentialité',
     'account_parser' => 'Analyseur de comptes de jeu',
     'game_accounts' => 'Comptes de jeu',
     'website_accounts' => 'Comptes sur le site',

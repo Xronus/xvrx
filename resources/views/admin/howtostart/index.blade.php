@@ -100,6 +100,12 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div class="mt-3">
+                        <label class="form-label">{{ __('main.download_problems_label') }}</label>
+                        <textarea name="download_problems_text" class="form-control @error('download_problems_text') is-invalid @enderror" rows="4">{{ old('download_problems_text', $hts->download_problems_text ?? '') }}</textarea>
+                        @error('download_problems_text')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
                 </div>
             </div>
 

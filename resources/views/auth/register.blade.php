@@ -2,6 +2,12 @@
 
 @section('title', __('main.registration'))
 
+@push('styles')
+<style>
+.register-btn.btn-loading { opacity: .65; pointer-events: none; cursor: not-allowed; }
+</style>
+@endpush
+
 @section('content')
 <div class="nk-wrap nk-wrap-nosidebar">
     <div class="nk-content">
@@ -133,6 +139,9 @@ $(document).ready(function() {
     }
 
     function doRegister(captchaToken) {
+        var $btn = $('.register-btn');
+        $btn.prop('disabled', true).addClass('btn-loading').html('<span class="spinner-border spinner-border-sm me-2"></span>{{ __("main.registering") }}');
+        $('.msg').addClass('none');
         var formData = new FormData();
         formData.append('username', $('input[name="username"]').val());
         formData.append('password', $('input[name="password"]').val());
@@ -148,14 +157,20 @@ $(document).ready(function() {
             contentType: false,
             cache: false,
             data: formData,
+            complete: function() {
+                $btn.prop('disabled', false).removeClass('btn-loading').text('{{ __("main.register") }}');
+            },
             success: function(data) {
                 if (data.status) {
+                    $('.msg').removeClass('none').text(data.message);
                     var redirect = data.redirect;
-                    if (redirect && (redirect.startsWith('/') || redirect.startsWith(window.location.origin))) {
-                        document.location.href = redirect;
-                    } else {
-                        document.location.href = '{{ route("cabinet") }}';
-                    }
+                    setTimeout(function () {
+                        if (redirect && (redirect.startsWith('/') || redirect.startsWith(window.location.origin))) {
+                            document.location.href = redirect;
+                        } else {
+                            document.location.href = '{{ route("cabinet") }}';
+                        }
+                    }, 1500);
                 } else {
                     if (data.type === 1 && data.fields) {
                         data.fields.forEach(function (field) {

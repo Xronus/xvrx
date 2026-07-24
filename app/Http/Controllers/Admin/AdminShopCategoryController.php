@@ -12,14 +12,16 @@ class AdminShopCategoryController extends Controller
 {
     public function index(): View
     {
-        $categories = ShopCategory::orderBy('sort_order')->get();
+        $categories = ShopCategory::with('parent')->orderBy('sort_order')->get();
 
         return view('admin.shop-categories.index', compact('categories'));
     }
 
     public function create(): View
     {
-        return view('admin.shop-categories.create');
+        $parentCategories = ShopCategory::topLevel()->get();
+
+        return view('admin.shop-categories.create', compact('parentCategories'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -27,9 +29,13 @@ class AdminShopCategoryController extends Controller
         $validated = $request->validate([
             'name_ru' => 'required|string|max:128',
             'sort_order' => 'integer|min:0',
+            'parent_id' => 'nullable|integer',
         ]);
 
-        $validated['parent_id'] = 0;
+        $validated['parent_id'] = (int) ($validated['parent_id'] ?? 0);
+        if ($validated['parent_id'] !== 0 && ! ShopCategory::where('id', $validated['parent_id'])->exists()) {
+            return back()->withErrors(['parent_id' => __('main.parent_invalid')])->withInput();
+        }
 
         ShopCategory::create($validated);
 
@@ -39,8 +45,9 @@ class AdminShopCategoryController extends Controller
     public function edit(ShopCategory $shop_category): View
     {
         $category = $shop_category;
+        $parentCategories = ShopCategory::topLevel()->where('id', '!=', $category->id)->get();
 
-        return view('admin.shop-categories.edit', compact('category'));
+        return view('admin.shop-categories.edit', compact('category', 'parentCategories'));
     }
 
     public function update(Request $request, ShopCategory $shop_category): RedirectResponse
@@ -50,7 +57,19 @@ class AdminShopCategoryController extends Controller
         $validated = $request->validate([
             'name_ru' => 'required|string|max:128',
             'sort_order' => 'integer|min:0',
+            'parent_id' => 'nullable|integer',
         ]);
+
+        $validated['parent_id'] = (int) ($validated['parent_id'] ?? 0);
+
+        if ($validated['parent_id'] !== 0 && ! ShopCategory::where('id', $validated['parent_id'])->exists()) {
+            return back()->withErrors(['parent_id' => __('main.parent_invalid')])->withInput();
+        }
+
+        // Prevent circular reference: category cannot be its own parent
+        if ($validated['parent_id'] === $category->id) {
+            $validated['parent_id'] = 0;
+        }
 
         $category->update($validated);
 

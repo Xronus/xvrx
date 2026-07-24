@@ -26,6 +26,16 @@
                         @error('name_ru')<div class="invalid-feedback">{{ $message }}</div>@enderror
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">{{ __('main.parent_category') }}</label>
+                        <select name="parent_id" class="form-select @error('parent_id') is-invalid @enderror">
+                            <option value="0">{{ __('main.top_level') }}</option>
+                            @foreach($parentCategories as $p)
+                            <option value="{{ $p->id }}" {{ old('parent_id', $category->parent_id) == $p->id ? 'selected' : '' }}>{{ $p->localizedName() }}</option>
+                            @endforeach
+                        </select>
+                        @error('parent_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">{{ __('main.sort') }}</label>
                         <input type="number" name="sort_order" class="form-control @error('sort_order') is-invalid @enderror" value="{{ old('sort_order', $category->sort_order) }}" min="0">
                         @error('sort_order')<div class="invalid-feedback">{{ $message }}</div>@enderror

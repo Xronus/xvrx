@@ -3,8 +3,10 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\SiteSetting;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Illuminate\Support\Facades\RateLimiter;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
@@ -78,13 +80,16 @@ class LoginTest extends TestCase
     public function test_forgot_password_uses_configured_rate_limit(): void
     {
         SiteSetting::first()->update(['mail_password_reset_rate_limit' => 1]);
+        site_settings_forget();
+        $user = User::factory()->create(['email' => 'limited@example.com']);
+        RateLimiter::clear('password-reset:'.$user->email.'|127.0.0.1');
 
         $this->post('/cp/forgot-password', [
-            'email' => 'limited@example.com',
+            'email' => $user->email,
         ])->assertSessionHas('status');
 
         $this->post('/cp/forgot-password', [
-            'email' => 'limited@example.com',
+            'email' => $user->email,
         ])->assertSessionHasErrors(['email']);
     }
 }

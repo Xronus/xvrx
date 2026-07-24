@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HowToStart;
 use App\Models\LanguageSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AdminHowToStartController extends Controller
 {
@@ -47,6 +48,7 @@ class AdminHowToStartController extends Controller
             'req_gpu_rec' => 'nullable|string|max:50',
             'req_internet_min' => 'nullable|string|max:50',
             'req_internet_rec' => 'nullable|string|max:50',
+            'download_problems_text' => 'nullable|string',
         ]);
 
         $hts = HowToStart::first();
@@ -62,6 +64,7 @@ class AdminHowToStartController extends Controller
             'req_ram_min', 'req_ram_rec',
             'req_gpu_min', 'req_gpu_rec',
             'req_internet_min', 'req_internet_rec',
+            'download_problems_text',
         ]);
 
         $data['google_drive_active'] = $request->boolean('google_drive_active');
@@ -75,6 +78,8 @@ class AdminHowToStartController extends Controller
         } else {
             HowToStart::create($data);
         }
+
+        Cache::forget('homepage_howtostart');
 
         return redirect()->route('admin.howtostart.index')->with('success', __('main.hts_settings_saved'));
     }

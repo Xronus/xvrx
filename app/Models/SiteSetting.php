@@ -39,6 +39,8 @@ class SiteSetting extends Model
         'mail_reset_subject',
         'mail_reset_body',
         'mail_password_reset_rate_limit',
+        'terms_text',
+        'policy_text',
     ];
 
     protected function casts(): array

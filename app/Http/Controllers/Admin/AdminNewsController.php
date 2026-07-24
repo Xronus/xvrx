@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\News;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class AdminNewsController extends Controller
@@ -44,6 +45,8 @@ class AdminNewsController extends Controller
             'images' => $imagePath,
         ]);
 
+        Cache::forget('homepage_news');
+
         return redirect()->route('admin.news.index')->with('success', __('main.news_added'));
     }
 
@@ -77,6 +80,8 @@ class AdminNewsController extends Controller
 
         $news->update($data);
 
+        Cache::forget('homepage_news');
+
         return redirect()->route('admin.news.index')->with('success', __('main.news_updated'));
     }
 
@@ -84,6 +89,8 @@ class AdminNewsController extends Controller
     {
         $this->deleteOldImage($news->getRawOriginal('images'));
         $news->delete();
+
+        Cache::forget('homepage_news');
 
         return redirect()->route('admin.news.index')->with('success', __('main.news_deleted'));
     }

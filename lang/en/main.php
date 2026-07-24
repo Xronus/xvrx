@@ -207,6 +207,8 @@ return [
     'start_game_title' => 'Start Playing Title',
     'start_game_description' => 'Start Playing Description',
     'save_settings' => 'Save Settings',
+    'terms_of_service_text' => 'Terms of Service Text',
+    'privacy_policy_text' => 'Privacy Policy Text',
     'account_parser' => 'Game Accounts Parser',
     'game_accounts' => 'Game Accounts',
     'website_accounts' => 'Website Accounts',

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ShopCategory;
 use App\Models\ShopItem;
+use App\Models\ShopItemType;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -13,7 +14,7 @@ class AdminShopController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = ShopItem::with('category')->orderBy('id', 'desc');
+        $query = ShopItem::with(['category', 'type'])->orderBy('id', 'desc');
 
         if ($request->has('search') && $request->search) {
             $s = $request->search;
@@ -36,8 +37,9 @@ class AdminShopController extends Controller
     public function create(): View
     {
         $categories = ShopCategory::orderBy('sort_order')->get();
+        $types = ShopItemType::ordered()->get();
 
-        return view('admin.shop.create', compact('categories'));
+        return view('admin.shop.create', compact('categories', 'types'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -51,6 +53,7 @@ class AdminShopController extends Controller
             'quantity' => 'integer|min:1',
             'enabled' => 'boolean',
             'sort_order' => 'integer|min:0',
+            'type_id' => 'required|exists:shop_item_types,id',
         ]);
 
         ShopItem::create($validated);
@@ -62,8 +65,9 @@ class AdminShopController extends Controller
     {
         $item = $shop;
         $categories = ShopCategory::orderBy('sort_order')->get();
+        $types = ShopItemType::ordered()->get();
 
-        return view('admin.shop.edit', compact('item', 'categories'));
+        return view('admin.shop.edit', compact('item', 'categories', 'types'));
     }
 
     public function update(Request $request, ShopItem $shop): RedirectResponse
@@ -79,6 +83,7 @@ class AdminShopController extends Controller
             'quantity' => 'integer|min:1',
             'enabled' => 'boolean',
             'sort_order' => 'integer|min:0',
+            'type_id' => 'required|exists:shop_item_types,id',
         ]);
 
         $item->update($validated);

@@ -29,6 +29,8 @@ class Realm extends Model
         'rep',
         'loot',
         'honor',
+        'link_url',
+        'link_text',
     ];
 
     public function getPatchAttribute(): string

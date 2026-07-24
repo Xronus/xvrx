@@ -57,15 +57,36 @@ class ShopService
 
             // Sanitize character name to prevent SOAP command injection
             $safeCharName = preg_replace('/[^a-zA-Z0-9]/', '', $characterName);
+            if (empty($safeCharName)) {
+                DB::rollBack();
+                return ['ok' => false, 'message' => __('main.shop_char_invalid')];
+            }
+
+            // Determine SOAP command action from item type
+            $typeName = $item->type?->name_ru ?? 'items';
+            $action = strtolower($typeName); // "Items" → "items", "Money" → "money"
 
             // Build SOAP command — escape quotes to prevent command injection
             $subject = str_replace('"', '\"', config('shop.mail_subject', 'Shop'));
             $body = str_replace('"', '\"', config('shop.mail_body', 'Thank you for your purchase!'));
-            $command = '.send items ' . $safeCharName . ' "' . $subject . '" "' . $body . '" ' . $item->item_entry . ':' . $item->quantity;
+            $command = '.send ' . $action . ' ' . $safeCharName . ' "' . $subject . '" "' . $body . '" ' . $item->item_entry . ':' . $item->quantity;
 
-            $result = $this->soap->executeCommand($command);
+            // Вызов execute() — он возвращает строку (XML)
+            $xmlResponse = $this->soap->execute($command);
 
-            if (! $result['ok']) {
+            // Парсим XML, чтобы вытащить текст результата
+            $doc = new \DOMDocument();
+            @$doc->loadXML($xmlResponse); // @ подавляет предупреждения, если XML битый
+            $resultNode = $doc->getElementsByTagName('result')->item(0);
+            $soapResultText = $resultNode ? trim($resultNode->nodeValue) : 'Unknown response';
+
+            // Простая эвристика успеха: ищем ключевые фразы от TrinityCore
+            $soapSuccess = strpos($soapResultText, 'Command executed') !== false
+                || strpos($soapResultText, 'OK') !== false
+                || strpos($soapResultText, 'success') !== false
+                || strpos($soapResultText, 'Mail sent') !== false;
+
+            if (! $soapSuccess) {
                 // Refund
                 $user->increment('bonuses', $item->price);
                 DB::rollBack();
@@ -74,10 +95,15 @@ class ShopService
                     'user' => $user->username,
                     'item' => $item->item_entry,
                     'character' => $characterName,
-                    'error' => $result['error'],
+                    'command' => $command,
+                    'soap_response' => $soapResultText,
                 ]);
 
-                return ['ok' => false, 'message' => __('main.shop_purchase_error')];
+                return [
+                    'ok' => false,
+                    'message' => __('main.shop_purchase_error'),
+                    'debug' => $soapResultText,
+                ];
             }
 
             // Log purchase

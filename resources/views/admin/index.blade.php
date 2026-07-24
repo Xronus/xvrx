@@ -92,6 +92,34 @@
                         </div>
                     </div>
 
+                    {{-- Terms of Service --}}
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5 class="mb-3">{{ __('main.terms_of_service_text') }}</h5>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <textarea class="form-control @error('terms_text') is-invalid @enderror" name="terms_text" rows="14">{{ old('terms_text', $settings->terms_text ?? '') }}</textarea>
+                                @error('terms_text')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                <small class="text-muted">{{ __('main.html_hint') }}</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Privacy Policy --}}
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5 class="mb-3">{{ __('main.privacy_policy_text') }}</h5>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="mb-3">
+                                <textarea class="form-control @error('policy_text') is-invalid @enderror" name="policy_text" rows="14">{{ old('policy_text', $settings->policy_text ?? '') }}</textarea>
+                                @error('policy_text')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                <small class="text-muted">{{ __('main.html_hint') }}</small>
+                            </div>
+                        </div>
+                    </div>
+
                     <div style="text-align:right;">
                         <button type="submit" class="btn btn-primary">{{ __('main.save_settings') }}</button>
                     </div>

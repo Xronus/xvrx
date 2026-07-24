@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AdminRaceController;
 use App\Http\Controllers\Admin\AdminRealmController;
 use App\Http\Controllers\Admin\AdminShopCategoryController;
 use App\Http\Controllers\Admin\AdminShopController;
+use App\Http\Controllers\Admin\AdminShopItemTypeController;
 use App\Http\Controllers\Admin\AdminSocialController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminVoteController;
@@ -35,18 +36,43 @@ Route::post('/lang/{locale}', function (string $locale) {
 })->name('locale.switch');
 
 Route::middleware('guest')->group(function () {
-    Route::get('/cp', [LoginController::class, 'showLoginForm'])->name('login')->middleware('throttle:6,1');
+    Route::get('/cp', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/cp', [LoginController::class, 'login'])->middleware('throttle:6,1');
-    Route::get('/cp/forgot-password', [LoginController::class, 'showForgotPasswordForm'])->name('password.request')->middleware('throttle:6,1');
-    Route::post('/cp/forgot-password', [LoginController::class, 'sendPasswordResetLink'])->name('password.email')->middleware('throttle:10,1');
-    Route::get('/cp/reset-password', [LoginController::class, 'showResetForm'])->name('password.reset')->middleware('throttle:6,1');
+    Route::get('/cp/forgot-password', [LoginController::class, 'showForgotPasswordForm'])->name('password.request');
+    Route::post('/cp/forgot-password', [LoginController::class, 'sendPasswordResetLink'])->name('password.email')->middleware('throttle:6,1');
+    Route::get('/cp/reset-password', [LoginController::class, 'showResetForm'])->name('password.reset');
     Route::post('/cp/reset-password', [LoginController::class, 'reset'])->name('password.update')->middleware('throttle:6,1');
-    Route::get('/cp/register', [RegisterController::class, 'showRegistrationForm'])->name('register')->middleware('throttle:6,1');
+    Route::get('/cp/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/cp/register', [RegisterController::class, 'register'])->middleware('throttle:6,1');
 });
 
-Route::middleware(['auth', 'check.banned'])->group(function () {
-    Route::post('/cp/logout', [LoginController::class, 'logout'])->name('logout');
+// Email verification
+Route::get('/email/verify', function () {
+    return view('auth.verify-email');
+})->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {
+    $user = \App\Models\User::findOrFail($id);
+    if (! hash_equals(sha1($user->getEmailForVerification()), (string) $hash)) {
+        abort(403);
+    }
+    if (! $user->hasVerifiedEmail()) {
+        $user->markEmailAsVerified();
+    }
+    if (! auth()->check()) {
+        auth()->login($user);
+    }
+    return redirect()->route('cabinet')->with('success', __('main.email_verified'));
+})->middleware('signed')->name('verification.verify');
+
+Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('status', __('main.verification_sent'));
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
+
+Route::post('/cp/logout', [LoginController::class, 'logout'])->middleware(['auth', 'check.banned'])->name('logout');
+
+Route::middleware(['auth', 'check.banned', 'verified'])->group(function () {
     Route::get('/cp/cabinet', [CabinetController::class, 'index'])->name('cabinet');
     Route::get('/cp/characters', [CabinetController::class, 'characters'])->name('cabinet.characters');
     Route::get('/cp/votes', [VoteController::class, 'index'])->name('cabinet.votes');
@@ -131,6 +157,7 @@ Route::middleware(['auth', 'check.banned', 'admin'])->prefix('powerpuffsiteadmin
     Route::post('/shop/{shop}/toggle', [AdminShopController::class, 'toggle'])->name('shop.toggle');
     Route::resource('shop', AdminShopController::class)->except(['show']);
     Route::resource('shop-categories', AdminShopCategoryController::class)->except(['show']);
+    Route::resource('shop-item-types', AdminShopItemTypeController::class)->except(['show']);
 });
 
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
