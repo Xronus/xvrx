@@ -69,7 +69,15 @@ class ShopService
             // Build SOAP command — escape quotes to prevent command injection
             $subject = str_replace('"', '\"', config('shop.mail_subject', 'Shop'));
             $body = str_replace('"', '\"', config('shop.mail_body', 'Thank you for your purchase!'));
-            $command = '.send ' . $action . ' ' . $safeCharName . ' "' . $subject . '" "' . $body . '" ' . $item->item_entry . ':' . $item->quantity;
+
+            // Format the value part depending on item type
+            if ($action === 'money') {
+                $value = (string) $item->item_entry;                        // "1000000"
+            } else {
+                $value = $item->item_entry . ':' . $item->quantity;         // "12345:1"
+            }
+
+            $command = '.send ' . $action . ' ' . $safeCharName . ' "' . $subject . '" "' . $body . '" ' . $value;
 
             // Вызов execute() — он возвращает строку (XML)
             $xmlResponse = $this->soap->execute($command);

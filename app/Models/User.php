@@ -19,6 +19,9 @@ class User extends Authenticatable implements MustVerifyEmailContract
         'verifier',
         'password',
         'votes',
+        'totp_secret',
+        'totp_confirmed_at',
+        'totp_recovery_codes',
     ];
 
     protected $hidden = [
@@ -31,6 +34,8 @@ class User extends Authenticatable implements MustVerifyEmailContract
         'banned_at',
         'ban_reason',
         'votes',
+        'totp_secret',
+        'totp_recovery_codes',
     ];
 
     protected function casts(): array
@@ -39,6 +44,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
             'email_verified_at' => 'datetime',
             'banned_at' => 'datetime',
             'password' => 'hashed',
+            'totp_confirmed_at' => 'datetime',
         ];
     }
 
@@ -138,5 +144,51 @@ class User extends Authenticatable implements MustVerifyEmailContract
         }
 
         return $value;
+    }
+
+    /**
+     * Check if the user has completed 2FA setup.
+     */
+    public function hasTwoFactorEnabled(): bool
+    {
+        return $this->totp_secret !== null && $this->totp_confirmed_at !== null;
+    }
+
+    /**
+     * Get the decoded TOTP secret.
+     */
+    public function getTotpSecret(): ?string
+    {
+        if (! $this->totp_secret) {
+            return null;
+        }
+        $decoded = base64_decode($this->totp_secret, true);
+
+        return $decoded !== false ? $decoded : null;
+    }
+
+    /**
+     * Get decoded recovery codes (hashes).
+     */
+    public function getRecoveryCodes(): array
+    {
+        if (! $this->totp_recovery_codes) {
+            return [];
+        }
+        $decoded = json_decode($this->totp_recovery_codes, true);
+
+        return is_array($decoded) ? $decoded : [];
+    }
+
+    /**
+     * Disable 2FA for this user.
+     */
+    public function disableTwoFactor(): void
+    {
+        $this->forceFill([
+            'totp_secret' => null,
+            'totp_confirmed_at' => null,
+            'totp_recovery_codes' => null,
+        ])->save();
     }
 }

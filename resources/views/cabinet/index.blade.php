@@ -72,6 +72,27 @@
                                 <a href="{{ route('admin.index') }}" class="btn btn-primary">{{ __('main.go_to_admin') }}</a>
                             </div>
                         </div>
+
+                        <div class="nk-block">
+                            <div class="xvrx-cabinet-action-panel">
+                                <span class="xvrx-cabinet-action-icon"><em class="icon ni ni-lock-alt"></em></span>
+                                <div>
+                                    <h6>{{ __('main.two_factor_auth') }}</h6>
+                                    @if($user->hasTwoFactorEnabled())
+                                    <p>{{ __('main.two_factor_enabled', ['date' => $user->totp_confirmed_at->format('d.m.Y')]) }}</p>
+                                    @else
+                                    <p>{{ __('main.two_factor_not_setup') }}</p>
+                                    @endif
+                                </div>
+                                <a href="{{ route('admin.2fa.setup') }}" class="btn btn-outline-primary">
+                                    @if($user->hasTwoFactorEnabled())
+                                    {{ __('main.two_factor_manage') }}
+                                    @else
+                                    {{ __('main.two_factor_setup') }}
+                                    @endif
+                                </a>
+                            </div>
+                        </div>
                         @endif
 
                         <div class="nk-block">

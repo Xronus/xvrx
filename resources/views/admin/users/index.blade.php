@@ -108,6 +108,15 @@
                                     <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-sm btn-primary" title="{{ __('main.edit') }}">
                                         <i class="ri-pencil-line"></i>
                                     </a>
+                                    @if($user->hasTwoFactorEnabled())
+                                    <form action="{{ route('admin.users.reset-2fa', $user) }}" method="POST" style="display:inline;"
+                                          onsubmit="return confirm('{{ __('main.two_factor_reset_confirm', ['username' => $user->username]) }}')">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-warning ms-1" title="{{ __('main.two_factor_reset') }}">
+                                            <i class="ri-shield-keyhole-line"></i>
+                                        </button>
+                                    </form>
+                                    @endif
                                 </td>
                             </tr>
                             @empty

@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Http\Middleware\CheckBanned;
+use App\Http\Middleware\CheckTwoFactorAuth;
 use App\Models\LanguageSetting;
 use App\Models\SocialLink;
+use App\Services\TwoFactorAuthService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -14,6 +16,9 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind('check.banned', CheckBanned::class);
+        $this->app->bind('2fa', CheckTwoFactorAuth::class);
+
+        $this->app->singleton(TwoFactorAuthService::class);
 
         // Load helpers (also in composer.json autoload — belt and suspenders)
         require_once app_path('Helpers/WowIconHelper.php');

@@ -80,6 +80,22 @@ class AdminUserController extends Controller
         return redirect()->route('admin.users.index')->with('success', __('main.user_unbanned'));
     }
 
+    /**
+     * Reset 2FA for a user (admin action).
+     */
+    public function resetTwoFactor(User $user): RedirectResponse
+    {
+        $user->disableTwoFactor();
+
+        Log::info('2FA reset by admin', [
+            'admin' => auth()->user()->username,
+            'user' => $user->username,
+        ]);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', __('main.two_factor_disabled_by_admin', ['username' => $user->username]));
+    }
+
     public function edit(User $user)
     {
         // Game ban info

@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminVoteController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\TwoFactorAuthController;
 use App\Http\Controllers\CabinetController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LadderController;
@@ -72,6 +73,16 @@ Route::post('/email/verification-notification', function (\Illuminate\Http\Reque
 
 Route::post('/cp/logout', [LoginController::class, 'logout'])->middleware(['auth', 'check.banned'])->name('logout');
 
+// 2FA routes (accessible to any authenticated, non-banned user)
+Route::middleware(['auth', 'check.banned'])->group(function () {
+    Route::get('/cp/2fa/setup', [TwoFactorAuthController::class, 'showSetup'])->name('admin.2fa.setup');
+    Route::post('/cp/2fa/generate', [TwoFactorAuthController::class, 'generateSecret'])->name('admin.2fa.generate');
+    Route::post('/cp/2fa/confirm', [TwoFactorAuthController::class, 'confirmSetup'])->name('admin.2fa.confirm');
+    Route::post('/cp/2fa/disable', [TwoFactorAuthController::class, 'disable'])->name('admin.2fa.disable');
+    Route::get('/cp/2fa/challenge', [TwoFactorAuthController::class, 'showChallenge'])->name('admin.2fa.challenge');
+    Route::post('/cp/2fa/verify', [TwoFactorAuthController::class, 'verifyChallenge'])->name('admin.2fa.verify')->middleware('throttle:6,1');
+});
+
 Route::middleware(['auth', 'check.banned', 'verified'])->group(function () {
     Route::get('/cp/cabinet', [CabinetController::class, 'index'])->name('cabinet');
     Route::get('/cp/characters', [CabinetController::class, 'characters'])->name('cabinet.characters');
@@ -81,7 +92,7 @@ Route::middleware(['auth', 'check.banned', 'verified'])->group(function () {
     Route::post('/cp/shop/buy', [ShopController::class, 'buy'])->name('shop.buy')->middleware('throttle:10,1');
 });
 
-Route::middleware(['auth', 'check.banned', 'admin'])->prefix('powerpuffsiteadmin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'check.banned', 'admin', '2fa'])->prefix('powerpuffsiteadmin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('index');
     Route::put('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
     Route::get('/languages', [AdminController::class, 'languages'])->name('languages.index');
@@ -153,6 +164,7 @@ Route::middleware(['auth', 'check.banned', 'admin'])->prefix('powerpuffsiteadmin
     Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
     Route::post('/users/{user}/ban', [AdminUserController::class, 'ban'])->name('users.ban');
     Route::post('/users/{user}/unban', [AdminUserController::class, 'unban'])->name('users.unban');
+    Route::post('/users/{user}/reset-2fa', [AdminUserController::class, 'resetTwoFactor'])->name('users.reset-2fa');
 
     Route::post('/shop/{shop}/toggle', [AdminShopController::class, 'toggle'])->name('shop.toggle');
     Route::resource('shop', AdminShopController::class)->except(['show']);
