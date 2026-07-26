@@ -43,6 +43,7 @@ class SocialLink extends Model
             str_contains($needle, 'youtube') => 'ri-youtube-fill',
             str_contains($needle, 'facebook') => 'ri-facebook-fill',
             str_contains($needle, 'twitter'), str_contains($needle, 'x.com') => 'ri-twitter-x-fill',
+            str_contains($needle, 'mail'), str_contains($needle, 'email'), str_contains($needle, 'почта') => 'ri-mail-fill',
             default => 'ri-links-fill',
         };
     }

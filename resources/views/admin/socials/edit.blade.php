@@ -50,6 +50,7 @@
                             <option value="ri-youtube-fill" {{ $currentIcon == 'ri-youtube-fill' ? 'selected' : '' }}>YouTube</option>
                             <option value="ri-facebook-fill" {{ $currentIcon == 'ri-facebook-fill' ? 'selected' : '' }}>Facebook</option>
                             <option value="ri-twitter-x-fill" {{ $currentIcon == 'ri-twitter-x-fill' ? 'selected' : '' }}>X / Twitter</option>
+                            <option value="ri-mail-fill" {{ $currentIcon == 'ri-mail-fill' ? 'selected' : '' }}>Почта</option>
                         </select>
                         @error('class')
                         <div class="invalid-feedback">{{ $message }}</div>

@@ -112,6 +112,9 @@ return [
     'login_error' => 'Error de inicio de sesión',
     'validation_error' => 'Error de validación',
     'server_error' => 'Error del servidor',
+    'retry' => 'Reintentar',
+    'unknown' => 'Desconocido',
+    'no_data' => 'Sin datos',
     'captcha_validation_error' => 'Error de verificación del captcha. Actualice la página e intente de nuevo.',
 
     'shop_error_title' => 'Error',

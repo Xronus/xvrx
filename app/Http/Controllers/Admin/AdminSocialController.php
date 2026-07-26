@@ -94,7 +94,7 @@ class AdminSocialController extends Controller
                 'string',
                 'max:255',
                 function (string $attribute, mixed $value, \Closure $fail) {
-                    if ($value === '#' || preg_match('/^https?:\/\//i', (string) $value)) {
+                    if ($value === '#' || preg_match('/^(?:https?:\/\/|mailto:)/i', (string) $value)) {
                         return;
                     }
 

@@ -48,6 +48,7 @@
                             <option value="ri-youtube-fill" {{ old('class') == 'ri-youtube-fill' ? 'selected' : '' }}>YouTube</option>
                             <option value="ri-facebook-fill" {{ old('class') == 'ri-facebook-fill' ? 'selected' : '' }}>Facebook</option>
                             <option value="ri-twitter-x-fill" {{ old('class') == 'ri-twitter-x-fill' ? 'selected' : '' }}>X / Twitter</option>
+                            <option value="ri-mail-fill" {{ old('class') == 'ri-mail-fill' ? 'selected' : '' }}>Почта</option>
                         </select>
                         @error('class')
                         <div class="invalid-feedback">{{ $message }}</div>

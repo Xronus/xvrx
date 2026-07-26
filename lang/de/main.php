@@ -112,6 +112,9 @@ return [
     'login_error' => 'Anmeldefehler',
     'validation_error' => 'Validierungsfehler',
     'server_error' => 'Serverfehler',
+    'retry' => 'Wiederholen',
+    'unknown' => 'Unbekannt',
+    'no_data' => 'Keine Daten',
     'captcha_validation_error' => 'Captcha-Überprüfung fehlgeschlagen. Bitte laden Sie die Seite neu und versuchen Sie es erneut.',
 
     'shop_error_title' => 'Fehler',

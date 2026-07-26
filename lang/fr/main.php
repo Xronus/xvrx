@@ -112,6 +112,9 @@ return [
     'login_error' => 'Erreur de connexion',
     'validation_error' => 'Erreur de validation',
     'server_error' => 'Erreur du serveur',
+    'retry' => 'Réessayer',
+    'unknown' => 'Inconnu',
+    'no_data' => 'Aucune donnée',
     'captcha_validation_error' => 'Échec de la vérification du captcha. Veuillez actualiser la page et réessayer.',
 
     'shop_error_title' => 'Erreur',

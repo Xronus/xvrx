@@ -40,7 +40,7 @@
                                         <span class="xvrx-cabinet-stat-icon"><em class="icon ni ni-users"></em></span>
                                         <div>
                                             <span class="xvrx-shop-panel-label">{{ __('main.characters_count') }}</span>
-                                            <strong>{{ count($characters) }}</strong>
+                                            <strong id="character-count"><span class="spinner-border spinner-border-sm" role="status"></span></strong>
                                         </div>
                                     </div>
                                 </div>
@@ -111,3 +111,28 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+(function() {
+    var el = document.getElementById('character-count');
+    fetch('{{ route('api.characters') }}', {
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        if (data.ok) {
+            el.textContent = data.count;
+        } else {
+            el.textContent = '—';
+        }
+    })
+    .catch(function() {
+        el.textContent = '—';
+    });
+})();
+</script>
+@endpush

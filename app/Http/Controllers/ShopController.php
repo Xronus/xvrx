@@ -4,11 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\ShopCategory;
 use App\Models\ShopItem;
-use App\Models\SiteSetting;
 use App\Services\ShopService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class ShopController extends Controller
@@ -33,10 +31,7 @@ class ShopController extends Controller
             ->get()
             ->groupBy('subcategory_id');
 
-        // Get characters for the purchase dropdown
-        $characters = $this->getCharacters($user);
-
-        return view('cabinet.shop', compact('user', 'settings', 'categories', 'items', 'characters'));
+        return view('cabinet.shop', compact('user', 'settings', 'categories', 'items'));
     }
 
     public function buy(Request $request, ShopService $shop): JsonResponse
@@ -52,29 +47,5 @@ class ShopController extends Controller
         $result = $shop->buy($user, $item, $request->character_name);
 
         return response()->json($result);
-    }
-
-    private function getCharacters($user): array
-    {
-        try {
-            $accountId = DB::connection('game_auth')
-                ->table('account')
-                ->where('username', strtoupper($user->username))
-                ->value('id');
-
-            if (! $accountId) {
-                return [];
-            }
-
-            return DB::connection('game_char')
-                ->table('characters')
-                ->where('account', $accountId)
-                ->select('name', 'level')
-                ->orderBy('level', 'desc')
-                ->get()
-                ->toArray();
-        } catch (\Exception $e) {
-            return [];
-        }
     }
 }

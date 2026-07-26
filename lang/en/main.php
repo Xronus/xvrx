@@ -112,6 +112,9 @@ return [
     'login_error' => 'Login Error',
     'validation_error' => 'Validation Error',
     'server_error' => 'Server Error',
+    'retry' => 'Retry',
+    'unknown' => 'Unknown',
+    'no_data' => 'No data',
     'captcha_validation_error' => 'Captcha verification failed. Please refresh the page and try again.',
 
     'shop_error_title' => 'Error',

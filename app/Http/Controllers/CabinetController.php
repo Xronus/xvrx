@@ -2,35 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CharacterClass;
-use App\Models\Race;
-use App\Models\SiteSetting;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use App\Services\CharacterService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CabinetController extends Controller
 {
-    public function __construct()
-    {
+    public function __construct(
+        private CharacterService $characterService,
+    ) {
         $this->middleware('auth');
     }
 
     public function index()
     {
         $user = auth()->user();
-        $characters = $this->getCharacters($user);
         $settings = site_settings();
 
-        return view('cabinet.index', compact('user', 'characters', 'settings'));
+        return view('cabinet.index', compact('user', 'settings'));
     }
 
     public function characters()
     {
         $user = auth()->user();
-        $characters = $this->getCharacters($user);
         $settings = site_settings();
 
-        return view('cabinet.characters', compact('user', 'characters', 'settings'));
+        return view('cabinet.characters', compact('user', 'settings'));
     }
 
     public function votes()
@@ -41,43 +38,26 @@ class CabinetController extends Controller
         return view('cabinet.votes', compact('user', 'settings'));
     }
 
-    private function getCharacters($user): Collection
+    public function apiCharacters(Request $request): JsonResponse
     {
-        $characters = collect();
-
         try {
-            $accountId = DB::connection('game_auth')
-                ->table('account')
-                ->where('username', strtoupper($user->username))
-                ->value('id');
+            $user = auth()->user();
+            $mode = $request->query('mode');
+            $full = !in_array($mode, ['minimal'], true);
+            $characters = $this->characterService->getCharacters($user, $full);
 
-            if (! $accountId) {
-                return $characters;
-            }
-
-            $races = Race::pluck('name', 'race_id')->toArray();
-            $factions = Race::pluck('faction', 'race_id')->toArray();
-            $classes = CharacterClass::pluck('name', 'class_id')->toArray();
-
-            $characters = DB::connection('game_char')
-                ->table('characters')
-                ->where('account', $accountId)
-                ->select('name', 'level', 'class', 'race', 'gender', 'online', 'logout_time')
-                ->orderBy('level', 'desc')
-                ->get()
-                ->map(function ($char) use ($races, $factions, $classes) {
-                    $char->class_name = $classes[$char->class] ?? __('main.unknown');
-                    $char->race_name = $races[$char->race] ?? __('main.unknown');
-                    $char->faction_id = $factions[$char->race] ?? 0;
-                    $char->faction = $char->faction_id === 0 ? __('main.alliance') : __('main.horde');
-                    $char->last_login = $char->logout_time > 0 ? date('d.m.Y H:i', $char->logout_time) : __('main.no_data');
-
-                    return $char;
-                });
+            return response()->json([
+                'ok' => true,
+                'count' => $characters->count(),
+                'characters' => $characters->values(),
+            ]);
         } catch (\Exception $e) {
-            \Log::error('Cabinet: failed to fetch characters for user '.$user->username.': '.$e->getMessage());
-        }
+            \Log::error('API characters error for user '.auth()->user()?->username.': '.get_class($e));
 
-        return $characters;
+            return response()->json([
+                'ok' => false,
+                'message' => __('main.server_error'),
+            ]);
+        }
     }
 }

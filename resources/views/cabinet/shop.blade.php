@@ -65,17 +65,9 @@
                                                     <h2><a href="https://www.wowhead.com/ru/item={{ $item->item_entry }}" target="_blank" rel="noopener">{{ $item->name_ru ?: '#' . $item->item_entry }}</a></h2>
                                                     <div class="xvrx-shop-card-price">{{ $item->price }} <em class="icon ni ni-coins"></em></div>
 
-                                                    @if(count($characters))
-                                                    <select class="form-select form-select-sm xvrx-shop-character-select" id="char-select-{{ $item->id }}" onchange="document.getElementById('buy-btn-{{ $item->id }}').disabled = !this.value">
-                                                        <option value="">{{ __('main.shop_select_char') }}</option>
-                                                        @foreach($characters as $c)
-                                                        <option value="{{ $c->name }}">{{ $c->name }} ({{ $c->level }})</option>
-                                                        @endforeach
-                                                    </select>
-                                                    <button class="btn btn-primary xvrx-shop-buy-btn" id="buy-btn-{{ $item->id }}" onclick="buyItem({{ $item->id }})" disabled>{{ __('main.shop_buy') }}</button>
-                                                    @else
-                                                    <p class="xvrx-shop-empty-character">{{ __('main.no_characters') }}</p>
-                                                    @endif
+                                                    <div class="xvrx-shop-char-area" data-item-id="{{ $item->id }}">
+                                                        <span class="spinner-border spinner-border-sm text-secondary" role="status"></span>
+                                                    </div>
                                                 </div>
                                             </article>
                                             @endforeach
@@ -105,6 +97,49 @@ function filterCat(catId) {
         a.classList.toggle('is-active', a.dataset.cat === selectedCat || (catId === 'all' && !a.dataset.cat));
     });
 }
+
+(function loadShopCharacters() {
+    var LABELS = {
+        selectChar: '{{ __('main.shop_select_char') }}',
+        buy: '{{ __('main.shop_buy') }}',
+        noChars: '{{ __('main.no_characters') }}'
+    };
+
+    function esc(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    fetch('{{ route('api.characters', ['mode' => 'minimal']) }}', {
+        headers: {
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+        var areas = document.querySelectorAll('.xvrx-shop-char-area');
+        areas.forEach(function(area) {
+            var itemId = area.dataset.itemId;
+            if (data.ok && data.count > 0) {
+                var html = '<select class="form-select form-select-sm xvrx-shop-character-select" id="char-select-' + itemId + '" onchange="document.getElementById(\'buy-btn-' + itemId + '\').disabled = !this.value">';
+                html += '<option value="">' + LABELS.selectChar + '</option>';
+                data.characters.forEach(function(c) {
+                    html += '<option value="' + esc(c.name) + '">' + esc(c.name) + ' (' + Number(c.level) + ')</option>';
+                });
+                html += '</select>';
+                html += '<button class="btn btn-primary xvrx-shop-buy-btn" id="buy-btn-' + itemId + '" onclick="buyItem(' + itemId + ')" disabled>' + LABELS.buy + '</button>';
+                area.innerHTML = html;
+            } else {
+                area.innerHTML = '<p class="xvrx-shop-empty-character">' + LABELS.noChars + '</p>';
+            }
+        });
+    })
+    .catch(function() {
+        document.querySelectorAll('.xvrx-shop-char-area').forEach(function(area) {
+            area.innerHTML = '<p class="xvrx-shop-empty-character">' + LABELS.noChars + '</p>';
+        });
+    });
+})();
 function showShopModal(msg, ok) {
     document.getElementById('shop-modal-icon').innerHTML = ok
         ? '<em class="icon ni ni-check-circle" style="font-size:48px;color:#28a745;"></em>'
@@ -130,7 +165,7 @@ function buyItem(itemId) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
             'Accept': 'application/json'
         },
         body: JSON.stringify({item_id: itemId, character_name: charName})

@@ -90,6 +90,7 @@ Route::middleware(['auth', 'check.banned', 'verified'])->group(function () {
     Route::post('/cp/votes/{voteTop}/claim', [VoteController::class, 'claim'])->name('cabinet.votes.claim')->middleware('throttle:6,1');
     Route::get('/cp/shop', [ShopController::class, 'index'])->name('shop');
     Route::post('/cp/shop/buy', [ShopController::class, 'buy'])->name('shop.buy')->middleware('throttle:10,1');
+    Route::get('/cp/api/characters', [CabinetController::class, 'apiCharacters'])->name('api.characters')->middleware('throttle:30,1');
 });
 
 Route::middleware(['auth', 'check.banned', 'admin', '2fa'])->prefix('powerpuffsiteadmin')->name('admin.')->group(function () {
