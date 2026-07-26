@@ -23,10 +23,13 @@ class ShopController extends Controller
         $user = auth()->user();
         $settings = site_settings();
 
-        $categories = ShopCategory::topLevel()->get();
+        $categories = ShopCategory::topLevel()
+            ->with('subcategories')
+            ->get();
 
-        // Load enabled items grouped by category
+        // Load enabled items grouped by subcategory.
         $items = ShopItem::enabled()
+            ->with('category')
             ->get()
             ->groupBy('subcategory_id');
 

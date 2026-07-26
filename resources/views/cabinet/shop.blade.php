@@ -35,7 +35,16 @@
                                         <span class="xvrx-shop-panel-label">{{ __('main.shop_categories') }}</span>
                                         <a href="#" class="shop-cat-link is-active" onclick="event.preventDefault();filterCat('all')">{{ __('main.shop_all_categories') }}</a>
                                         @foreach($categories as $cat)
-                                        <a href="#" class="shop-cat-link" data-cat="{{ $cat->id }}" onclick="event.preventDefault();filterCat({{ $cat->id }})">{{ $cat->localizedName() }}</a>
+                                            <div class="xvrx-shop-category-group">
+                                                <a href="#" class="shop-cat-link xvrx-shop-parent-link" data-cat="{{ $cat->id }}" onclick="event.preventDefault();filterCat({{ $cat->id }})">{{ $cat->localizedName() }}</a>
+                                                @if($cat->subcategories->isNotEmpty())
+                                                    <div class="xvrx-shop-subcategories">
+                                                        @foreach($cat->subcategories as $subcat)
+                                                            <a href="#" class="shop-cat-link xvrx-shop-subcat-link" data-cat="{{ $subcat->id }}" data-parent="{{ $cat->id }}" onclick="event.preventDefault();filterCat({{ $subcat->id }})">{{ $subcat->localizedName() }}</a>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            </div>
                                         @endforeach
                                     </div>
                                 </aside>
@@ -44,7 +53,11 @@
                                     <div class="xvrx-shop-grid" id="shop-items">
                                         @foreach($items as $catId => $catItems)
                                             @foreach($catItems as $item)
-                                            <article class="shop-item xvrx-shop-card" data-cat="{{ $catId }}">
+                                            @php
+                                                $itemCategory = $item->category;
+                                                $parentCatId = $itemCategory && (int) $itemCategory->parent_id !== 0 ? $itemCategory->parent_id : $catId;
+                                            @endphp
+                                            <article class="shop-item xvrx-shop-card" data-cat="{{ $catId }}" data-parent="{{ $parentCatId }}">
                                                 <a href="https://www.wowhead.com/ru/item={{ $item->item_entry }}" target="_blank" rel="noopener" class="xvrx-shop-card-icon">
                                                     <img src="{{ $item->icon_name ? 'https://wow.zamimg.com/images/wow/icons/large/' . $item->icon_name . '.jpg' : 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg' }}" alt="">
                                                 </a>
@@ -82,11 +95,14 @@
 @push('scripts')
 <script>
 function filterCat(catId) {
+    var selectedCat = String(catId);
+
     document.querySelectorAll('.shop-item').forEach(function(item) {
-        item.style.display = (catId === 'all' || item.dataset.cat === String(catId)) ? '' : 'none';
+        item.style.display = (catId === 'all' || item.dataset.cat === selectedCat || item.dataset.parent === selectedCat) ? '' : 'none';
     });
+
     document.querySelectorAll('.shop-cat-link').forEach(function(a) {
-        a.classList.toggle('is-active', a.dataset.cat === String(catId) || (catId === 'all' && !a.dataset.cat));
+        a.classList.toggle('is-active', a.dataset.cat === selectedCat || (catId === 'all' && !a.dataset.cat));
     });
 }
 function showShopModal(msg, ok) {

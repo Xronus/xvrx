@@ -446,6 +446,42 @@ input[type="password"] {
     text-decoration: none;
 }
 
+.xvrx-register-agreement {
+    margin-top: -2px;
+    padding-left: 1.45rem;
+}
+
+.xvrx-register-agreement .custom-control-input {
+    margin-top: .2rem;
+}
+
+.xvrx-register-agreement .custom-control-label {
+    margin: 0;
+    color: var(--xvrx-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.xvrx-register-agreement .custom-control-label::before,
+.xvrx-register-agreement .custom-control-label::after {
+    top: .16rem;
+}
+
+.xvrx-register-agreement a {
+    color: var(--xvrx-gold-strong) !important;
+    font-weight: 900;
+    text-decoration: underline;
+    text-decoration-color: rgba(240, 212, 138, .46);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+}
+
+.xvrx-register-agreement a:hover,
+.xvrx-register-agreement a:focus {
+    color: var(--xvrx-gold-strong) !important;
+    text-decoration-color: rgba(240, 212, 138, .9);
+}
+
 .xvrx-msg-success {
     color: #9ee8c7 !important;
 }
@@ -711,6 +747,209 @@ input[type="password"] {
 .xvrx-cabinet-action-panel .btn {
     margin-left: auto;
     white-space: nowrap;
+}
+
+.xvrx-two-factor-page {
+    max-width: 1120px;
+    padding-right: 0;
+}
+
+.xvrx-two-factor-page,
+.xvrx-two-factor-page .nk-block-title,
+.xvrx-two-factor-page .title,
+.xvrx-two-factor-page h5,
+.xvrx-two-factor-page h6,
+.xvrx-two-factor-page p,
+.xvrx-two-factor-page label,
+.xvrx-two-factor-page input,
+.xvrx-two-factor-page button,
+.xvrx-two-factor-page a {
+    font-family: "LatoLocal", Arial, sans-serif;
+    letter-spacing: 0;
+}
+
+.xvrx-two-factor-page .xvrx-cabinet-hero {
+    min-height: 150px;
+}
+
+.xvrx-two-factor-page .xvrx-cabinet-hero .nk-block-title {
+    font-size: clamp(30px, 4vw, 44px) !important;
+    font-weight: 900;
+    line-height: 1.08 !important;
+}
+
+.xvrx-two-factor-page .xvrx-cabinet-eyebrow {
+    letter-spacing: .04em;
+}
+
+.xvrx-two-factor-card {
+    border: 1px solid rgba(214, 185, 107, .2);
+    border-radius: 8px;
+    background:
+        linear-gradient(180deg, rgba(35, 31, 25, .9), rgba(18, 20, 24, .88)),
+        rgba(18, 20, 24, .88);
+    box-shadow: 0 20px 52px rgba(0, 0, 0, .34);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+.xvrx-two-factor-card-inner {
+    padding: 24px;
+}
+
+.xvrx-two-factor-card .title {
+    margin: 0 0 10px;
+    color: var(--xvrx-gold-strong);
+}
+
+.xvrx-two-factor-status {
+    border-color: rgba(214, 185, 107, .28);
+    background:
+        linear-gradient(180deg, rgba(33, 37, 31, .9), rgba(13, 19, 17, .88)),
+        rgba(18, 20, 24, .9);
+}
+
+.xvrx-two-factor-intro,
+.xvrx-two-factor-challenge,
+.xvrx-two-factor-form,
+.xvrx-two-factor-links {
+    text-align: center;
+}
+
+.xvrx-two-factor-intro .xvrx-cabinet-action-icon {
+    margin: 0 auto 18px;
+}
+
+.xvrx-two-factor-grid {
+    display: grid;
+    grid-template-columns: minmax(240px, .9fr) minmax(260px, 1fr);
+    gap: 22px;
+    align-items: start;
+}
+
+.xvrx-two-factor-qr-panel,
+.xvrx-two-factor-confirm {
+    min-height: 100%;
+    padding: 20px;
+    border: 1px solid rgba(214, 185, 107, .16);
+    border-radius: 8px;
+    background: rgba(5, 8, 13, .42);
+    text-align: center;
+}
+
+.xvrx-two-factor-qr {
+    display: grid;
+    place-items: center;
+    margin: 18px auto;
+}
+
+.xvrx-two-factor-qr-image {
+    width: min(100%, 240px);
+    height: auto;
+    padding: 12px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 16px 34px rgba(0, 0, 0, .28);
+}
+
+.xvrx-two-factor-secret,
+.xvrx-two-factor-recovery-code {
+    display: block;
+    padding: 11px 12px;
+    border: 1px solid rgba(214, 185, 107, .18);
+    border-radius: 7px;
+    color: var(--xvrx-gold-strong);
+    background: rgba(4, 7, 11, .72);
+    font-size: 13px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.xvrx-two-factor-code-input {
+    width: min(100%, 220px);
+    margin: 0 auto;
+    font-size: 24px !important;
+    letter-spacing: .42em;
+    text-indent: .42em;
+}
+
+.xvrx-two-factor-form {
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+.xvrx-two-factor-challenge-card {
+    display: grid;
+    justify-items: center;
+    gap: 18px;
+    padding-top: 28px;
+    padding-bottom: 28px;
+}
+
+.xvrx-two-factor-challenge-card .xvrx-two-factor-intro {
+    max-width: 560px;
+}
+
+.xvrx-two-factor-primary {
+    min-width: 180px;
+    margin-top: 14px;
+}
+
+.xvrx-two-factor-links {
+    margin-top: 18px;
+}
+
+.xvrx-two-factor-links .btn-link {
+    color: var(--xvrx-gold-strong);
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.xvrx-two-factor-secondary-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.xvrx-two-factor-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 14px;
+    border: 1px solid rgba(214, 185, 107, .28);
+    border-radius: 7px;
+    color: var(--xvrx-gold-strong);
+    background: rgba(7, 11, 17, .48);
+    font-size: 13px;
+    font-weight: 900;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.xvrx-two-factor-ghost:hover,
+.xvrx-two-factor-ghost:focus {
+    color: var(--xvrx-gold-strong);
+    background: rgba(214, 185, 107, .08);
+}
+
+.xvrx-two-factor-recovery-form {
+    width: min(100%, 420px);
+    margin: 2px auto 0;
+    padding: 18px;
+    border: 1px solid rgba(214, 185, 107, .14);
+    border-radius: 8px;
+    background: rgba(5, 8, 13, .38);
+}
+
+.xvrx-two-factor-recovery-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin: 18px 0;
 }
 
 .xvrx-cabinet-head {
@@ -2148,6 +2387,39 @@ body.xvrx-home .xvrx-header:not(.is-scrolled) .xvrx-nav a {
     transition: background .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
 }
 
+.xvrx-shop-category-group {
+    display: grid;
+    gap: 5px;
+}
+
+.xvrx-shop-parent-link {
+    color: rgba(244, 239, 228, .86);
+}
+
+.xvrx-shop-subcategories {
+    display: grid;
+    gap: 4px;
+    padding-left: 10px;
+}
+
+.xvrx-shop-subcat-link {
+    min-height: 32px;
+    padding-left: 14px;
+    font-size: 13px;
+    font-weight: 800;
+    color: rgba(244, 239, 228, .66);
+    background: rgba(3, 6, 11, .18);
+}
+
+.xvrx-shop-subcat-link::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    margin-right: 9px;
+    border-radius: 50%;
+    background: rgba(214, 185, 107, .42);
+}
+
 .shop-cat-link:hover,
 .shop-cat-link.is-active {
     border-color: rgba(214, 185, 107, .34);
@@ -2368,6 +2640,11 @@ body.xvrx-home .xvrx-header:not(.is-scrolled) .xvrx-nav a {
         padding-right: 78px;
     }
 
+    .xvrx-two-factor-page {
+        max-width: 100%;
+        padding-right: 0;
+    }
+
     .xvrx-shop-page {
         max-width: 100%;
         padding-right: 78px;
@@ -2418,6 +2695,10 @@ body.xvrx-home .xvrx-header:not(.is-scrolled) .xvrx-nav a {
         padding-right: 0;
     }
 
+    .xvrx-two-factor-page {
+        max-width: 100%;
+    }
+
     .xvrx-cabinet-hero,
     .xvrx-cabinet-head,
     .xvrx-cabinet-action-panel,
@@ -2429,6 +2710,18 @@ body.xvrx-home .xvrx-header:not(.is-scrolled) .xvrx-nav a {
     .xvrx-cabinet-hero-balance,
     .xvrx-cabinet-head-count,
     .xvrx-cabinet-action-panel .btn {
+        width: 100%;
+    }
+
+    .xvrx-two-factor-card-inner {
+        padding: 20px;
+    }
+
+    .xvrx-two-factor-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .xvrx-two-factor-code-input {
         width: 100%;
     }
 

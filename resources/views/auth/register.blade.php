@@ -67,11 +67,13 @@
                                     </div>
                                     @endif
                                     <div class="form-group">
-                                        <div class="custom-control custom-control-xs custom-checkbox flex-wrap">
+                                        <div class="custom-control custom-control-xs custom-checkbox flex-wrap xvrx-register-agreement">
                                             <input type="checkbox" class="custom-control-input" id="ok" name="ok" value="1" checked required>
                                             <label class="custom-control-label" for="ok">
-                                                {{ __('main.agree_to') }} <a tabindex="-1" href="{{ route('terms') }}">{{ __('main.terms_of_service') }}</a> &amp;
-                                                <a tabindex="-1" href="{{ route('policy') }}">{{ __('main.privacy_policy') }}</a>.
+                                                {{ __('main.agree_to') }}
+                                                <a href="{{ route('terms') }}">{{ __('main.terms_of_service') }}</a>
+                                                &amp;
+                                                <a href="{{ route('policy') }}">{{ __('main.privacy_policy') }}</a>.
                                             </label>
                                         </div>
                                     </div>
