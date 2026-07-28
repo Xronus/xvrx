@@ -201,7 +201,7 @@ class AdminUserController extends Controller
                 DB::connection('game_auth')->table('account_banned')->insert([
                     'id' => $gameAccId,
                     'bandate' => time(),
-                    'unbandate' => 0,
+                    'unbandate' => strtotime('+100 years'),
                     'bannedby' => auth()->user()->username,
                     'banreason' => $reason,
                     'active' => 1,
@@ -210,7 +210,7 @@ class AdminUserController extends Controller
                 DB::connection('game_auth')->table('account_banned')
                     ->where('id', $existingBan->id)
                     ->where('bandate', $existingBan->bandate)
-                    ->update(['active' => 0, 'unbandate' => time()]);
+                    ->update(['active' => 0, 'unbandate' => 0]);
             } elseif ($shouldBan && $currentlyBanned && $reason) {
                 DB::connection('game_auth')->table('account_banned')
                     ->where('id', $existingBan->id)
