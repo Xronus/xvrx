@@ -54,6 +54,7 @@ class AdminUserController extends Controller
             return DB::connection('game_auth')
                 ->table('account_banned')
                 ->where('active', 1)
+                ->where('bandate', '<=', time())
                 ->where(function ($q) {
                     $q->where('unbandate', 0)
                         ->orWhere('unbandate', '>', time());
@@ -110,11 +111,11 @@ class AdminUserController extends Controller
                 ->value('id');
 
             if ($gameAccId) {
-                // TrinityCore: account_banned.id = account ID (PK)
                 $gameBan = DB::connection('game_auth')
                     ->table('account_banned')
                     ->where('id', $gameAccId)
                     ->where('active', 1)
+                    ->where('bandate', '<=', time())
                     ->where(function ($q) {
                         $q->where('unbandate', 0)
                             ->orWhere('unbandate', '>', time());
@@ -182,11 +183,12 @@ class AdminUserController extends Controller
                 return;
             }
 
-            // TrinityCore: account_banned.id = account ID (PK)
+            // account_banned: id (account ID FK), bandate (PK), unbandate, bannedby, banreason, active
             $existingBan = DB::connection('game_auth')
                 ->table('account_banned')
                 ->where('id', $gameAccId)
                 ->where('active', 1)
+                ->where('bandate', '<=', time())
                 ->where(function ($q) {
                     $q->where('unbandate', 0)
                         ->orWhere('unbandate', '>', time());
@@ -197,7 +199,7 @@ class AdminUserController extends Controller
 
             if ($shouldBan && !$currentlyBanned) {
                 DB::connection('game_auth')->table('account_banned')->insert([
-                    'account' => $gameAccId,
+                    'id' => $gameAccId,
                     'bandate' => time(),
                     'unbandate' => 0,
                     'bannedby' => auth()->user()->username,
@@ -207,10 +209,12 @@ class AdminUserController extends Controller
             } elseif (!$shouldBan && $currentlyBanned) {
                 DB::connection('game_auth')->table('account_banned')
                     ->where('id', $existingBan->id)
+                    ->where('bandate', $existingBan->bandate)
                     ->update(['active' => 0, 'unbandate' => time()]);
             } elseif ($shouldBan && $currentlyBanned && $reason) {
                 DB::connection('game_auth')->table('account_banned')
                     ->where('id', $existingBan->id)
+                    ->where('bandate', $existingBan->bandate)
                     ->update(['banreason' => $reason]);
             }
         } catch (\Exception $e) {
