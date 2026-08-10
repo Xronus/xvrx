@@ -2565,15 +2565,55 @@ body.xvrx-home .xvrx-header:not(.is-scrolled) .xvrx-nav a {
 }
 
 .xvrx-shop-character-select {
+    appearance: none;
     width: 100% !important;
-    min-height: 42px;
+    min-height: 44px;
     margin-top: auto;
-    border-color: rgba(214, 185, 107, .16) !important;
-    border-radius: 7px !important;
-    color: rgba(244, 239, 228, .9) !important;
-    background-color: rgba(4, 6, 10, .82) !important;
+    padding: 0 42px 0 14px !important;
+    border: 1px solid rgba(214, 185, 107, .28) !important;
+    border-radius: 8px !important;
+    color: rgba(250, 242, 218, .94) !important;
+    background-color: rgba(6, 8, 12, .9) !important;
+    background-image:
+        linear-gradient(45deg, transparent 50%, rgba(244, 213, 142, .9) 50%),
+        linear-gradient(135deg, rgba(244, 213, 142, .9) 50%, transparent 50%),
+        linear-gradient(180deg, rgba(244, 213, 142, .18), rgba(214, 185, 107, .04));
+    background-position:
+        calc(100% - 20px) 50%,
+        calc(100% - 14px) 50%,
+        0 0;
+    background-size:
+        6px 6px,
+        6px 6px,
+        100% 100%;
+    background-repeat: no-repeat;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, .08),
+        0 8px 18px rgba(0, 0, 0, .22);
+    font-size: 13px;
+    font-weight: 800;
     opacity: 1 !important;
     cursor: pointer;
+    transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+}
+
+.xvrx-shop-character-select:hover {
+    border-color: rgba(244, 213, 142, .48) !important;
+    background-color: rgba(10, 13, 18, .96) !important;
+}
+
+.xvrx-shop-character-select:focus {
+    border-color: rgba(244, 213, 142, .72) !important;
+    box-shadow:
+        0 0 0 3px rgba(214, 185, 107, .14),
+        inset 0 1px 0 rgba(255, 255, 255, .1),
+        0 10px 22px rgba(0, 0, 0, .26);
+    outline: none;
+}
+
+.xvrx-shop-character-select option {
+    color: #f4efe4;
+    background: #090b10;
 }
 
 .xvrx-shop-buy-btn {
