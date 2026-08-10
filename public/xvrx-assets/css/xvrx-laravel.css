@@ -2565,12 +2565,15 @@ body.xvrx-home .xvrx-header:not(.is-scrolled) .xvrx-nav a {
 }
 
 .xvrx-shop-character-select {
+    width: 100% !important;
     min-height: 42px;
     margin-top: auto;
     border-color: rgba(214, 185, 107, .16) !important;
     border-radius: 7px !important;
     color: rgba(244, 239, 228, .9) !important;
     background-color: rgba(4, 6, 10, .82) !important;
+    opacity: 1 !important;
+    cursor: pointer;
 }
 
 .xvrx-shop-buy-btn {

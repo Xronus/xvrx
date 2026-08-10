@@ -7,6 +7,7 @@ use App\Http\Middleware\CheckTwoFactorAuth;
 use App\Models\LanguageSetting;
 use App\Models\SocialLink;
 use App\Services\TwoFactorAuthService;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -27,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Paginator::useBootstrapFive();
+
         // Share site name from DB across all views (cached)
         View::composer('*', function ($view) {
             try {

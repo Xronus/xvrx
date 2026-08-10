@@ -43,7 +43,7 @@ class CharacterService
         $classes = CharacterClass::pluck('name', 'class_id')->toArray();
 
         return $query
-            ->select('name', 'level', 'class', 'race', 'gender', 'online', 'logout_time')
+            ->select('name', 'level', 'class', 'race', 'online', 'logout_time')
             ->get()
             ->map(function ($char) use ($races, $factions, $classes) {
                 $char->class_name = $classes[$char->class] ?? __('main.unknown');
@@ -54,9 +54,10 @@ class CharacterService
                     ? date('d.m.Y H:i', $char->logout_time)
                     : __('main.no_data');
 
-                // Icon URLs for the frontend
-                $char->race_icon = race_icon_url($char->race, $char->gender);
-                $char->race_icon_small = race_icon_url($char->race, $char->gender, false);
+                // Icon URLs for the frontend (gender defaults to 0 if column missing)
+                $gender = $char->gender ?? 0;
+                $char->race_icon = race_icon_url($char->race, $gender);
+                $char->race_icon_small = race_icon_url($char->race, $gender, false);
                 $char->class_icon = class_icon_url($char->class);
                 $char->faction_icon = faction_icon_url($char->faction_id);
 
