@@ -14,15 +14,18 @@
     <meta name="description" content="{{ $settings ? $settings->localizedSiteDescription() : '' }}">
     <meta name="format-detection" content="telephone=no">
     <title>{{ $siteTitle }}</title>
-    <link rel="stylesheet" href="{{ asset('xvrx-assets/css/remixicon.css') }}">
+    <link rel="preload" href="{{ asset('xvrx-assets/images/hero.jpg') }}" as="image">
+    <link rel="preload" href="{{ asset('xvrx-assets/css/xvrx-laravel.css') }}" as="style">
     <link rel="stylesheet" href="{{ asset('xvrx-assets/css/xvrx-laravel.css') }}">
+    <link rel="stylesheet" href="{{ asset('xvrx-assets/css/remixicon.css') }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ asset('xvrx-assets/css/remixicon.css') }}"></noscript>
 </head>
 <body class="xvrx-home">
 @include('partials.xvrx-header')
 
 <main>
     <section class="xvrx-hero">
-        <video class="xvrx-hero-video" src="{{ asset('xvrx-assets/images/impressivewow-hero.mp4') }}" poster="{{ asset('xvrx-assets/images/wotlk-page-bg-2.png') }}" loop muted autoplay playsinline></video>
+        <video class="xvrx-hero-video" src="{{ asset('xvrx-assets/images/impressivewow-hero.mp4') }}" poster="{{ asset('xvrx-assets/images/hero.jpg') }}" loop muted autoplay playsinline></video>
         <div class="xvrx-hero-shade"></div>
         <div class="xvrx-hero-magic xvrx-hero-magic-one" aria-hidden="true"></div>
         <div class="xvrx-hero-magic xvrx-hero-magic-two" aria-hidden="true"></div>
@@ -101,22 +104,37 @@
     </section>
 
     @if($realm)
+        @php
+            $realmDescription = trim((string) $realm->localized('description'));
+            $realmLinkUrl = trim((string) $realm->link_url);
+            $realmLinkScheme = strtolower((string) parse_url($realmLinkUrl, PHP_URL_SCHEME));
+            $realmLinkIsSafe = $realmLinkUrl !== ''
+                && in_array($realmLinkScheme, ['http', 'https'], true)
+                && filter_var($realmLinkUrl, FILTER_VALIDATE_URL) !== false;
+            $realmStats = [
+                [$realm->rate, __('main.experience')],
+                [$realm->proffesion, __('main.professions')],
+                [$realm->gold, __('main.gold')],
+                [$realm->rep, __('main.reputation')],
+                [$realm->loot, __('main.loot')],
+                [$realm->honor, __('main.honor_points')],
+            ];
+        @endphp
         <section class="xvrx-section xvrx-realm-section">
             <div class="xvrx-realm-copy">
                 <p class="xvrx-eyebrow">{{ __('main.realm_status') }}</p>
-                <h2>{{ $realm && $realm->full_name ? $realm->full_name : \App\Models\SiteSetting::first()?->title ?? 'xVRx' }}</h2>
-                <p>{{ $realm->localized('description') }}</p>
-                @if($realm->link_url)
-                <p><a href="{{ $realm->link_url }}" target="_blank" rel="noopener noreferrer">{{ $realm->link_text ?: __('main.start_playing') }}</a></p>
+                <h2>{{ $realm->full_name ?: $siteTitle }}</h2>
+                @if($realmDescription !== '')
+                    <p>{{ $realmDescription }}</p>
+                @endif
+                @if($realmLinkIsSafe)
+                    <p><a href="{{ $realmLinkUrl }}" target="_blank" rel="noopener noreferrer">{{ $realm->link_text ?: __('main.start_playing') }}</a></p>
                 @endif
             </div>
             <div class="xvrx-realm-grid">
-                <div><strong>{{ $realm->rate }}</strong><span>{{ __('main.experience') }}</span></div>
-                <div><strong>{{ $realm->proffesion }}</strong><span>{{ __('main.professions') }}</span></div>
-                <div><strong>{{ $realm->gold }}</strong><span>{{ __('main.gold') }}</span></div>
-                <div><strong>{{ $realm->rep }}</strong><span>{{ __('main.reputation') }}</span></div>
-                <div><strong>{{ $realm->loot }}</strong><span>{{ __('main.loot') }}</span></div>
-                <div><strong>{{ $realm->honor }}</strong><span>{{ __('main.honor_points') }}</span></div>
+                @foreach($realmStats as [$value, $label])
+                    <div><strong>{{ filled($value) ? $value : '—' }}</strong><span>{{ $label }}</span></div>
+                @endforeach
             </div>
         </section>
     @endif

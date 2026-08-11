@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LanguageSetting;
 use App\Models\News;
 use App\Models\SiteSetting;
 use Illuminate\Http\Request;
@@ -13,9 +12,9 @@ class NewsController extends Controller
     {
         $query = News::query();
 
-        // Поиск по тексту новости
-        if ($request->has('search') && ! empty($request->search)) {
-            $searchTerm = $request->search;
+        // Поиск по тексту новости (minimum 3 characters)
+        $searchTerm = $request->input('search', '');
+        if (mb_strlen($searchTerm) >= 3) {
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('text', 'like', '%'.$searchTerm.'%')
                     ->orWhere('text_en', 'like', '%'.$searchTerm.'%')
@@ -31,20 +30,16 @@ class NewsController extends Controller
         }
 
         $news = $query->orderBy('id', 'desc')->paginate(12)->withQueryString();
-        $searchTerm = $request->input('search', '');
 
-        // Получаем настройки и активные языки для хедера
         $settings = site_settings();
-        $activeLangs = LanguageSetting::where('is_active', true)->orderBy('sort_order')->get();
 
-        return view('news.index', compact('news', 'searchTerm', 'settings', 'activeLangs'));
+        return view('news.index', compact('news', 'searchTerm', 'settings'));
     }
 
     public function show(News $news)
     {
         $settings = site_settings();
-        $activeLangs = LanguageSetting::where('is_active', true)->orderBy('sort_order')->get();
 
-        return view('news.show', compact('news', 'settings', 'activeLangs'));
+        return view('news.show', compact('news', 'settings'));
     }
 }

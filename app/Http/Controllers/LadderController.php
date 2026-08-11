@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\LanguageSetting;
 use App\Models\SiteSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class LadderController extends Controller
@@ -28,13 +29,18 @@ class LadderController extends Controller
 
         $ladderData = [];
         try {
-            if ($mode === 'arena') {
-                $ladderData = $this->getArenaLadder($type);
-            } elseif ($mode === 'honorable_kills') {
-                $ladderData = $this->getHonorableKillsLadder();
-            } elseif ($mode === 'time_played') {
-                $ladderData = $this->getTimePlayedLadder();
-            }
+            $cacheKey = "ladder_{$mode}_{$type}";
+            $ladderData = Cache::remember($cacheKey, 600, function () use ($mode, $type) {
+                if ($mode === 'arena') {
+                    return $this->getArenaLadder($type);
+                } elseif ($mode === 'honorable_kills') {
+                    return $this->getHonorableKillsLadder();
+                } elseif ($mode === 'time_played') {
+                    return $this->getTimePlayedLadder();
+                }
+
+                return [];
+            });
         } catch (\Throwable $e) {
             $ladderData = [];
         }
@@ -135,18 +141,20 @@ class LadderController extends Controller
 
     private function hasColumn(string $table, string $column): bool
     {
-        try {
-            $conn = DB::connection('game_char');
-            $db = $conn->getDatabaseName();
-            $r = $conn->selectOne(
-                'SELECT COUNT(*) AS c FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?',
-                [$db, $table, $column]
-            );
+        return Cache::rememberForever("schema_{$table}_{$column}", function () use ($table, $column) {
+            try {
+                $conn = DB::connection('game_char');
+                $db = $conn->getDatabaseName();
+                $r = $conn->selectOne(
+                    'SELECT COUNT(*) AS c FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ? AND COLUMN_NAME = ?',
+                    [$db, $table, $column]
+                );
 
-            return isset($r->c) && (int) $r->c > 0;
-        } catch (\Throwable $e) {
-            return false;
-        }
+                return isset($r->c) && (int) $r->c > 0;
+            } catch (\Throwable $e) {
+                return false;
+            }
+        });
     }
 
     private function honorKillsColumn(): ?string

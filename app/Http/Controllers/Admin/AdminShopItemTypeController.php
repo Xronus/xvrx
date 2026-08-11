@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ShopItemType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AdminShopItemTypeController extends Controller
 {
@@ -23,10 +24,12 @@ class AdminShopItemTypeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name_ru' => 'required|string|max:128',
+            'name_ru' => $this->nameRule(),
         ]);
 
         ShopItemType::create($request->only(['name_ru']));
+
+        Cache::forget('shop_items');
 
         return redirect()->route('admin.shop-item-types.index')->with('success', __('main.type_added'));
     }
@@ -39,10 +42,12 @@ class AdminShopItemTypeController extends Controller
     public function update(Request $request, ShopItemType $shop_item_type)
     {
         $request->validate([
-            'name_ru' => 'required|string|max:128',
+            'name_ru' => $this->nameRule(),
         ]);
 
         $shop_item_type->update($request->only(['name_ru']));
+
+        Cache::forget('shop_items');
 
         return redirect()->route('admin.shop-item-types.index')->with('success', __('main.type_updated'));
     }
@@ -51,6 +56,24 @@ class AdminShopItemTypeController extends Controller
     {
         $shop_item_type->delete();
 
+        Cache::forget('shop_items');
+
         return redirect()->route('admin.shop-item-types.index')->with('success', __('main.type_deleted'));
+    }
+
+    private function nameRule(): array
+    {
+        return [
+            'required',
+            'string',
+            'max:128',
+            function (string $attribute, mixed $value, \Closure $fail) {
+                $allowed = ['item', 'items', 'предмет', 'предметы', 'money', 'gold', 'деньги', 'золото'];
+
+                if (! in_array(strtolower(trim((string) $value)), $allowed, true)) {
+                    $fail(__('validation.in', ['attribute' => $attribute]));
+                }
+            },
+        ];
     }
 }

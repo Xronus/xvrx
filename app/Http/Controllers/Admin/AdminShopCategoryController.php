@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ShopCategory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class AdminShopCategoryController extends Controller
@@ -38,6 +39,8 @@ class AdminShopCategoryController extends Controller
         }
 
         ShopCategory::create($validated);
+
+        $this->forgetShopCache();
 
         return redirect()->route('admin.shop-categories.index')->with('success', __('main.shop_category_added'));
     }
@@ -73,6 +76,8 @@ class AdminShopCategoryController extends Controller
 
         $category->update($validated);
 
+        $this->forgetShopCache();
+
         return redirect()->route('admin.shop-categories.index')->with('success', __('main.shop_category_updated'));
     }
 
@@ -88,6 +93,14 @@ class AdminShopCategoryController extends Controller
 
         $shop_category->delete();
 
+        $this->forgetShopCache();
+
         return redirect()->route('admin.shop-categories.index')->with('success', __('main.shop_category_deleted'));
+    }
+
+    private function forgetShopCache(): void
+    {
+        Cache::forget('shop_categories');
+        Cache::forget('shop_items');
     }
 }

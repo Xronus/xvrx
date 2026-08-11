@@ -23,16 +23,22 @@ class AdminController extends Controller
         $gameStatsError = false;
 
         try {
-            $totalAccounts = DB::connection('game_auth')->table('account')->count();
-            $totalBanned = DB::connection('game_auth')->table('account_banned')
-                ->where('active', 1)
-                ->where('bandate', '<=', time())
-                ->where(function ($query) {
-                    $query->where('unbandate', 0)
-                          ->orWhere('unbandate', '>', time());
-                })
-                ->count();
-            $onlineCount = DB::connection('trinity')->table('characters')->where('online', 1)->count();
+            $totalAccounts = Cache::remember('admin_total_accounts', 300, function () {
+                return DB::connection('game_auth')->table('account')->count();
+            });
+            $totalBanned = Cache::remember('admin_total_banned', 300, function () {
+                return DB::connection('game_auth')->table('account_banned')
+                    ->where('active', 1)
+                    ->where('bandate', '<=', time())
+                    ->where(function ($query) {
+                        $query->where('unbandate', 0)
+                              ->orWhere('unbandate', '>', time());
+                    })
+                    ->count();
+            });
+            $onlineCount = Cache::remember('admin_online', 300, function () {
+                return DB::connection('trinity')->table('characters')->where('online', 1)->count();
+            });
         } catch (\Exception $e) {
             \Log::error('Admin dashboard: failed to fetch game stats: '.$e->getMessage());
             $gameStatsError = true;
@@ -64,23 +70,25 @@ class AdminController extends Controller
 
     private function checkSmtpReachable(): bool
     {
-        $host = env('MAIL_HOST');
-        $port = (int) env('MAIL_PORT', 587);
+        return Cache::remember('smtp_reachable', 300, function () {
+            $host = env('MAIL_HOST');
+            $port = (int) env('MAIL_PORT', 587);
 
-        if (empty($host)) {
-            return false;
-        }
-
-        try {
-            $socket = @fsockopen($host, $port, $errno, $errstr, 5);
-            if ($socket) {
-                fclose($socket);
-                return true;
+            if (empty($host)) {
+                return false;
             }
-        } catch (\Exception $e) {
-        }
 
-        return false;
+            try {
+                $socket = @fsockopen($host, $port, $errno, $errstr, 5);
+                if ($socket) {
+                    fclose($socket);
+                    return true;
+                }
+            } catch (\Exception $e) {
+            }
+
+            return false;
+        });
     }
 
     public function updateMail(Request $request)
@@ -169,6 +177,8 @@ class AdminController extends Controller
         ]);
 
         Cache::forget('homepage_langs');
+        Cache::forget('active_languages');
+        Cache::forget('admin_languages');
 
         return response()->json(['success' => true]);
     }

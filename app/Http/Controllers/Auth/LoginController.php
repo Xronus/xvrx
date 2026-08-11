@@ -254,7 +254,7 @@ class LoginController extends Controller
             ]);
         }
 
-        $user = User::whereRaw('LOWER(username) = ?', [strtolower($request->username)])->first();
+        $user = User::where('username', $request->username)->first();
 
         if (! $user) {
             throw ValidationException::withMessages([

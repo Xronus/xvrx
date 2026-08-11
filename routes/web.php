@@ -54,15 +54,23 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {
     $user = \App\Models\User::findOrFail($id);
+
+    if (auth()->check() && auth()->id() !== $user->id) {
+        abort(403);
+    }
+
     if (! hash_equals(sha1($user->getEmailForVerification()), (string) $hash)) {
         abort(403);
     }
+
     if (! $user->hasVerifiedEmail()) {
         $user->markEmailAsVerified();
     }
+
     if (! auth()->check()) {
-        auth()->login($user);
+        return redirect()->route('login')->with('success', __('main.email_verified'));
     }
+
     return redirect()->route('cabinet')->with('success', __('main.email_verified'));
 })->middleware('signed')->name('verification.verify');
 

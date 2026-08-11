@@ -150,6 +150,120 @@ php artisan config:cache
 
 Пароль SMTP в админке не показывается: отображается только признак, что он задан.
 
+## Очередь и асинхронная отправка писем
+
+Все письма (сброс пароля, верификация email) отправляются **асинхронно** через очередь. Mailable и Notification реализуют `ShouldQueue` — письмо ставится в очередь моментально, а отправка происходит в фоне, не блокируя HTTP-запрос.
+
+Для работы очереди на production-сервере нужно запустить воркер:
+
+```bash
+php artisan queue:work --daemon
+```
+
+Рекомендуется настроить systemd-сервис или supervisor, чтобы воркер работал постоянно и автоматически перезапускался при падении.
+
+### Supervisor (рекомендуемый способ)
+
+Пример конфига `/etc/supervisor/conf.d/xvrx-worker.conf`:
+
+```ini
+[program:xvrx-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=php /var/www/xvrx/artisan queue:work --daemon --sleep=3 --tries=3 --max-time=3600
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=2
+redirect_stderr=true
+stdout_logfile=/var/www/xvrx/storage/logs/worker.log
+stopwaitsecs=3600
+```
+
+После создания конфига:
+
+```bash
+supervisorctl reread
+supervisorctl update
+supervisorctl start xvrx-worker:*
+```
+
+### Проверка очереди
+
+```bash
+# Посмотреть количество задач в очереди
+php artisan queue:monitor
+
+# Посмотреть упавшие задачи
+php artisan queue:failed
+```
+
+В `.env` должно быть:
+
+```env
+QUEUE_CONNECTION=database
+```
+
+Таблицы `jobs` и `failed_jobs` создаются миграциями и уже есть в проекте.
+
+## Холодный старт: почему сайт тормозит после простоя
+
+После долгого неиспользования первый запрос к сайту может быть заметно медленнее. Причины и решения:
+
+### Почему это происходит
+
+| Причина | Механизм |
+|---------|----------|
+| **PHP OPcache** | PHP-FPM воркеры умирают при простое. Новый запрос форкает воркер и парсит все файлы заново |
+| **MySQL Buffer Pool** | Данные вытесняются из памяти. Первый SELECT читает с диска |
+| **Кеш Laravel** | TTL кешей истекает — первый хит пересчитывает всё заново |
+| **Сессии в БД** | `SESSION_DRIVER=database` — сборка мусора (gc) может попасть на первый же запрос |
+
+### Что сделано для смягчения
+
+- **TTL кешей увеличены:** 60с → 300с, 300с → 600с. Кеш живёт дольше и реже протухает при простое
+- **Крон-прогрев каждые 5 минут:** фоном обновляет все кеши главной и админ-дашборда. Даже после часов простоя первый запрос попадает в горячий кеш
+- **Чистка сессий кроном:** `session:gc` выполняется по расписанию, а не лотерейно на первом хите
+
+### Что настроить на сервере
+
+**Crontab** (обязательно):
+
+```bash
+* * * * * cd /var/www/xvrx && php artisan schedule:run >> /dev/null 2>&1
+```
+
+**PHP-FPM** (`/etc/php/8.2/fpm/pool.d/www.conf`):
+
+```ini
+pm = dynamic
+pm.min_spare_servers = 2
+pm.start_servers = 2
+```
+
+Это держит минимум 2 воркера горячими, даже при нулевом трафике.
+
+**OPcache** (`/etc/php/8.2/fpm/conf.d/10-opcache.ini`):
+
+```ini
+opcache.revalidate_freq=60
+opcache.validate_timestamps=0
+```
+
+На production `validate_timestamps=0` отключает проверку изменений файлов — PHP не перечитывать исходники на каждом запросе. После деплоя перезапускать PHP-FPM.
+
+### Проверка
+
+После настройки проверь, что крон работает:
+
+```bash
+crontab -l
+php artisan schedule:list
+```
+
+Первый запрос после ночного простоя больше не должен тормозить.
+
 ## Production-разворачивание
 
 1. Клонировать проект:
@@ -188,13 +302,21 @@ php artisan route:cache
 php artisan view:cache
 ```
 
-7. Выставить права на запись:
+7. Запустить воркер очереди (см. раздел «Очередь и асинхронная отправка писем»).
+
+8. Настроить cron для фоновых задач (кеш-прогрев, чистка сессий):
+
+```bash
+* * * * * cd /var/www/xvrx && php artisan schedule:run >> /dev/null 2>&1
+```
+
+9. Выставить права на запись:
 
 ```bash
 chmod -R ug+rw storage bootstrap/cache
 ```
 
-8. Настроить web root на каталог `public`.
+10. Настроить web root на каталог `public`.
 
 Пример Nginx:
 

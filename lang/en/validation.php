@@ -4,7 +4,7 @@ return [
     'username_required' => 'Enter your login.',
     'username_string' => 'Login must be a string.',
     'username_max' => 'Login must not exceed 14 characters.',
-    'username_regex' => 'Login must contain only Latin letters.',
+    'username_regex' => 'Login must contain only Latin letters, digits, and underscores.',
     'email_required' => 'Enter your email.',
     'email_string' => 'Email must be a string.',
     'email_email' => 'Enter a valid email address.',

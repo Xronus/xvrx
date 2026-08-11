@@ -7,6 +7,7 @@ use App\Models\ShopItem;
 use App\Services\ShopService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class ShopController extends Controller
@@ -21,15 +22,19 @@ class ShopController extends Controller
         $user = auth()->user();
         $settings = site_settings();
 
-        $categories = ShopCategory::topLevel()
-            ->with('subcategories')
-            ->get();
+        $categories = Cache::remember('shop_categories', 600, function () {
+            return ShopCategory::topLevel()
+                ->with('subcategories')
+                ->get();
+        });
 
         // Load enabled items grouped by subcategory.
-        $items = ShopItem::enabled()
-            ->with('category')
-            ->get()
-            ->groupBy('subcategory_id');
+        $items = Cache::remember('shop_items', 600, function () {
+            return ShopItem::enabled()
+                ->with('category')
+                ->get()
+                ->groupBy('subcategory_id');
+        });
 
         return view('cabinet.shop', compact('user', 'settings', 'categories', 'items'));
     }

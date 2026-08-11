@@ -17,11 +17,8 @@
             // Allow safe HTML tags
             $allowed = '<b><i><strong><em><u><h2><h3><h4><p><br><ul><ol><li><a><blockquote><hr><table><thead><tbody><tr><th><td>';
             $text = strip_tags($text, $allowed);
-            // Strip event handlers: on*="..." or on*='...' or on*=value
-            $text = preg_replace('/\s+on\w+\s*=\s*(["\']).*?\1/i', '', $text);
-            $text = preg_replace('/\s+on\w+\s*=\s*[^\s>]+/i', '', $text);
-            // Neutralise javascript: URLs in href/src
-            $text = preg_replace('/((?:href|src)\s*=\s*(["\']))javascript\s*:/i', '$1#', $text);
+            // Strip ALL attributes from remaining tags to prevent XSS via event handlers / javascript:
+            $text = preg_replace('/<(\w+)\s+[^>]*>/i', '<$1>', $text);
         @endphp
         <div>{!! $text !!}</div>
     </main>

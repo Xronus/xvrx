@@ -64,19 +64,8 @@
                                 <td>{{ $user->bonuses ?? 0 }}</td>
                                 <td>
                                     @php
-                                        $charCount = 0;
-                                        try {
-                                            $gameAccId = \DB::connection('game_auth')->table('account')
-                                                ->where('username', strtoupper($user->username))
-                                                ->value('id');
-                                            if ($gameAccId) {
-                                                $charCount = \DB::connection('game_char')->table('characters')
-                                                    ->where('account', $gameAccId)
-                                                    ->count();
-                                            }
-                                        } catch (\Exception $e) {
-                                            $charCount = 0;
-                                        }
+                                        $gameAccId = $gameAccounts[strtoupper($user->username)] ?? null;
+                                        $charCount = $gameAccId ? ($gameCharCounts[$gameAccId] ?? 0) : 0;
                                     @endphp
                                     {{ $charCount }}
                                 </td>

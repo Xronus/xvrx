@@ -62,9 +62,19 @@ class ShopService
                 return ['ok' => false, 'message' => __('main.shop_char_invalid')];
             }
 
-            // Determine SOAP command action from item type
-            $typeName = $item->type?->name_ru ?? 'items';
-            $action = strtolower($typeName); // "Items" → "items", "Money" → "money"
+            // Determine SOAP command action from a strict allowlist.
+            $action = $this->resolveAction($item->type?->name_ru);
+            if ($action === null) {
+                DB::rollBack();
+
+                Log::error('Shop purchase blocked: unsupported item type', [
+                    'user_id' => $user->id,
+                    'item_id' => $item->id,
+                    'type_id' => $item->type_id,
+                ]);
+
+                return ['ok' => false, 'message' => __('main.shop_purchase_error')];
+            }
 
             // Build SOAP command — escape quotes to prevent command injection
             $subject = str_replace('"', '\"', config('shop.mail_subject', 'Shop'));
@@ -100,17 +110,14 @@ class ShopService
                 DB::rollBack();
 
                 Log::error('Shop purchase SOAP failed', [
-                    'user' => $user->username,
+                    'user_id' => $user->id,
                     'item' => $item->item_entry,
-                    'character' => $characterName,
-                    'command' => $command,
                     'soap_response' => $soapResultText,
                 ]);
 
                 return [
                     'ok' => false,
                     'message' => __('main.shop_purchase_error'),
-                    'debug' => $soapResultText,
                 ];
             }
 
@@ -129,9 +136,8 @@ class ShopService
             DB::commit();
 
             Log::info('Shop purchase completed', [
-                'user' => $user->username,
+                'user_id' => $user->id,
                 'item' => $item->item_entry,
-                'character' => $characterName,
                 'price' => $item->price,
             ]);
 
@@ -143,12 +149,22 @@ class ShopService
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Shop purchase error: ' . $e->getMessage(), [
-                'user' => $user->username,
+                'user_id' => $user->id,
                 'item' => $item->item_entry,
-                'trace' => $e->getTraceAsString(),
             ]);
 
             return ['ok' => false, 'message' => __('main.shop_purchase_error')];
         }
+    }
+
+    private function resolveAction(?string $typeName): ?string
+    {
+        $normalized = strtolower(trim((string) $typeName));
+
+        return match ($normalized) {
+            '', 'item', 'items', 'предмет', 'предметы' => 'items',
+            'money', 'gold', 'деньги', 'золото' => 'money',
+            default => null,
+        };
     }
 }

@@ -39,7 +39,7 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $rules = [
-            'username' => 'required|string|max:14|regex:/^[a-zA-Z]+$/',
+            'username' => 'required|string|max:14|regex:/^[a-zA-Z0-9_]+$/',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'string', 'min:8', 'confirmed', Password::defaults()],
         ];

@@ -33,7 +33,10 @@ class AdminUserController extends Controller
         $gameAccounts = $this->getGameAccounts();
         $gameBanned = $this->getGameBannedAccounts();
 
-        return view('admin.users.index', compact('users', 'searchTerm', 'gameAccounts', 'gameBanned'));
+        // Batch-fetch character counts to avoid N+1 in the view
+        $gameCharCounts = $this->getGameCharCounts(array_values($gameAccounts));
+
+        return view('admin.users.index', compact('users', 'searchTerm', 'gameAccounts', 'gameBanned', 'gameCharCounts'));
     }
 
     private function getGameAccounts(): array
@@ -42,6 +45,25 @@ class AdminUserController extends Controller
             return DB::connection('game_auth')
                 ->table('account')
                 ->pluck('id', 'username')
+                ->toArray();
+        } catch (\Exception $e) {
+            return [];
+        }
+    }
+
+    private function getGameCharCounts(array $accountIds): array
+    {
+        if (empty($accountIds)) {
+            return [];
+        }
+
+        try {
+            return DB::connection('game_char')
+                ->table('characters')
+                ->whereIn('account', $accountIds)
+                ->groupBy('account')
+                ->selectRaw('account, COUNT(*) as count')
+                ->pluck('count', 'account')
                 ->toArray();
         } catch (\Exception $e) {
             return [];
@@ -233,7 +255,7 @@ class AdminUserController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'username' => 'required|string|max:14|regex:/^[a-zA-Z]+$/|unique:users',
+            'username' => 'required|string|max:14|regex:/^[a-zA-Z0-9_]+$/|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
         ]);

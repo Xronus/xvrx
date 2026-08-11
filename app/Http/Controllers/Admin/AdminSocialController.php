@@ -34,6 +34,8 @@ class AdminSocialController extends Controller
         ]);
 
         Cache::forget('homepage_socials');
+        Cache::forget('social_links');
+        Cache::forget('social_links');
 
         return redirect()->route('admin.socials.index')->with('success', __('main.social_added'));
     }
@@ -56,6 +58,7 @@ class AdminSocialController extends Controller
         ]);
 
         Cache::forget('homepage_socials');
+        Cache::forget('social_links');
 
         return redirect()->route('admin.socials.index')->with('success', __('main.social_updated'));
     }
@@ -65,6 +68,7 @@ class AdminSocialController extends Controller
         $social->update(['is_active' => ! $social->is_active]);
 
         Cache::forget('homepage_socials');
+        Cache::forget('social_links');
 
         return redirect()->route('admin.socials.index')->with('success',
             ($social->is_active ? __('main.social_enabled') : __('main.social_disabled')).': '.$social->name
@@ -76,6 +80,7 @@ class AdminSocialController extends Controller
         $social->delete();
 
         Cache::forget('homepage_socials');
+        Cache::forget('social_links');
 
         return redirect()->route('admin.socials.index')->with('success', __('main.social_deleted'));
     }

@@ -6,6 +6,7 @@ use App\Models\CharacterClass;
 use App\Models\Race;
 use App\Models\User;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class CharacterService
@@ -38,9 +39,9 @@ class CharacterService
             return $query->select('name', 'level')->get();
         }
 
-        $races = Race::pluck('name', 'race_id')->toArray();
-        $factions = Race::pluck('faction', 'race_id')->toArray();
-        $classes = CharacterClass::pluck('name', 'class_id')->toArray();
+        $races = Cache::rememberForever('reference_races', fn() => Race::pluck('name', 'race_id')->toArray());
+        $factions = Cache::rememberForever('reference_factions', fn() => Race::pluck('faction', 'race_id')->toArray());
+        $classes = Cache::rememberForever('reference_classes', fn() => CharacterClass::pluck('name', 'class_id')->toArray());
 
         return $query
             ->select('name', 'level', 'class', 'race', 'online', 'logout_time')

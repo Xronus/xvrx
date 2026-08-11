@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class PasswordResetMail extends Mailable
+class PasswordResetMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -27,7 +28,7 @@ class PasswordResetMail extends Mailable
         $fromAddress = config('mail.from.address') ?: env('MAIL_FROM_ADDRESS');
 
         return new Envelope(
-            from: $fromAddress ? new Address($fromAddress, $this->fromName ?: (\App\Models\SiteSetting::first()?->title ?: config('app.name'))) : null,
+            from: $fromAddress ? new Address($fromAddress, $this->fromName ?: (site_settings()?->title ?: config('app.name'))) : null,
             subject: $this->subjectLine ?: __('main.reset_password'),
         );
     }

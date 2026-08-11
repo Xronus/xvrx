@@ -8,6 +8,7 @@ use App\Models\LanguageSetting;
 use App\Models\SocialLink;
 use App\Services\TwoFactorAuthService;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -47,7 +48,9 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('admin.*', function ($view) {
             try {
-                $languages = LanguageSetting::orderBy('sort_order')->get();
+                $languages = Cache::rememberForever('admin_languages', function () {
+                    return LanguageSetting::orderBy('sort_order')->get();
+                });
                 $enabledLangs = $languages->where('is_active', true)->pluck('code')->toArray();
             } catch (\Exception $e) {
                 $languages = collect();
@@ -60,7 +63,9 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer(['home', 'news.*', 'cabinet.*', 'auth.*'], function ($view) {
             try {
-                $activeLangs = LanguageSetting::where('is_active', true)->orderBy('sort_order')->get();
+                $activeLangs = Cache::rememberForever('active_languages', function () {
+                    return LanguageSetting::where('is_active', true)->orderBy('sort_order')->get();
+                });
             } catch (\Exception $e) {
                 $activeLangs = collect();
             }
@@ -70,7 +75,9 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('partials.xvrx-social', function ($view) {
             try {
-                $socialLinks = SocialLink::where('is_active', true)->orderBy('id')->get();
+                $socialLinks = Cache::rememberForever('social_links', function () {
+                    return SocialLink::where('is_active', true)->orderBy('id')->get();
+                });
             } catch (\Exception $e) {
                 $socialLinks = collect();
             }

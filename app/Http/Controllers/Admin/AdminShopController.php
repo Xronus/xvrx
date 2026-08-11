@@ -8,6 +8,7 @@ use App\Models\ShopItem;
 use App\Models\ShopItemType;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class AdminShopController extends Controller
@@ -58,6 +59,8 @@ class AdminShopController extends Controller
 
         ShopItem::create($validated);
 
+        $this->forgetShopCache();
+
         return redirect()->route('admin.shop.index')->with('success', __('main.shop_item_added'));
     }
 
@@ -88,12 +91,16 @@ class AdminShopController extends Controller
 
         $item->update($validated);
 
+        $this->forgetShopCache();
+
         return redirect()->route('admin.shop.index')->with('success', __('main.shop_item_updated'));
     }
 
     public function destroy(ShopItem $shop): RedirectResponse
     {
         $shop->delete();
+
+        $this->forgetShopCache();
 
         return redirect()->route('admin.shop.index')->with('success', __('main.shop_item_deleted'));
     }
@@ -102,8 +109,16 @@ class AdminShopController extends Controller
     {
         $shop->update(['enabled' => ! $shop->enabled]);
 
+        $this->forgetShopCache();
+
         return back()->with('success', $shop->enabled
             ? __('main.shop_item_enabled')
             : __('main.shop_item_disabled'));
+    }
+
+    private function forgetShopCache(): void
+    {
+        Cache::forget('shop_categories');
+        Cache::forget('shop_items');
     }
 }

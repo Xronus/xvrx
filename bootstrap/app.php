@@ -3,6 +3,7 @@
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -19,6 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'auth' => Authenticate::class,
             'admin' => AdminMiddleware::class,
             'guest' => RedirectIfAuthenticated::class,
+        ]);
+
+        $middleware->web(prepend: [
+            SecurityHeaders::class,
         ]);
 
         $middleware->web(append: [

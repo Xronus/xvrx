@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\News;
+use App\Support\HtmlSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -40,8 +41,8 @@ class AdminNewsController extends Controller
 
         News::create([
             'date' => now()->format('d.m.Y'),
-            'text' => $request->text,
-            'content' => $request->content,
+            'text' => strip_tags($request->text),
+            'content' => HtmlSanitizer::clean($request->content),
             'images' => $imagePath,
         ]);
 
@@ -69,8 +70,8 @@ class AdminNewsController extends Controller
         ]);
 
         $data = [
-            'text' => $request->text,
-            'content' => $request->content,
+            'text' => strip_tags($request->text),
+            'content' => HtmlSanitizer::clean($request->content),
         ];
 
         if ($request->hasFile('image')) {
@@ -103,7 +104,7 @@ class AdminNewsController extends Controller
             mkdir($dir, 0775, true);
         }
 
-        $filename = Str::random(20).'.'.$file->getClientOriginalExtension();
+        $filename = Str::random(20).'.'.$file->guessExtension();
         $file->move($dir, $filename);
 
         return $imageDir.'/'.$filename;

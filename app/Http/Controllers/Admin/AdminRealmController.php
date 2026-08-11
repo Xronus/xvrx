@@ -43,7 +43,7 @@ class AdminRealmController extends Controller
             'rep' => 'nullable|string|max:255',
             'loot' => 'nullable|string|max:255',
             'honor' => 'nullable|string|max:255',
-            'link_url' => 'nullable|string|max:500',
+            'link_url' => $this->urlRule(),
             'link_text' => 'nullable|string|max:100',
         ]);
 
@@ -88,7 +88,7 @@ class AdminRealmController extends Controller
             'rep' => 'nullable|string|max:255',
             'loot' => 'nullable|string|max:255',
             'honor' => 'nullable|string|max:255',
-            'link_url' => 'nullable|string|max:500',
+            'link_url' => $this->urlRule(),
             'link_text' => 'nullable|string|max:100',
         ]);
 
@@ -114,5 +114,27 @@ class AdminRealmController extends Controller
         Cache::forget('homepage_realms');
 
         return redirect()->route('admin.realms.index')->with('success', 'Реалм успешно удалён');
+    }
+
+    private function urlRule(): array
+    {
+        return [
+            'nullable',
+            'string',
+            'max:500',
+            function (string $attribute, mixed $value, \Closure $fail) {
+                $value = trim((string) $value);
+
+                if ($value === '') {
+                    return;
+                }
+
+                $scheme = strtolower((string) parse_url($value, PHP_URL_SCHEME));
+
+                if (! in_array($scheme, ['http', 'https'], true) || filter_var($value, FILTER_VALIDATE_URL) === false) {
+                    $fail(__('validation.url', ['attribute' => $attribute]));
+                }
+            },
+        ];
     }
 }

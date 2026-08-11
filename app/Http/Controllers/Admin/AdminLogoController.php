@@ -53,7 +53,7 @@ class AdminLogoController extends Controller
             }
 
             // Генерируем уникальное имя файла (без race condition)
-            $extension = $request->file('logo')->getClientOriginalExtension();
+            $extension = $request->file('logo')->guessExtension();
             $fileName = 'powerpuff-site-'.Str::random(16).'.'.$extension;
 
             // Сохраняем файл

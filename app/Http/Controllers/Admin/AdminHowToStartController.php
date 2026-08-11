@@ -22,17 +22,17 @@ class AdminHowToStartController extends Controller
     {
         $request->validate([
             'client_size' => 'nullable|string|max:100',
-            'google_drive_url' => 'nullable|string|max:500',
-            'yandex_disk_url' => 'nullable|string|max:500',
-            'filemail_url' => 'nullable|string|max:500',
-            'mega_url' => 'nullable|string|max:500',
-            'torrent_url' => 'nullable|string|max:500',
+            'google_drive_url' => $this->urlRule(),
+            'yandex_disk_url' => $this->urlRule(),
+            'filemail_url' => $this->urlRule(),
+            'mega_url' => $this->urlRule(),
+            'torrent_url' => $this->urlRule(['http', 'https', 'magnet']),
             'launcher_text_ru' => 'nullable|string|max:255',
             'launcher_text_en' => 'nullable|string|max:255',
             'launcher_text_de' => 'nullable|string|max:255',
             'launcher_text_es' => 'nullable|string|max:255',
             'launcher_text_fr' => 'nullable|string|max:255',
-            'launcher_url' => 'nullable|string|max:500',
+            'launcher_url' => $this->urlRule(),
             'launcher_description_ru' => 'nullable|string',
             'launcher_description_en' => 'nullable|string',
             'launcher_description_de' => 'nullable|string',
@@ -82,5 +82,32 @@ class AdminHowToStartController extends Controller
         Cache::forget('homepage_howtostart');
 
         return redirect()->route('admin.howtostart.index')->with('success', __('main.hts_settings_saved'));
+    }
+
+    private function urlRule(array $schemes = ['http', 'https']): array
+    {
+        return [
+            'nullable',
+            'string',
+            'max:500',
+            function (string $attribute, mixed $value, \Closure $fail) use ($schemes) {
+                $value = trim((string) $value);
+
+                if ($value === '') {
+                    return;
+                }
+
+                $scheme = strtolower((string) parse_url($value, PHP_URL_SCHEME));
+                $valid = in_array($scheme, $schemes, true)
+                    && (
+                        $scheme === 'magnet'
+                        || filter_var($value, FILTER_VALIDATE_URL) !== false
+                    );
+
+                if (! $valid) {
+                    $fail(__('validation.url', ['attribute' => $attribute]));
+                }
+            },
+        ];
     }
 }

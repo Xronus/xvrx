@@ -99,7 +99,7 @@ class AdminFeatureController extends Controller
             mkdir($dir, 0775, true);
         }
 
-        $filename = Str::random(20).'.'.$file->getClientOriginalExtension();
+        $filename = Str::random(20).'.'.$file->guessExtension();
         $file->move($dir, $filename);
 
         return $imageDir.'/'.$filename;
