@@ -24,7 +24,14 @@ class AdminController extends Controller
 
         try {
             $totalAccounts = DB::connection('game_auth')->table('account')->count();
-            $totalBanned = DB::connection('game_auth')->table('account_banned')->count();
+            $totalBanned = DB::connection('game_auth')->table('account_banned')
+                ->where('active', 1)
+                ->where('bandate', '<=', time())
+                ->where(function ($query) {
+                    $query->where('unbandate', 0)
+                          ->orWhere('unbandate', '>', time());
+                })
+                ->count();
             $onlineCount = DB::connection('trinity')->table('characters')->where('online', 1)->count();
         } catch (\Exception $e) {
             \Log::error('Admin dashboard: failed to fetch game stats: '.$e->getMessage());
