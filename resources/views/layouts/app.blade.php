@@ -7,7 +7,7 @@
     <title>@yield('title', $siteName)</title>
     <link rel="stylesheet" href="{{ asset('xvrx-assets/css/remixicon.css') }}">
     <link rel="stylesheet" href="{{ asset('powerpuffsite/css/cabinet.css') }}">
-    <link rel="stylesheet" href="{{ asset('xvrx-assets/css/xvrx-laravel.css') }}">
+    <link rel="stylesheet" href="{{ asset('xvrx-assets/css/xvrx-laravel.css') }}?v=yookassa-1">
     <link rel="shortcut icon" href="{{ asset('powerpuffsite/images/favicon.ico') }}">
     @stack('styles')
 </head>

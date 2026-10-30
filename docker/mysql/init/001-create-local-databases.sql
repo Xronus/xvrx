@@ -27,11 +27,13 @@ CREATE TABLE IF NOT EXISTS `account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `account_banned` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `account_id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL,
+  `bandate` int unsigned NOT NULL,
+  `unbandate` int unsigned NOT NULL DEFAULT 0,
+  `bannedby` varchar(50) NOT NULL DEFAULT '',
+  `banreason` varchar(255) NOT NULL DEFAULT '',
   `active` tinyint unsigned NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  KEY `account_id` (`account_id`)
+  PRIMARY KEY (`id`, `bandate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `account_premium` (

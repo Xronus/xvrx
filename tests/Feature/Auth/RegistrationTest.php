@@ -66,10 +66,10 @@ class RegistrationTest extends TestCase
         $response->assertSessionHasErrors(['password']);
     }
 
-    public function test_registration_username_only_latin_letters(): void
+    public function test_registration_username_rejects_characters_outside_allowed_set(): void
     {
         $response = $this->post('/cp/register', [
-            'username' => 'testuser123',
+            'username' => 'test-user',
             'email' => 'test@example.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',

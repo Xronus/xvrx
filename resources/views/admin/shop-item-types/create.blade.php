@@ -23,9 +23,15 @@
                 <form action="{{ route('admin.shop-item-types.store') }}" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label class="form-label">{{ __('main.name') }}</label>
-                        <input type="text" name="name_ru" class="form-control @error('name_ru') is-invalid @enderror" value="{{ old('name_ru') }}" required>
+                        <label for="name_ru" class="form-label">{{ __('main.type') }}</label>
+                        <select id="name_ru" name="name_ru" class="form-select @error('name_ru') is-invalid @enderror" aria-describedby="name_ru_help" required>
+                            <option value="">{{ __('main.select_type') }}</option>
+                            @foreach($typeOptions as $value => $label)
+                                <option value="{{ $value }}" @selected(old('name_ru') === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
                         @error('name_ru')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        <div id="name_ru_help" class="form-text">{{ __('main.shop_item_type_help') }}</div>
                     </div>
                     <button type="submit" class="btn btn-primary">{{ __('main.save') }}</button>
                 </form>

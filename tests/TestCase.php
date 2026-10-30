@@ -6,6 +6,21 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
+    public function createApplication()
+    {
+        $app = parent::createApplication();
+        $connection = $app['config']->get('database.default');
+        $database = $app['config']->get("database.connections.{$connection}.database");
+
+        if (! $app->environment('testing') || $connection !== 'sqlite' || $database !== ':memory:') {
+            throw new \RuntimeException(
+                'Unsafe test database configuration. Tests require APP_ENV=testing and SQLite :memory:.'
+            );
+        }
+
+        return $app;
+    }
+
     /**
      * Make a POST request with CSRF token, expecting JSON validation response.
      */

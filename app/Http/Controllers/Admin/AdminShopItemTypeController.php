@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ShopItemType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Validation\Rule;
 
 class AdminShopItemTypeController extends Controller
 {
@@ -18,16 +19,16 @@ class AdminShopItemTypeController extends Controller
 
     public function create()
     {
-        return view('admin.shop-item-types.create');
+        return view('admin.shop-item-types.create', [
+            'typeOptions' => $this->typeOptions(),
+        ]);
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name_ru' => $this->nameRule(),
-        ]);
+        $validated = $this->validateType($request);
 
-        ShopItemType::create($request->only(['name_ru']));
+        ShopItemType::create($validated);
 
         Cache::forget('shop_items');
 
@@ -36,16 +37,17 @@ class AdminShopItemTypeController extends Controller
 
     public function edit(ShopItemType $shop_item_type)
     {
-        return view('admin.shop-item-types.edit', compact('shop_item_type'));
+        return view('admin.shop-item-types.edit', [
+            'shop_item_type' => $shop_item_type,
+            'typeOptions' => $this->typeOptions(),
+        ]);
     }
 
     public function update(Request $request, ShopItemType $shop_item_type)
     {
-        $request->validate([
-            'name_ru' => $this->nameRule(),
-        ]);
+        $validated = $this->validateType($request);
 
-        $shop_item_type->update($request->only(['name_ru']));
+        $shop_item_type->update($validated);
 
         Cache::forget('shop_items');
 
@@ -66,14 +68,24 @@ class AdminShopItemTypeController extends Controller
         return [
             'required',
             'string',
-            'max:128',
-            function (string $attribute, mixed $value, \Closure $fail) {
-                $allowed = ['item', 'items', 'предмет', 'предметы', 'money', 'gold', 'деньги', 'золото'];
+            Rule::in(ShopItemType::allowedValues()),
+        ];
+    }
 
-                if (! in_array(strtolower(trim((string) $value)), $allowed, true)) {
-                    $fail(__('validation.in', ['attribute' => $attribute]));
-                }
-            },
+    private function validateType(Request $request): array
+    {
+        return $request->validate(
+            ['name_ru' => $this->nameRule()],
+            ['name_ru.in' => __('main.shop_item_type_invalid')],
+            ['name_ru' => __('main.type')],
+        );
+    }
+
+    private function typeOptions(): array
+    {
+        return [
+            ShopItemType::ITEMS => __('main.shop_item_type_items'),
+            ShopItemType::MONEY => __('main.shop_item_type_money'),
         ];
     }
 }

@@ -29,6 +29,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             SetLocale::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            'payments/yookassa/webhook',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

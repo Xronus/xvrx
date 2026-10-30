@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\AdminVoteController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\TwoFactorAuthController;
+use App\Http\Controllers\BalanceTopUpController;
 use App\Http\Controllers\CabinetController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LadderController;
@@ -81,6 +82,10 @@ Route::post('/email/verification-notification', function (\Illuminate\Http\Reque
 
 Route::post('/cp/logout', [LoginController::class, 'logout'])->middleware(['auth', 'check.banned'])->name('logout');
 
+Route::post('/payments/yookassa/webhook', [BalanceTopUpController::class, 'webhook'])
+    ->middleware('throttle:120,1')
+    ->name('payments.yookassa.webhook');
+
 // 2FA routes (accessible to any authenticated, non-banned user)
 Route::middleware(['auth', 'check.banned'])->group(function () {
     Route::get('/cp/2fa/setup', [TwoFactorAuthController::class, 'showSetup'])->name('admin.2fa.setup');
@@ -98,6 +103,9 @@ Route::middleware(['auth', 'check.banned', 'verified'])->group(function () {
     Route::post('/cp/votes/{voteTop}/claim', [VoteController::class, 'claim'])->name('cabinet.votes.claim')->middleware('throttle:6,1');
     Route::get('/cp/shop', [ShopController::class, 'index'])->name('shop');
     Route::post('/cp/shop/buy', [ShopController::class, 'buy'])->name('shop.buy')->middleware('throttle:10,1');
+    Route::get('/cp/balance/top-up', [BalanceTopUpController::class, 'index'])->name('balance.topup');
+    Route::post('/cp/balance/top-up', [BalanceTopUpController::class, 'store'])->name('balance.topup.store')->middleware('throttle:5,1');
+    Route::get('/cp/balance/top-up/{topUp}/return', [BalanceTopUpController::class, 'complete'])->name('balance.topup.complete');
     Route::get('/cp/api/characters', [CabinetController::class, 'apiCharacters'])->name('api.characters')->middleware('throttle:30,1');
 });
 

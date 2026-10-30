@@ -37,7 +37,7 @@
                         <select name="type_id" class="form-select @error('type_id') is-invalid @enderror" required>
                             <option value="">{{ __('main.select_type') }}</option>
                             @foreach($types as $t)
-                            <option value="{{ $t->id }}" {{ old('type_id') == $t->id ? 'selected' : '' }}>{{ $t->name_ru }}</option>
+                            <option value="{{ $t->id }}" {{ old('type_id') == $t->id ? 'selected' : '' }}>{{ $t->displayName() }}</option>
                             @endforeach
                         </select>
                         @error('type_id')<div class="invalid-feedback">{{ $message }}</div>@enderror

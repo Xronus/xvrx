@@ -33,7 +33,7 @@
                             @forelse($types as $type)
                             <tr>
                                 <td>{{ $type->id }}</td>
-                                <td>{{ $type->name_ru }}</td>
+                                <td>{{ $type->displayName() }}</td>
                                 <td>
                                     <a href="{{ route('admin.shop-item-types.edit', $type) }}" class="btn btn-sm btn-warning">
                                         <i class="ri-pencil-line"></i>

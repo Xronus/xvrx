@@ -27,11 +27,17 @@
                         <div class="nk-block">
                             <div class="row g-gs xvrx-cabinet-stats">
                                 <div class="col-sm-6">
-                                    <div class="xvrx-cabinet-stat-card">
+                                    <div class="xvrx-cabinet-stat-card xvrx-balance-stat">
                                         <span class="xvrx-cabinet-stat-icon"><em class="icon ni ni-coins"></em></span>
-                                        <div>
+                                        <div class="xvrx-balance-copy">
                                             <span class="xvrx-shop-panel-label">{{ __('main.bonuses') }}</span>
                                             <strong><span class="xvrx-shop-balance-value">{{ $user->bonuses ?? 0 }}</span></strong>
+                                        </div>
+                                        <div class="xvrx-balance-action">
+                                            <a href="{{ route('balance.topup') }}" class="btn btn-sm btn-primary xvrx-balance-topup">
+                                                <em class="icon ni ni-plus-circle"></em>
+                                                {{ __('main.top_up_balance') }}
+                                            </a>
                                         </div>
                                     </div>
                                 </div>

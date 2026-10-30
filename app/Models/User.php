@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -152,6 +153,11 @@ class User extends Authenticatable implements MustVerifyEmailContract
     public function hasTwoFactorEnabled(): bool
     {
         return $this->totp_secret !== null && $this->totp_confirmed_at !== null;
+    }
+
+    public function balanceTopUps(): HasMany
+    {
+        return $this->hasMany(BalanceTopUp::class);
     }
 
     /**

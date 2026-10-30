@@ -29,6 +29,12 @@
                                     <div class="xvrx-shop-balance">
                                         <span class="xvrx-shop-panel-label">{{ __('main.shop_balance') }}</span>
                                         <strong id="shop-balance">{{ $user->bonuses ?? 0 }} <em class="icon ni ni-coins"></em></strong>
+                                        <div class="xvrx-balance-action">
+                                            <a href="{{ route('balance.topup') }}" class="btn btn-sm btn-primary xvrx-balance-topup">
+                                                <em class="icon ni ni-plus-circle"></em>
+                                                {{ __('main.top_up_balance') }}
+                                            </a>
+                                        </div>
                                     </div>
 
                                     <div class="xvrx-shop-categories">
