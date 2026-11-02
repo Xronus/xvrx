@@ -46,11 +46,16 @@ class HtmlSanitizer
 
     public static function plainText(?string $html): string
     {
-        return Str::squish(html_entity_decode(
-            strip_tags((string) $html),
+        return Str::squish(self::decodeEntities(strip_tags((string) $html)));
+    }
+
+    public static function decodeEntities(?string $html): string
+    {
+        return html_entity_decode(
+            (string) $html,
             ENT_QUOTES | ENT_HTML5,
             'UTF-8'
-        ));
+        );
     }
 
     private static function sanitizeNode(\DOMNode $node): void

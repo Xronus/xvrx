@@ -34,7 +34,7 @@
 
                     <div class="mb-3">
                         <label class="form-label">{{ __('main.news_content') }}</label>
-                        <textarea name="content" class="form-control @error('content') is-invalid @enderror" rows="10">{{ old('content', $news->content) }}</textarea>
+                        <textarea name="content" class="form-control @error('content') is-invalid @enderror" rows="10">{{ \App\Support\HtmlSanitizer::decodeEntities(old('content', $news->content)) }}</textarea>
                         @error('content')
                         <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
