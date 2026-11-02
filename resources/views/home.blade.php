@@ -88,7 +88,7 @@
                                     <time>{{ $item->date }}</time>
                                     <h3>{{ $item->localized('text') }}</h3>
                                     @if($item->localized('content'))
-                                        <p>{{ \Illuminate\Support\Str::limit(strip_tags($item->localized('content')), 130) }}</p>
+                                        <p>{{ \Illuminate\Support\Str::limit(\App\Support\HtmlSanitizer::plainText($item->localized('content')), 130) }}</p>
                                     @endif
                                     <span>{{ __('main.read_more') }}</span>
                                 </div>

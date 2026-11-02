@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="{{ asset('powerpuffsite/images/favicon.ico') }}" type="image/x-icon">
-    <meta name="description" content="{{ \Illuminate\Support\Str::limit(strip_tags($news->localized('content') ?: $news->localized('text')), 160) }}">
+    <meta name="description" content="{{ \Illuminate\Support\Str::limit(\App\Support\HtmlSanitizer::plainText($news->localized('content') ?: $news->localized('text')), 160) }}">
     <title>{{ $news->localized('text') }}</title>
     <link rel="stylesheet" href="{{ asset('xvrx-assets/css/remixicon.css') }}">
     <link rel="stylesheet" href="{{ asset('xvrx-assets/css/xvrx-laravel.css') }}">

@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use Illuminate\Support\Str;
+
 class HtmlSanitizer
 {
     private const ALLOWED_TAGS = [
@@ -40,6 +42,15 @@ class HtmlSanitizer
         self::sanitizeNode($document);
 
         return str_replace('<?xml encoding="UTF-8">', '', $document->saveHTML());
+    }
+
+    public static function plainText(?string $html): string
+    {
+        return Str::squish(html_entity_decode(
+            strip_tags((string) $html),
+            ENT_QUOTES | ENT_HTML5,
+            'UTF-8'
+        ));
     }
 
     private static function sanitizeNode(\DOMNode $node): void

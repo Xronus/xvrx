@@ -58,7 +58,7 @@
                                 <div class="news-all__date">{{ $item->date }}</div>
                                 <h3 class="news-all__title-item">{{ $item->localized('text') }}</h3>
                                 @if($item->localized('content'))
-                                <p class="news-all__text">{{ Str::limit(strip_tags($item->localized('content')), 120) }}</p>
+                                <p class="news-all__text">{{ Str::limit(\App\Support\HtmlSanitizer::plainText($item->localized('content')), 120) }}</p>
                                 @endif
                             </div>
                         </a>
